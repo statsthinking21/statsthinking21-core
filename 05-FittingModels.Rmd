@@ -254,8 +254,8 @@ error_df <- #build a dataframe using the function tribble()
     ~model, ~error,
     "mode", rmse_mode,
     "mean", rmse_mean,
-    "mean + age", rmse_age,
-    "mean + age + gender", rmse_age_gender
+    "constant + age", rmse_age,
+    "constant + age + gender", rmse_age_gender
   ) %>% 
   mutate(
     RMSE = error
@@ -264,7 +264,7 @@ error_df <- #build a dataframe using the function tribble()
 error_df %>% 
   ggplot(aes(x = model, y = RMSE)) +
   geom_col() +
-  scale_x_discrete(limits = c("mode", "mean", "mean + age", "mean + age + gender")) +
+  scale_x_discrete(limits = c("mode", "mean", "constant + age", "constant + age + gender")) +
   labs(
     y = "root mean squared error"
   ) + 
