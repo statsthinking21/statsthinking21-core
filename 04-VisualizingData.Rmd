@@ -367,7 +367,7 @@ Having read this chapter, you should be able to:
 
 ## Suggested readings and videos
 
-- [*Fundamentals of data visualization*](https://serialmentor.com/dataviz/), by Claus Wilke
+- [*Fundamentals of Data Visualization*](https://serialmentor.com/dataviz/), by Claus Wilke
 - *Visual Explanations*, by Edward Tufte
 - *Visualizing Data*, by William S. Cleveland
 - *Graph Design for the Eye and Mind*, by Stephen M. Kosslyn
