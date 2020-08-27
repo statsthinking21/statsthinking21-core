@@ -52,11 +52,11 @@ NHANES <-
 # help(NHANES)
 ```
 
-Let's look at some examples of the use of tables, again using the NHANES dataset.  Type the command `help(NHANES)` in the RStudio console, and scroll through the help page, which should open within the Help panel if you are using RStudio.  This page provides some information about the dataset as well as a listing of all of the variables included in the dataset.  Let's have a look at a simple variable, called "PhysActive" in the dataset.  This variable contains one of three different values: "Yes" or "No" (indicating whether or not the person reports doing "moderate or vigorous-intensity sports, fitness or recreational activities"), or "NA" if the data are missing for that individual. There are different reasons that the data might be missing; for example, this question was not asked of children younger than 12 years of age, while in other cases an adult may have declined to answer the question during the interview. 
+Let's look at some examples of the use of tables, using a more realistic dataset.  Throughout this book we will use the [National Health and Nutrition Examination Survey (NHANES)](https://www.cdc.gov/nchs/nhanes/index.htm) dataset.  This is an ongoing study that assesses the health and nutrition status of a sample of individuals from the United States on many different variables.  We will use a version of the dataset that is available with the R software library.   For this example, we will look at a simple variable, called "PhysActive" in the dataset.  This variable contains one of three different values: "Yes" or "No" (indicating whether or not the person reports doing "moderate or vigorous-intensity sports, fitness or recreational activities"), or "NA" if the data are missing for that individual. There are different reasons that the data might be missing; for example, this question was not asked of children younger than 12 years of age, while in other cases an adult may have declined to answer the question during the interview. 
 
 ### Frequency distributions  {#frequency-distributions}
 
-Let's look at how many people fall into each of these categories. We will do this in R by selecting the variable of interest (PhysActive) from the NHANES dataset, grouping the data by the different values of the variable, and then counting how many values there are in each group:
+Let's look at how many people fall into each of these categories:
 
 ```{r MakePhysActiveTable, echo=FALSE, warning=FALSE}
 # summarize physical activity data
@@ -108,7 +108,7 @@ This lets us see that `r formatC(I(PhysActive_table_filtered %>% subset(PhysActi
 
 The PhysActive variable that we examined above only had two possible values, but often we wish to summarize data that can have many more possible values. When those values are quantitative, then one useful way to summarize them is via what we call a *cumulative* frequency representation: rather than asking how many observations take on a specific value, we ask how many have a value of *at least* some specific value.  
 
-Let's look at another variable in the NHANES dataset, called SleepHrsNight which records how many hours the participant reports sleeping on usual weekdays.  Let's create a frequency table as we did above, after removing anyone who didn't provide a response to the question.
+Let's look at another variable in the NHANES dataset, called SleepHrsNight which records how many hours the participant reports sleeping on usual weekdays.  Let's create a frequency table as we did above, after removing anyone with missing data for this question.
 
 ```{r echo=FALSE}
 # create summary table for relative frequency of different
@@ -130,7 +130,7 @@ sleepTable <- NHANES %>%
 kable(sleepTable, caption='Frequency distribution for number of hours of sleep per night in the NHANES dataset')
 ```
 
-We can already begin to summarize the dataset just by looking at the table; for example, we can see that most people report sleeping between 6 and 8 hours.  Let's plot the data to see this more clearly.  To do this we can plot a *histogram* which shows the number of cases having each of the different values; see left panel of Figure \@ref(fig:sleepHist).  The ggplot2() library has a built in histogram function (`geom_histogram()`) which we will often use.  We can also plot the relative frequencies, which we will often refer to as *densities* - see the right panel of Figure \@ref(fig:sleepHist).
+We can already begin to summarize the dataset just by looking at the table; for example, we can see that most people report sleeping between 6 and 8 hours.  Let's plot the data to see this more clearly.  To do this we can plot a *histogram* which shows the number of cases having each of the different values; see left panel of Figure \@ref(fig:sleepHist). We can also plot the relative frequencies, which we will often refer to as *densities* - see the right panel of Figure \@ref(fig:sleepHist).
 
 
 
@@ -252,7 +252,7 @@ plot_grid(p1,p2)
 
 The variables that we examined above were fairly simple, having only a few possible values. Now let's look at a more complex variable: Age.  First let's plot the Age variable for all of the individuals in the NHANES dataset (see left panel of Figure \@ref(fig:ageHist)). What do you see there?  First, you should notice that the number of individuals in each age group is declining over time.  This makes sense because the population is being randomly sampled, and thus death over time leads to fewer people in the older age ranges.  Second, you probably notice a large spike in the graph at age 80.  What do you think that's about?  
 
-If you look at the help function for the NHANES dataset, you will see the following definition: "Age in years at screening of study participant. Note: Subjects 80 years or older were recorded as 80." The reason for this is that the relatively small number of individuals with very high ages would make it potentially easier to identify the specific person in the dataset if you knew their exact age;  researchers generally promise their participants to keep their identity confidential, and this is one of the things they can do to help protect their research subjects.  This also highlights the fact that it's always important to know where one's data have come from and how they have been processed; otherwise we might interpret them improperly, thinking that 80-year-olds had been somehow overrepresented in the sample.
+If were were to look up the information about the NHANES dataset in R, we would see the following definition: "Age in years at screening of study participant. Note: Subjects 80 years or older were recorded as 80." The reason for this is that the relatively small number of individuals with very high ages would make it potentially easier to identify the specific person in the dataset if you knew their exact age;  researchers generally promise their participants to keep their identity confidential, and this is one of the things they can do to help protect their research subjects.  This also highlights the fact that it's always important to know where one's data have come from and how they have been processed; otherwise we might interpret them improperly, thinking that 80-year-olds had been somehow overrepresented in the sample.
 
 Let's look at another more complex variable in the NHANES dataset: Height. The histogram of height values is plotted in the right panel of Figure \@ref(fig:ageHist). The first thing you should notice about this distribution is that most of its density is centered around about 170 cm, but the distribution has a "tail" on the left; there are a small number of individuals with much smaller heights. What do you think is going on here?
 
@@ -307,7 +307,7 @@ nhanes_slice <- NHANES_adult %>%
   dplyr::select(Height) %>%
   slice(45:50) 
 
-kable(nhanes_slice, caption='A few values from the NHANES data frame.')
+kable(nhanes_slice, caption='A few values from the NHANES data frame.', digits=1)
 ```
 
 Panel C of Figure \@ref(fig:heightHistSep) shows a histogram that counts the density of each possible value. That histogram looks really jagged, which is because of the variability in specific decimal place values.  For example, the value 173.2 occurs `r I(sum(NHANES_adult$Height==173.2,na.rm=TRUE))` times, while the value 173.3 only occurs `r I(sum(NHANES_adult$Height==173.3,na.rm=TRUE))` times. We probably don't think that there is really such a big difference between the prevalence of these two heights; more likely this is just due to random variability in our sample of people.  
@@ -319,7 +319,7 @@ $$
 number\, of\, bins  = \frac{range\, of\, scores}{bin\, width}
 $$
 
-There is no hard and fast rule for how to choose the optimal bin width.  Occasionally it will be obvious (as when there are only a few possible values), but in many cases it would require trial and error.  There are methods that try to find an optimal bin size automatically, such as the Freedman-Diaconis method (that is implemented within the `nclass.FD()` function in R); we will use this function in some later examples.
+There is no hard and fast rule for how to choose the optimal bin width.  Occasionally it will be obvious (as when there are only a few possible values), but in many cases it would require trial and error.  There are methods that try to find an optimal bin size automatically, such as the Freedman-Diaconis method that we will use in some later examples.
 
 ## Idealized representations of distributions
 
@@ -413,7 +413,7 @@ plot_grid(h1, h2)
 
 While these plots certainly don't look exactly the same, both have the general characteristic of being relatively symmetric around a rounded peak in the middle.  This shape is in fact one of the commonly observed shapes of distributions when we collect data, which we call the *normal* (or *Gaussian*) distribution.  This distribution is defined in terms of two values (which we call *parameters* of the distribution): the location of the center peak (which we call the *mean*) and the width of the distribution (which is described in terms of a parameter called the *standard deviation*). Figure \@ref(fig:NormalDistPlotsWithDist) shows the appropriate normal distribution plotted on top of each of the histrograms.You can see that although the curves don't fit the data exactly, they do a pretty good job of characterizing the distribution -- with just two numbers! 
 
-As we will see later in the course when we discuss the central limit theorem, there is a deep mathematical reason why many variables in the world exhibit the form of a normal distribution. 
+As we will see later when we discuss the central limit theorem, there is a deep mathematical reason why many variables in the world exhibit the form of a normal distribution. 
 
 ### Skewness
 
