@@ -40,7 +40,7 @@ $$
 data = model + error
 $$
 
-This expresses the idea that the data can be described by a statistical model, which describes what we expect to occur in the data, along with the difference between the model and the data, which we refer to as the *error*. 
+This expresses the idea that the data can be described by a statistical model, which expresses what we expect to occur in the data, along with the difference between the model and the data, which we refer to as the *error*. 
 
 
 ## Statistical modeling: An example
@@ -92,7 +92,7 @@ error_i = height_i - \hat{height_i}
 $$
 
 
-How good of a model is this?  In general we define the goodness of a model in terms of the error, which represents the difference between model and the data; all things being equal, the model that produces lower error is the better model. 
+How good of a model is this?  In general we define the goodness of a model in terms of the error, which represents the difference between model and the data; all things being equal, the model that produces lower error is the better model. (Though as we will see later, all things are usually not equal...)
 
 ```{r errorMode, echo=FALSE}
 # compute error compared to the mode and plot histogram
@@ -101,7 +101,7 @@ error_mode <- NHANES_child$Height - height_mode
 
 ```
 
-What we find is that the average individual has a fairly large error of `r I(mean(error_mode))` centimeters. We would like to have a model where the average error is zero, and it turns out that if we use the arithmetic mean (commonly known as the *average*) as our model then this will be the case. 
+What we find is that the average individual has a fairly large error of `r I(mean(error_mode))` centimeters compared to the mode. We would like to have a model where the average error is zero, and it turns out that if we use the arithmetic mean (commonly known as the *average*) as our model then this will be the case. 
 
 The mean (often denoted by a bar over the variable, such as $\bar{X}$) is the sum of all of the values, divided by the number of values.  Mathematically, we express this as:
 
@@ -137,13 +137,13 @@ rmse_mode <- sqrt(mean(error_mode**2))
 
 ```
 
-The mean has a pretty substantial amount of error -- any individual data point will be about `r I(sprintf('%.0f',rmse_mean))` cm from the mean on average -- but it's still much better than the mode, which has an average error of about `r I(sprintf('%.0f',rmse_mode))` cm.
+The mean has a pretty substantial amount of error -- any individual data point will be about `r I(sprintf('%.0f',rmse_mean))` cm from the mean on average -- but it's still much better than the mode, which has a root mean squared error of about `r I(sprintf('%.0f',rmse_mode))` cm.
 
 ### Improving our model
 
 Can we imagine a better model? Remember that these data are from all children in the NHANES sample, who vary from `r I(min(NHANES_child$Age))` to `r I(max(NHANES_child$Age))` years of age.  Given this wide age range, we might expect that our model of height should also include age.  Let's plot the data for height against age, to see if this relationship really exists.
 
-```{r childHeightLine,echo=FALSE,fig.cap="Height of children in NHANES, plotted without a model (A), with a linear model including only age (B) or age and a constant (C), and with a linear model that fits separate effects of age for males and females (D)."}
+```{r childHeightLine,echo=FALSE, message=FALSE, fig.cap="Height of children in NHANES, plotted without a model (A), with a linear model including only age (B) or age and a constant (C), and with a linear model that fits separate effects of age for males and females (D)."}
 
 
 p1 <- NHANES_child %>% 
@@ -200,13 +200,13 @@ $$
 y = slope*x + intercept
 $$
 
-If age is the $X$ variable, then that means that our prediction of height from age will be a line with a slope of $\beta$ and an intercept of zero - to see this, let's plot the best fitting line in blue on top of the data (Panel B in Figure \@ref(fig:childHeightLine)). Something is clearly wrong with this model, as the line doesn't seem to follow the data very well.  In fact, the RMSE for this model (`r I(rmse_heightOnly)`) is actually higher than the model that only includes the mean! The problem comes from the fact that our model only includes age, which means that the predicted value of height from the model must take on a value of zero when age is zero.  Even though the data do not include any children with an age of zero, the line is mathematically required to have a y-value of zero when x is zero, which explains why the line is pulled down below the younger datapoints.  We can fix this by including a constant value in our model, which basically represents the estimated value of height when age is equal to zero; even though an age of zero is not plausible in this dataset, this is a mathematical trick that will allow the model to account for the overall magnitude of the data.  The model is:
+If age is the $X$ variable, then that means that our prediction of height from age will be a line with a slope of $\beta$ and an intercept of zero - to see this, let's plot the best fitting line in blue on top of the data (Panel B in Figure \@ref(fig:childHeightLine)). Something is clearly wrong with this model, as the line doesn't seem to follow the data very well.  In fact, the RMSE for this model (`r I(rmse_heightOnly)`) is actually higher than the model that only includes the mean! The problem comes from the fact that our model only includes age, which means that the predicted value of height from the model must take on a value of zero when age is zero.  Even though the data do not include any children with an age of zero, the line is mathematically required to have a y-value of zero when x is zero, which explains why the line is pulled down below the younger datapoints.  We can fix this by including n intercept in our model, which basically represents the estimated height when age is equal to zero; even though an age of zero is not plausible in this dataset, this is a mathematical trick that will allow the model to account for the overall magnitude of the data.  The model is:
 
 $$
-\hat{height_i} = constant + \beta * age_i
+\hat{height_i} = intercept + \beta * age_i
 $$
 
-where *constant* is a constant value added to the prediction for each individual; we also call it the *intercept*, since it maps onto the intercept in the equation for a line.  We will learn later how it is that we actually compute these values for a particular dataset; for now, we will use the `lm()` function in R to compute the values of the constant and $\beta$ that give us the smallest error for these particular data. Panel C in Figure \@ref(fig:childHeightLine) shows this model applied to the NHANES data, where we see that the line matches the data much better than the one without a constant. 
+where *intercept* is a constant value added to the prediction for each individual; we call it the intercept because it maps onto the intercept in the equation for a straight line.  We will learn later how it is that we actually compute these parameter values for a particular dataset; for now, we will use the our statistical software to compute the values of the constant and $\beta$ that give us the smallest error for these particular data. Panel C in Figure \@ref(fig:childHeightLine) shows this model applied to the NHANES data, where we see that the line matches the data much better than the one without a constant. 
 
 ```{r ageHeightError,echo=FALSE,fig.cap="Distribution of errors from model including constant and age.",fig.width=4,fig.height=4,out.height='50%'}
 # find the best fitting model to predict height given age
@@ -245,7 +245,7 @@ rmse_age_gender <-
 
 ```
 
-Our error is much smaller using this model -- only `r I(rmse_age)` centimeters on average.  Can you think of other variables that might also be related to height? What about gender?  In Panel D of Figure \@ref(fig:childHeightLine) we plot the data with lines fitted separately for males and females. From the plot, it seems that there is a difference between males and females, but it is relatively small and only emerges after the age of puberty.  Let's estimate this model and see how the errors look.  In Figure \@ref(fig:msePlot) we plot the root mean squared error values across the different models. From this we see that the model got a little bit better going from mode to mean, much better going from mean to mean+age, and only very slightly better by including gender as well.
+Our error is much smaller using this model -- only `r I(rmse_age)` centimeters on average.  Can you think of other variables that might also be related to height? What about gender?  In Panel D of Figure \@ref(fig:childHeightLine) we plot the data with lines fitted separately for males and females. From the plot, it seems that there is a difference between males and females, but it is relatively small and only emerges after the age of puberty.  Let's estimate this model and see how the errors look.  In Figure \@ref(fig:msePlot) we plot the root mean squared error values across the different models. From this we see that the model got a little bit better going from mode to mean, much better going from mean to mean + age, and only very slightly better by including gender as well.
 
 
 ```{r msePlot,echo=FALSE, fig.cap="Mean squared error plotted for each of the models tested above.",fig.width=4,fig.height=4,out.height='50%'}
@@ -274,13 +274,13 @@ error_df %>%
 
 ## What makes a model "good"?
 
-There are generally two different things that we want from our statistical model. First, we want it to describe our data well; that is, we want it to have the lowest possible error when modeling our data.  Second, we want it to generalize well to new datasets; that is, we want its error to be as low as possible when we apply it to a new dataset.  It turns out that these two features can often be in conflict.
+There are generally two different things that we want from our statistical model. First, we want it to describe our data well; that is, we want it to have the lowest possible error when modeling our data.  Second, we want it to generalize well to new datasets; that is, we want its error to be as low as possible when we apply it to a new dataset in order to make a prediction.  It turns out that these two features can often be in conflict.
 
 To understand this, let's think about where error comes from.  First, it can occur if our model is wrong; for example, if we inaccurately said that height goes down with age instead of going up, then our error will be higher than it would be for the correct model.  Similarly, if there is an important factor that is missing from our model, that will also increase our error (as it did when we left age out of the model for height).  However, error can also occur even when the model is correct, due to random variation in the data, which we often refer to as "measurement error" or "noise".  Sometimes this really is due to error in our measurement -- for example, when the measurements rely on a human, such as using a stopwatch to measure elapsed time in a footrace. In other cases, our measurement device is highly accurate (like a digital scale to measure body weight), but the thing being measured is affected by many different factors that cause it to be variable.  If we knew all of these factors then we could build a more accurate model, but in reality that's rarely possible.
 
 Let's use an example to show this.  Rather than using real data, we will generate some data for the example using a computer simulation (about which we will have more to say in a few chapters).  Let's say that we want to understand the relationship between a person's blood alcohol content (BAC) and their reaction time on a simulated driving test.  We can generate some simulated data and plot the relationship (see Panel A of Figure \@ref(fig:BACrt)).
 
-```{r, BACrt,echo=FALSE,fig.cap="Simulated relationship between blood alcohol content and reaction time on a driving test, with best-fitting linear model represented by the line. A: linear relationship with low measurement error.  B: linear relationship with higher measurement error.  C: Nonlinear relationship with low measurement error and (incorrect) linear model"}
+```{r, BACrt,echo=FALSE,message=FALSE, fig.cap="Simulated relationship between blood alcohol content and reaction time on a driving test, with best-fitting linear model represented by the line. A: linear relationship with low measurement error.  B: linear relationship with higher measurement error.  C: Nonlinear relationship with low measurement error and (incorrect) linear model"}
 dataDf <-  
   tibble(
     BAC = runif(100) * 0.3,
@@ -329,7 +329,7 @@ In this example, reaction time goes up systematically with blood alcohol content
 
 We could also imagine data that show the same linear relationship, but have much more error, as in Panel B of Figure \@ref(fig:BACrt). Here we see that there is still a systematic increase of reaction time with BAC, but it's much more variable across individuals.  
 
-These were both examples where the *linear model* seems appropriate, and the error reflects noise in our measurement. The linear model specifies that the relationship between two variables follows a straight line. For example, in a linear model, change in BAC is always associated with a specific change in ReactionTime, regardless of the level of BAC.
+These were both examples where the *linear model* seems appropriate, and the error reflects noise in our measurement. The linear model specifies that the relationship between two variables follows a straight line. For example, in a linear model, a particularly increase in BAC is always associated with a specific increase in ReactionTime, regardless of the level of BAC.
 
 On the other hand, there are other situations where the linear model is incorrect, and error will be increased because the model is not properly specified.  Let's say that we are interested in the relationship between caffeine intake and performance on a test.  The relation between stimulants like caffeine and test performance is often *nonlinear* - that is, it doesn't follow a straight line.  This is because performance goes up with smaller amounts of caffeine (as the person becomes more alert), but then starts to decline with larger amounts (as the person becomes nervous and jittery). We can simulate data of this form, and then fit a linear model to the data (see Panel C of Figure \@ref(fig:BACrt)). The blue line shows the straight line that best fits these data; clearly, there is a high degree of error.  Although there is a very lawful relation between test performance and caffeine intake, it follows a curve rather than a straight line.  The linear model has high error because it's the wrong model for these data.
 
@@ -339,7 +339,7 @@ Error sounds like a bad thing, and usually we will prefer a model that has lower
 
 To see this, let's once again generate some data so that we know the true relation between the variables.  We will create two simulated datasets, which are generated in exactly the same way -- they just have different random noise added to them.  
 
-```{r Overfitting,echo=FALSE,fig.cap='An example of overfitting. Both datasets were generated using the same model, with different random noise added to generate each set.  The left panel shows the data used to fit the model, with a simple linear fit in blue and a complex (8th order polynomial) fit in red.  The root mean square error (RMSE) values for each model are shown in the figure; in this case, the complex model has a lower RMSE than the simple model.  The right panel shows the second dataset, with the same model overlaid on it and the RMSE values computed using the model obtained from the first dataset.  Here we see that the simpler model actually fits the new dataset better than the more complex model, which was overfitted to the first dataset.',fig.width=8,fig.height=4,out.height='50%'}
+```{r Overfitting,echo=FALSE,message=FALSE,warning=FALSE, fig.cap='An example of overfitting. Both datasets were generated using the same model, with different random noise added to generate each set.  The left panel shows the data used to fit the model, with a simple linear fit in blue and a complex (8th order polynomial) fit in red.  The root mean square error (RMSE) values for each model are shown in the figure; in this case, the complex model has a lower RMSE than the simple model.  The right panel shows the second dataset, with the same model overlaid on it and the RMSE values computed using the model obtained from the first dataset.  Here we see that the simpler model actually fits the new dataset better than the more complex model, which was overfitted to the first dataset.',fig.width=8,fig.height=4,out.height='50%'}
 
 #parameters for simulation
 set.seed(1122)
@@ -463,7 +463,7 @@ $$
 $$
 where N is the size of the entire population.
 
-We have already seen that the mean is the summary statistic that is guaranteed to give us a mean error of zero.  The mean also has another characteristic: It is the summary statistic that has the lowest possible value for the sum of squared errors (SSE). In statistics, we refer to this as being the "best" estimator. We could prove this mathematically, but instead we will demonstrate it graphically in Figure \@ref(fig:MinSSE).
+We have already seen that the mean is the summary statistic that is guaranteed to give us an average error of zero.  The mean also has another characteristic: It is the summary statistic that has the lowest possible value for the sum of squared errors (SSE). In statistics, we refer to this as being the "best" estimator. We could prove this mathematically, but instead we will demonstrate it graphically in Figure \@ref(fig:MinSSE).
 
 ```{r MinSSE, echo=FALSE,fig.cap="A demonstration of the mean as the statistic that minimizes the sum of squared errors.  Using the NHANES child height data, we compute the mean (denoted by the blue bar). Then, we test a range of other values, and for each one we compute the sum of squared errors for each data point from that value, which are denoted by the black curve.  We see that the mean falls at the minimum of the squared error plot.",fig.width=4,fig.height=4,out.height='50%'}
 df_error <- 
@@ -525,7 +525,7 @@ incomeDf <-
 ```
 
 ```{r echo=FALSE}
-kable(incomeDf, caption='Income for our five bar patrons plus Beyoncé Knowles.')
+kable(incomeDf %>% mutate(income=format(income, digits=0)), caption='Income for our five bar patrons plus Beyoncé Knowles.')
 
 ```
 
@@ -588,7 +588,7 @@ meanPhoneNumber <-
   
 ```
 
-Sometimes we wish to describe the central tendency of a dataset that is not numeric.  For example, let's say that we want to know which models of iPhone are most commonly used.  Let's say we ask a large group of iPhone users which model each one owns. If we were to take the average of these values, we would see that the mean iPhone model is `r I(meanPhoneNumber)`, which is clearly nonsensical, since the iPhone model numbers are not meant to be quantitative measurements. In this case, a more appropriate measure of central tendency is the mode, which is the most common value in the dataset, as we discussed above. 
+Sometimes we wish to describe the central tendency of a dataset that is not numeric.  For example, let's say that we want to know which models of iPhone are most commonly used.  To test this, we could ask a large group of iPhone users which model each person owns. If we were to take the average of these values, we might see that the mean iPhone model is `r I(meanPhoneNumber)`, which is clearly nonsensical, since the iPhone model numbers are not meant to be quantitative measurements. In this case, a more appropriate measure of central tendency is the mode, which is the most common value in the dataset, as we discussed above. 
 
 ## Variability: How well does the mean fit the data?
 
@@ -615,7 +615,7 @@ So when we say that we have "lost" a degree of freedom, it means that there is a
 
 ## Using simulations to understand statistics
 
-I am a strong believer in the use of computer simulations to understand statistical concepts, and in later sessions we will dig deeply into their use.  Here we will introduce the idea by asking whether we can confirm the need to subtract 1 from the sample size in computing the sample variance.
+I am a strong believer in the use of computer simulations to understand statistical concepts, and in later chapters we will dig deeply into their use.  Here we will introduce the idea by asking whether we can confirm the need to subtract 1 from the sample size in computing the sample variance.
 
 Let's treat the entire sample of children from the NHANES data as our "population", and see how well the calculations of sample variance using either $n$ or $n-1$ in the denominator will estimate variance of this population, across a large number of simulated random samples from the data.  We will return to the details of how to do this in a later chapter.
 
@@ -632,7 +632,7 @@ population_variance <-
 
 # take 100 samples and estimate the sample variance using both N or N-1  in the demoninator
 sampsize <- 50
-nsamp <- 1000
+nsamp <- 10000
 varhat_n <- array(data = NA, dim = nsamp)
 varhat_nm1 <- array(data = NA, dim = nsamp)
 
@@ -679,7 +679,7 @@ caCrimeData <-
 
 ```
 
-Having characterized a distribution in terms of its central tendency and variability, it is often useful to express the individual scores in terms of where they sit with respect to the overall distribution.  Let's say that we are interested in characterizing the relative level of crimes across different states, in order to determine whether California is a particularly dangerous place. We can ask this question using data for 2014 from the [FBI's Uniform Crime Reporting site](https://www.ucrdatatool.gov/Search/Crime/State/RunCrimeOneYearofData.cfm). The left panel of Figure \@ref(fig:crimeHist) shows a histogram of the number of violent crimes per state, highlighting the value for California. Looking at these data, it seems like California is terribly dangerous, with `r I(caCrimeData$Violent.crime.total)` crimes in that year.  
+Having characterized a distribution in terms of its central tendency and variability, it is often useful to express the individual scores in terms of where they sit with respect to the overall distribution.  Let's say that we are interested in characterizing the relative level of crimes across different states, in order to determine whether California is a particularly dangerous place. We can ask this question using data for 2014 from the [FBI's Uniform Crime Reporting site](https://www.ucrdatatool.gov/Search/Crime/State/RunCrimeOneYearofData.cfm). The left panel of Figure \@ref(fig:crimeHist) shows a histogram of the number of violent crimes per state, highlighting the value for California. Looking at these data, it seems like California is terribly dangerous, with `r I(caCrimeData$Violent.crime.total)` crimes in that year.  We can visualize these data by generating a map showing the distribution of a variable across states, which is presented in the right panel of Figure \@ref(fig:crimeHist).
 
 
 ```{r crimeHist,echo=FALSE,fig.cap="Left: Histogram of the number of violent crimes.  The value for CA is plotted in blue. Right: A map of the same data, with number of crimes plotted for each state in color.", fig.width=8,fig.height=4,out.height='50%'}
@@ -722,11 +722,9 @@ p2 <- plot_map + fifty_states_inset_boxes()
 plot_grid(p1,p2)
 ```
 
-With R it's also easy to generate a map showing the distribution of a variable across states, which is presented in the right panel of Figure \@ref(fig:crimeHist).
+It may have occurred to you, however, that CA also has the largest population of any state in the US, so it's reasonable that it will also have a larger number of crimes.  If we plot the number of crimes against one the population of each state (see left panel of Figure \@ref(fig:popVsCrime)), we see that there is a direct relationship between two variables.  
 
-It may have occurred to you, however, that CA also has the largest population of any state in the US, so it's reasonable that it will also have a larger number of crimes.  If we plot the two against one another (see left panel of Figure \@ref(fig:popVsCrime)), we see that there is a direct relationship between population and the number of crimes.  
-
-```{r popVsCrime,echo=FALSE,fig.cap="Left: A plot of number of crimes versus population by state. Right: A histogram of per capita crime rates, expressed as crimes per 100,000 people.",fig.width=8,fig.height=4,out.height='50%'}
+```{r popVsCrime,echo=FALSE,fig.cap="Left: A plot of number of violent crimes versus population by state. Right: A histogram of per capita violent crime rates, expressed as crimes per 100,000 people.",fig.width=8,fig.height=4,out.height='50%'}
 p1 <- crimeData %>%
   ggplot(aes(Population, Violent.crime.total)) +
   geom_point() +
@@ -764,15 +762,15 @@ plot_grid(p1,p2)
 
 ```
 
-Instead of using the raw numbers of crimes, we should instead use the per-capita violent crime rate, which we obtain by dividing the number of crimes by the population of the state.  The dataset from the FBI already includes this value (expressed as rate per 100,000 people). Looking at the right panel of Figure \@ref(fig:popVsCrime), we see that California is not so dangerous after all -- its crime rate of `r I(sprintf("%.2f", caCrimeData$Violent.Crime.rate))` per 100,000 people is a bit above the mean across states of `r I(sprintf("%.2f", mean(crimeData$Violent.Crime.rate)))`, but well within the range of many other states. But what if we want to get a clearer view of how far it is from the rest of the distribution? 
+Instead of using the raw numbers of crimes, we should instead use the violent crime *rate* per capita, which we obtain by dividing the number of crimes per state by the population of each state.  The dataset from the FBI already includes this value (expressed as rate per 100,000 people). Looking at the right panel of Figure \@ref(fig:popVsCrime), we see that California is not so dangerous after all -- its crime rate of `r I(sprintf("%.2f", caCrimeData$Violent.Crime.rate))` per 100,000 people is a bit above the mean across states of `r I(sprintf("%.2f", mean(crimeData$Violent.Crime.rate)))`, but well within the range of many other states. But what if we want to get a clearer view of how far it is from the rest of the distribution? 
 
-The *Z-score* allows us to express data in a way that provides more insight into each data point's relationship to the overall distribution.  The formula to compute a Z-score for a data point given that we know the value of the population mean $\mu$ and standard deviation $\sigma$ is:
+The *Z-score* allows us to express data in a way that provides more insight into each data point's relationship to the overall distribution.  The formula to compute a Z-score for an individual data point given that we know the value of the population mean $\mu$ and standard deviation $\sigma$ is:
 
 $$
 Z(x) = \frac{x - \mu}{\sigma}
 $$
 
-Intuitively, you can think of a Z-score as telling you how far away from the mean any data point is, in units of standard deviation.  We can compute this for the crime rate data, as shown in Figure \@ref(fig:crimeZplot).
+Intuitively, you can think of a Z-score as telling you how far away any data point is from the mean, in units of standard deviation.  We can compute this for the crime rate data, as shown in Figure \@ref(fig:crimeZplot).
 
 ```{r crimeZplot,echo=FALSE,fig.cap="Scatterplot of original crime rate data against Z-scored data.",fig.width=4,fig.height=4,out.height='50%'}
 crimeData <- 
@@ -787,9 +785,6 @@ caCrimeData <-
   crimeData %>% 
   dplyr::filter(State == "California")
 
-print(paste("mean of Z-scored data:", mean(crimeData$ViolentCrimeRateZscore)))
-print(paste("std deviation of Z-scored data:", sd(crimeData$ViolentCrimeRateZscore)))
-
 crimeData %>% 
   ggplot(aes(Violent.Crime.rate, ViolentCrimeRateZscore)) +
   geom_point() + 
@@ -799,9 +794,7 @@ crimeData %>%
   )
 ```
 
-The scatterplot shows us that the process of Z-scoring doesn't change the relative distribution of the data points (visible in the fact that the orginal data and Z-scored data fall on a straight line when plotted against each other) -- it just shifts them to have a mean of zero and a standard deviation of one.  However, if you look closely, you will see that the mean isn't exactly zero -- it's just very small.  What is going on here is that the computer represents numbers with a certain amount of *numerical precision* - which means that there are numbers that are not exactly zero, but are small enough that R considers them to be zero.  
-
-Figure \@ref(fig:crimeZmap) shows the Z-scored crime data using the geographical view.
+The scatterplot shows us that the process of Z-scoring doesn't change the relative distribution of the data points (visible in the fact that the orginal data and Z-scored data fall on a straight line when plotted against each other) -- it just shifts them to have a mean of zero and a standard deviation of one. Figure \@ref(fig:crimeZmap) shows the Z-scored crime data using the geographical view.
 
 ```{r crimeZmap,echo=FALSE,fig.cap="Crime data rendered onto a US map, presented as Z-scores."}
 plot_map_z <- 
@@ -955,7 +948,7 @@ The upper panel in Figure \@ref(fig:zDensityCDF) shows that we expect about 16% 
 plot_density_and_cdf(2)
 ```
 
-Figure \@ref(fig:zDensity2SD) shows the same plot for two standard deviations. Here we see that only about 2.3% of values fall in $Z \le -2$ and the same in $Z \ge 2$.  Thus, if we know the Z-score for a particular data point, we can estimate how likely or unlikely we would be to find a value at least as extreme as that value, which lets us put values into better context.
+Figure \@ref(fig:zDensity2SD) shows the same plot for two standard deviations. Here we see that only about 2.3% of values fall in $Z \le -2$ and the same in $Z \ge 2$.  Thus, if we know the Z-score for a particular data point, we can estimate how likely or unlikely we would be to find a value at least as extreme as that value, which lets us put values into better context.  In the case of crime rates, we see that California has a Z-score of 0.38 for its violent crime rate per capita, showing that it is quite near the mean of other states, with about 35% of states having higher rates and 65% of states having lower rates.
 
 ### Standardized scores
 
@@ -992,7 +985,7 @@ crimeData %>%
 
 #### Using Z-scores to compare distributions
 
-One useful application of Z-scores is to compare distributions of different variables.  Let's say that we want to compare the distributions of violent crimes and property crimes across states.  In the left panel of  Figure \@ref(fig:crimeTypePlot) we plot those against one another, with CA plotted in blue. As you can see the raw rates of property crimes are far higher than the raw rates of violent crimes, so we can't just compare the numbers directly.  However, we can plot the Z-scores for these data against one another (right panel of Figure \@ref(fig:crimeTypePlot))-- here again we see that the distribution of the data does not change.  Having put the data into Z-scores for each variable makes them comparable, and lets us see that California is actually right in the middle of the distribution in terms of both violent crime and property crime.
+One useful application of Z-scores is to compare distributions of different variables.  Let's say that we want to compare the distributions of violent crimes and property crimes across states.  In the left panel of  Figure \@ref(fig:crimeTypePlot) we plot those against one another, with CA plotted in blue. As you can see, the raw rates of property crimes are far higher than the raw rates of violent crimes, so we can't just compare the numbers directly.  However, we can plot the Z-scores for these data against one another (right panel of Figure \@ref(fig:crimeTypePlot))-- here again we see that the distribution of the data does not change.  Having put the data into Z-scores for each variable makes them comparable, and lets us see that California is actually right in the middle of the distribution in terms of both violent crime and property crime.
 
 ```{r crimeTypePlot,echo=FALSE,fig.cap="Plot of violent vs. property crime rates (left) and Z-scored rates (right).",fig.width=8,fig.height=4,out.height='50%'}
 
@@ -1097,15 +1090,15 @@ p2 <- crimeData %>%
 plot_grid(p1,p2)
 ```
 
-Because Z-scores are directly comparable, we can also compute a "Violence difference" score that expresses the relative rate of violent to non-violent (property) crimes across states. We can then plot those scores against population (see right panel of Figure \@ref(fig:crimeTypePopPlot)). This shows how we can use Z-scores to bring different variables together on a common scale.
+Because Z-scores are directly comparable, we can also compute a *difference score* that expresses the relative rate of violent to non-violent (property) crimes across states. We can then plot those scores against population (see right panel of Figure \@ref(fig:crimeTypePopPlot)). This shows how we can use Z-scores to bring different variables together on a common scale.
 
 It is worth noting that the smallest states appear to have the largest differences in both directions. While it might be tempting to look at each state and try to determine why it has a high or low difference score, this probably  reflects the fact that the estimates obtained from smaller samples are necessarily going to be more variable, as we will discuss in the later chapter on Sampling.
 
 ## Learning objectives
 
 * Describe the basic equation for statistical models (outcome=model + error)
-* Describe different measures of central tendency and dispersion, how they are computed, and which are appropriate under what circumstance.
-* Describe the concept of a Z-score and when they are useful.
+* Describe different measures of central tendency and dispersion, how they are computed, and which are appropriate under what circumstances.
+* Compute a Z-score and describe why they are useful.
 
 ## Appendix
 
