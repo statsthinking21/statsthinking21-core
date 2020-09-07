@@ -40,7 +40,7 @@ In this chapter we will introduce the concept of a Monte Carlo simulation and di
 ## Monte Carlo simulation
 
 The concept of Monte Carlo simulation was devised by the mathematicians Stan Ulam and Nicholas Metropolis, who were working to develop an atomic weapon for the US as part of the Manhattan Project. They needed to compute the average distance that a neutron would travel in a substance before it collided with an atomic nucleus, but they could not compute this using standard mathematics.
-Ulam realized that these computations could be simulated using random numbers, just like a casino game. In a casino game such as a roulette wheel, numbers are generated at random; to estimate the probability of a specific outcome, you could play the game hundreds of times. Ulam's uncle had gambled at the Monte Carlo casino in Monaco, which is apparently where the name came from for this new technique.
+Ulam realized that these computations could be simulated using random numbers, just like a casino game. In a casino game such as a roulette wheel, numbers are generated at random; to estimate the probability of a specific outcome, one could play the game hundreds of times. Ulam's uncle had gambled at the Monte Carlo casino in Monaco, which is apparently where the name came from for this new technique.
 
 There are four steps to performing a Monte Carlo simulation:
 
@@ -63,13 +63,7 @@ Running a Monte Carlo simulation requires that we generate random numbers.  Gene
 
 In general, instead of truly random numbers we use *pseudo-random* numbers generated using a computer algorithm; these numbers will seem random in the sense that they are difficult to predict, but the series of numbers will actually repeat at some point.  For example, the random number generator used in R will repeat after $2^{19937} - 1$ numbers.  That's far more than the number of seconds in the history of the universe, and we generally think that this is fine for most purposes in statistical analysis.
 
-In R, there is a function to generate random numbers for each of the major probability distributions, such as:
-
-* `runif()` - uniform distribution (all values between 0 and 1 equally)
-* `rnorm()` - normal distribution
-* `rbinom()` - binomial distribution (e.g. rolling the dice, coin flips)
-
-Figure \@ref(fig:rngExamples) shows examples of numbers generated using the `runif()` and `rnorm()` functions, generated using the following code:
+Most statistical software includes functions to generate random numbers for each of the major probability distributions, such as the uniform distribution (all values between 0 and 1 equally), normal distribution, and binomial distribution (e.g. rolling the dice, coin flips).  Figure \@ref(fig:rngExamples) shows examples of numbers generated from uniform and a normal distribution functions.
 
 ```{r rngExamples,echo=FALSE, fig.cap="Examples of random numbers generated from a uniform (left) or normal (right) distribution.",fig.width=8,fig.height=4,out.height='50%'}
 
@@ -92,25 +86,9 @@ p2 <-
 plot_grid(p1, p2, ncol = 3)
 ```
 
-You can also generate random numbers for any distribution if you have a *quantile* function for the distribution. This is the inverse of the cumulative distribution function; instead of identifying the cumulative probabilities for a set of values, the quantile function identifies the values for a set of cumulative probabilities. Using the quantile function, we can generate random numbers from a uniform distribution, and then map those into the distribution of interest via its quantile function.   
+One can also generate random numbers for any distribution using a *quantile* function for the distribution. This is the inverse of the cumulative distribution function; instead of identifying the cumulative probabilities for a set of values, the quantile function identifies the values for a set of cumulative probabilities. Using the quantile function, we can generate random numbers from a uniform distribution, and then map those into the distribution of interest via its quantile function.   
 
-By default, R will generate a different set of random numbers every time you run one of the random number generator functions described above. However, it is also possible to generate exactly the same set of random numbers, by setting what is called the *random seed* to a specific value.  We will do this in many of the examples in this book, in order to make sure that the examples are reproducible.
-
-If we run the ```rnorm()``` function twice, it will give us different sets of pseudorandom numbers each time:
-
-```{r}
-print(rnorm(n = 5))
-print(rnorm(n = 5))
-```
-
-However, if we set the random seed to the same value each time using the ```set.seed()``` function, then it will give us the same series of pseudorandom numbers each time:
-
-```{r}
-set.seed(12345)
-print(rnorm(n = 5))
-set.seed(12345)
-print(rnorm(n = 5))
-```
+By default, the random number generators in statistical software will generate a different set of random numbers every time they are run. However, it is also possible to generate exactly the same set of random numbers, by setting what is called the *random seed* to a specific value.  We will do this in many of the examples in this book, in order to make sure that the examples are reproducible.
 
 ## Using Monte Carlo simulation
 
@@ -159,9 +137,9 @@ So far we have used simulation to demonstrate statistical principles, but we can
 
 ### Computing the bootstrap
 
-In the section above, we used our knowledge of the sampling distribution of the mean to compute the standard error of the mean and confidence intervals.  But what if we can't assume that the estimates are normally distributed, or we don't know their distribution?  The idea of the bootstrap is to use the data themselves to estimate an answer.  The name comes from the idea of pulling one's self up by one's own bootstraps, expressing the idea that we don't have any external source of leverage so we have to rely upon the data themselves.  The bootstrap method was conceived by Bradley Efron of the Stanford Department of Statistics, who is one of the world's most influential statisticians.
+In the previous chapter, we used our knowledge of the sampling distribution of the mean to compute the standard error of the mean and confidence intervals.  But what if we can't assume that the estimates are normally distributed, or we don't know their distribution?  The idea of the bootstrap is to use the data themselves to estimate an answer.  The name comes from the idea of pulling one's self up by one's own bootstraps, expressing the idea that we don't have any external source of leverage so we have to rely upon the data themselves.  The bootstrap method was conceived by Bradley Efron of the Stanford Department of Statistics, who is one of the world's most influential statisticians.
 
-The idea behind the bootstrap is that we repeatedly sample from the actual dataset; importantly, we sample *with replacement*, such that the same data point will often end up being represented multiple times within one of the samples.  We then compute our statistic of interest on each of the bootstrap samples, and use the distribution of those estimates.
+The idea behind the bootstrap is that we repeatedly sample from the actual dataset; importantly, we sample *with replacement*, such that the same data point will often end up being represented multiple times within one of the samples.  We then compute our statistic of interest on each of the bootstrap samples, and use the distribution of those estimates as our sampling distribution.
 
 Let's start by using the bootstrap to estimate the sampling distribution of the mean, so that we can compare the result to the standard error of the mean (SEM) that we discussed earlier.
 
@@ -234,7 +212,7 @@ After reading this chapter, you should be able to:
 
 * Describe the concept of a Monte Carlo simulation.
 * Describe the meaning of randomness in statistics
-* Obtain random numbers from the uniform and normal distributions
+* Describe how pseudo-random numbers are generated
 * Describe the concept of the bootstrap
 
 ## Suggested readings
