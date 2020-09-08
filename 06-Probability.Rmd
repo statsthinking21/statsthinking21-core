@@ -319,13 +319,13 @@ curry_df <- tibble(
   numSuccesses = seq(0, 4)
 ) %>%
   mutate(
-    probability = pbinom(numSuccesses, size = 4, prob = 0.91)
+    CumulativeProbability = pbinom(numSuccesses, size = 4, prob = 0.91)
   )
 
 ```
 
 ```{r echo=FALSE}
-kable(curry_df, caption='Cumulative probability distribution for number of successful free throws by Steph Curry in 4 attempts.')
+kable(curry_df, caption='Cumulative probability distribution for number of successful free throws by Steph Curry in 4 attempts.', digits=3)
 ```
 
 From the table we can see that the probability of Curry landing 2 or fewer free throws out of 4 attempts is 0.043.
