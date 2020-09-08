@@ -53,7 +53,7 @@ This kind of behavior finally caught up with Wansink; [fifteen of his research s
 
 ## The reproducibility crisis in science
 
-While we think that the kind of frauduent behavior seen in Wansink's case is relatively rare, it has become increasingly clear that problems with reproducibility are much more widespread in science than previously thought.  This became clear in 2015, when a large group of researchers published a study in the journal *Science* titled "Estimating the reproducibility of psychological science"[@open:2015]. In this study, the researchers took 100 published studies in psychology and attempted to reproduce the results originally reported in the papers.  Their findings were shocking: Whereas 97% of the original papers had reported statistically significant findings, only 37% of these effects were statistically significant in the replication study.  Although these problems in psychology have received a great deal of attention, they seem to be present in nearly every area of science, from cancer biology [@erri:iorn:gunn:2014] and chemistry [@bake:2017] to economics [@NBERw22989] and the social sciences [@Camerer2018EvaluatingTR].
+While we think that the kind of frauduent behavior seen in Wansink's case is relatively rare, it has become increasingly clear that problems with reproducibility are much more widespread in science than previously thought.  This became particularly evident in 2015, when a large group of researchers published a study in the journal *Science* titled "Estimating the reproducibility of psychological science"[@open:2015]. In this paper, the researchers took 100 published studies in psychology and attempted to reproduce the results originally reported in the papers.  Their findings were shocking: Whereas 97% of the original papers had reported statistically significant findings, only 37% of these effects were statistically significant in the replication study.  Although these problems in psychology have received a great deal of attention, they seem to be present in nearly every area of science, from cancer biology [@erri:iorn:gunn:2014] and chemistry [@bake:2017] to economics [@NBERw22989] and the social sciences [@Camerer2018EvaluatingTR].
 
 The reproducibility crisis that emerged after 2010 was actually predicted by John Ioannidis, a physician from Stanford who wrote a paper in 2005 titled "Why most published research findings are false"[@ioan:2005].  In this article, Ioannidis argued that the use of null hypothesis statistical testing in the context of modern science will necessarily lead to high levels of false results.  
 
@@ -86,7 +86,7 @@ Let's first take an example where the probability of our hypothesis being true i
 $$
 PPV = \frac{0.8 * (1 - 0.2)}{0.8 * (1 - 0.2) + (1 - 0.8) * 0.05} = 0.98
 $$
-This means that if we find a positive result in a study where the hypothesis is likely to be true and power is high, then its likelihood of being true is high.  Note, however, that a research field where the hypotheses have such a high likelihood of being true is probably not a very interesting field of research; research is most important when it tells us something new!  
+This means that if we find a positive result in a study where the hypothesis is likely to be true and power is high, then its likelihood of being true is high.  Note, however, that a research field where the hypotheses have such a high likelihood of being true is probably not a very interesting field of research; research is most important when it tells us something unexpected!  
 
 Let's do the same analysis for a field where $p(hIsTrue)=0.1$ -- that is, most of the hypotheses being tested are false.  In this case, PPV is:
 
@@ -135,7 +135,7 @@ An amusing example of this was seen in a paper by Jonathan Schoenfeld and John I
 
 Another kind of error can also occur when statistical power is low: Our estimates of the effect size will be inflated.  This phenomenon often goes by the term "winner's curse", which comes from economics, where it refers to the fact that for certain types of auctions (where the value is the same for everyone, like a jar of quarters, and the bids are private), the winner is guaranteed to pay more than the good is worth.  In science, the winner's curse refers to the fact that the effect size estimated from a significant result (i.e. a winner) is almost always an overestimate of the true effect size.
 
-We can simulate this in order to see how the estimated effect size for significant results is related to the actual underlying effect size. Let's generate data for which there is a true effect size of 0.2, and estimate the effect size for those results where there is a significant effect detected. The left panel of Figure \@ref(fig:CurseSim) shows that when power is low, the estimated effect size for significant results can be highly inflated compared to the actual effect size.
+We can simulate this in order to see how the estimated effect size for significant results is related to the actual underlying effect size. Let's generate data for which there is a true effect size of d = 0.2, and estimate the effect size for those results where there is a significant effect detected. The left panel of Figure \@ref(fig:CurseSim) shows that when power is low, the estimated effect size for significant results can be highly inflated compared to the actual effect size.
 
 ```{r CurseSim, echo=FALSE,message=FALSE,fig.cap="Left: A simulation of the winner's curse as a function of statistical power (x axis). The solid line shows the estimated effect size, and the dotted line shows the actual effect size. Right: A histogram showing sample sizes for a number of samples from a dataset, with significant results shown in blue and non-significant results in red. ",fig.width=8,fig.height=4,out.height='50%'}
 
@@ -207,7 +207,7 @@ A popular book entitled "The Compleat Academic: A Career Guide", published by th
 
 > **Which article should you write?** There are two possible articles you can write: (1) the article you planned to write when you designed your study or (2) the article that makes the most sense now that you have seen the results. They are rarely the same, and the correct answer is (2).
 
-What Bem suggests here is known as *HARKing* (Hypothesizing After the Results are Known)[@kerr:1998].  This might seem innocuous, but is problematic because it allows the research to re-frame a post-hoc conclusion (which we should take with a grain of salt) as an a priori prediction (in which we would have stronger faith).  In essence, it allows the researcher to rewrite their theory based on the facts, rather that using the theory to make predictions and then test them -- akin to moving the goalpost so that it ends up wherever the ball goes.  It thus becomes very difficult to disconfirm incorrect ideas, since the goalpost can always be moved to match the data. Bem continues:
+What Bem suggests here is known as *HARKing* (Hypothesizing After the Results are Known)[@kerr:1998].  This might seem innocuous, but is problematic because it allows the researcher to re-frame a post-hoc conclusion (which we should take with a grain of salt) as an a priori prediction (in which we would have stronger faith).  In essence, it allows the researcher to rewrite their theory based on the facts, rather that using the theory to make predictions and then test them -- akin to moving the goalpost so that it ends up wherever the ball goes.  It thus becomes very difficult to disconfirm incorrect ideas, since the goalpost can always be moved to match the data. Bem continues:
 
 > **Analyzing data** Examine them from every angle. Analyze the sexes separately. Make up new composite indices. If a datum suggests a new hypothesis, try to find further evidence for it elsewhere in the data. If you see dim traces of interesting patterns, try to reorganize the data to bring them into bolder relief. If there are participants you don’t like, or trials, observers, or interviewers who gave you anomalous results,drop them (temporarily). Go on a fishing expedition for something — anything — interesting. No, this is not immoral. 
 
@@ -223,7 +223,7 @@ A well-known paper by @simm:nels:simo:2011 showed that the use of these kinds of
 
 ### ESP or QRP?
 
-In 2011, Daryl Bem published an article [@bem:2011] that claimed to have found scientific evidence for extrasensory perception.  The article states:
+In 2011, that same Daryl Bem published an article [@bem:2011] that claimed to have found scientific evidence for extrasensory perception.  The article states:
 
 >This article reports 9 experiments, involving more than 1,000 participants, that test for retroactive influence by “time-reversing” well-established psychological effects so that the individual’s responses are obtained before the putatively causal stimulus events occur. …The mean effect size (d) in psi performance across all 9 experiments was 0.22, and all but one of the experiments yielded statistically significant results.
 
@@ -244,7 +244,7 @@ In the years since the reproducibility crisis arose, there has been a robust mov
 
 One of the ideas that has gained the greatest traction is *pre-registration*, in which one submits a detailed description of a study (including all data analyses) to a trusted repository (such as the [Open Science Framework](http://osf.io) or [AsPredicted.org](http://aspredicted.org)).  By specifying one's plans in detail prior to analyzing the data, pre-registration provides greater faith that the analyses do not suffer from p-hacking or other questionable research practices.  
 
-The effects of pre-registration have been seen in clinical trials in medicine.  In 2000, the National Heart, Lung, and Blood Institute (NHLBI) began requiring all clinical trials to be pre-registered using the system at  [ClinicalTrials.gov](http://clinicaltrials.gov).  This provides a natural experiment to observe the effects of study pre-registration.  When @kapl:irvi:2015 examined clinical trial outcomes over time, they found that the number of positive outcomes in clinical trials was reduced after 2000 compared to before. While there are many possible causes, it seems likely that prior to study registration researchers were able to change their methods in order to find a positive result, which became more difficult after registration was required.
+The effects of pre-registration in clinical trials in medicine  have been striking.  In 2000, the National Heart, Lung, and Blood Institute (NHLBI) began requiring all clinical trials to be pre-registered using the system at  [ClinicalTrials.gov](http://clinicaltrials.gov).  This provides a natural experiment to observe the effects of study pre-registration.  When @kapl:irvi:2015 examined clinical trial outcomes over time, they found that the number of positive outcomes in clinical trials was greatly reduced after 2000 compared to before. While there are many possible causes, it seems likely that prior to study registration researchers were able to change their methods or hypotheses in order to find a positive result, which became more difficult after registration was required.
  
 ### Reproducible practices
 
@@ -280,7 +280,7 @@ It is every scientist's responsibility to improve their research practices in or
 ## Learning objectives
 
 * Describe the concept of P-hacking and its effects on scientific practice
-* Describe the concept of positive predictive value and its relation to statstical power
+* Describe the concept of positive predictive value and its relation to statistical power
 * Describe the concept of pre-registration and how it can help protect against questionable research practices
 
 ## Suggested Readings
