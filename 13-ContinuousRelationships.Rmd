@@ -45,7 +45,7 @@ In 2017, the web site Fivethirtyeight.com published a story titled [*Higher Rate
 
 > "we found that income inequality was the most significant determinant of population-adjusted hate crimes and hate incidents across the United States".  
 
-The data for this analysis are included in the ``fivethirtyeight`` R package, which makes it easy for us to access them.  The analysis reported in the story focused on the relationship between income inequality (defined by a quantity called the *Gini index* --- see Appendix for more details) and the prevalence of hate crimes in each state.  
+The data for this analysis are available as part the ``fivethirtyeight`` package for the R statistical software, which makes it easy for us to access them.  The analysis reported in the story focused on the relationship between income inequality (defined by a quantity called the *Gini index* --- see Appendix for more details) and the prevalence of hate crimes in each state.  
 
 ## Is income inequality related to hate crimes?
 
@@ -87,7 +87,7 @@ $$
 covariance = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{N - 1}
 $$
 
-This value will be far from zero when x and y are both highly deviant from the mean; if they are deviant in the same direction then the covariance is positive, whereas if they are deviant in opposite directions the covariance is negative.  Let's look at a toy example first.  The data are shown in the table, along with their individual deviations from the mean and their crossproducts.
+This value will be far from zero when individual data points deviate by similar amounts from their respective means; if they are deviant in the same direction then the covariance is positive, whereas if they are deviant in opposite directions the covariance is negative.  Let's look at a toy example first.  The data are shown in the table, along with their individual deviations from the mean and their crossproducts.
 
 ```{r echo=FALSE}
 # create data for toy example of covariance
@@ -111,9 +111,7 @@ The covariance is simply the mean of the crossproducts, which in this case is `r
 $$
 r = \frac{covariance}{s_xs_y} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{(N - 1)s_x s_y}
 $$
-In this case, the value is `r I(corXY)`. We can also compute the correlation value easily using the `cor()` function in R, rather than computing it by hand.
-
-The correlation coefficient is useful because it varies between -1 and 1 regardless of the nature of the data - in fact, we already discussed the correlation coefficient earlier in the discussion of effect sizes.  As we saw in the previous chapter on effect sizes, a correlation of 1 indicates a perfect linear relationship, a correlation of -1 indicates a perfect negative relationship, and a correlation of zero indicates no linear relationship.
+In this case, the value is `r I(corXY)`.  The correlation coefficient is useful because it varies between -1 and 1 regardless of the nature of the data - in fact, we already discussed the correlation coefficient earlier in our discussion of effect sizes.  As we saw in that previous chapter, a correlation of 1 indicates a perfect linear relationship, a correlation of -1 indicates a perfect negative relationship, and a correlation of zero indicates no linear relationship.
 
 
 ```{r echo=FALSE}
@@ -126,13 +124,13 @@ corGiniHC <-
 
 ### Hypothesis testing for correlations
 
-The correlation value of `r I(corGiniHC)` seems to indicate a reasonably strong relationship between the hate crimes and income inequality, but we can also imagine that this could occur by chance even if there is no relationship.  We can test the null hypothesis that the correlation is zero, using a simple equation that lets us convert a correlation value into a *t* statistic:
+The correlation value of `r I(corGiniHC)` between hate crimes and income inequality seems to indicate a reasonably strong relationship between the two, but we can also imagine that this could occur by chance even if there is no relationship.  We can test the null hypothesis that the correlation is zero, using a simple equation that lets us convert a correlation value into a *t* statistic:
 
 $$
 \textit{t}_r =  \frac{r\sqrt{N-2}}{\sqrt{1-r^2}}
 $$
 
-Under the null hypothesis $H_0:r=0$, this statistic is distributed as a t distribution with $N - 2$ degrees of freedom.  We can compute this using the ``cor.test()`` function in R:
+Under the null hypothesis $H_0:r=0$, this statistic is distributed as a t distribution with $N - 2$ degrees of freedom.  We can compute this using our statistical software:
 
 ```{r echo=FALSE}
 # perform correlation test on hate crime data
@@ -210,9 +208,9 @@ print(p)
 
 ```
 
-One way to address outliers is to compute the correlation on the ranks of the data after ordering them, rather than on the data themselves; this is known as the *Spearman correlation*.  Whereas the Pearson correlation for the example in Figure \@ref(fig:outlierCorr) was `r I(cc)`, the Spearman correlation is `r I(ccSpearman)`, showing that the rank correlation reduces the effect of the outlier.
+One way to address outliers is to compute the correlation on the ranks of the data after ordering them, rather than on the data themselves; this is known as the *Spearman correlation*.  Whereas the Pearson correlation for the example in Figure \@ref(fig:outlierCorr) was `r I(cc)`, the Spearman correlation is `r I(ccSpearman)`, showing that the rank correlation reduces the effect of the outlier and reflects the negative relationship between the majority of the data points.
 
-We can compute the rank correlation on the hate crime data using the `cor.test` function:
+We can compute the rank correlation on the hate crime data as well:
 
 ```{r echo=FALSE}
 corTestSpearman <- cor.test( hateCrimes$avg_hatecrimes_per_100k_fbi,
@@ -230,7 +228,7 @@ When we say that one thing *causes* another, what do we mean?  There is a long h
 
 In medicine, there is a set of ideas known as [*Koch's postulates*](https://en.wikipedia.org/wiki/Koch%27s_postulates) which have historically been used to determine whether a particular organism causes a disease.   The basic idea is that the organism should be present in people with the disease, and not present in those without it -- thus, a treatment that eliminates the organism should also eliminate the disease.  Further, infecting someone with the organism should cause them to contract the disease.  An example of this was seen in the work of Dr. Barry Marshall, who had a hypothesis that stomach ulcers were caused by a bacterium (*Helicobacter pylori*).  To demonstrate this, he infected himself with the bacterium, and soon thereafter developed severe inflammation in his stomach.  He then treated himself with an antibiotic, and his stomach soon recovered.  He later won the Nobel Prize in Medicine for this work.
 
-Often we would like to test causal hypotheses but we can't actually do an experiment, either because it's impossible ("What is the relationship between human carbon emissions and the earth's climate?") or unethical ("What are the effects of severe abuse on child brain development?"). However, we can still collect data that might be relevant to those questions.  For example, in the latter example, we can potentially collect data from children who have been abused as well as those who have not, and we can then ask whether their brain development differs.
+Often we would like to test causal hypotheses but we can't actually do an experiment, either because it's impossible ("What is the relationship between human carbon emissions and the earth's climate?") or unethical ("What are the effects of severe abuse on child brain development?"). However, we can still collect data that might be relevant to those questions.  For example, we can potentially collect data from children who have been abused as well as those who have not, and we can then ask whether their brain development differs.
 
 Let's say that we did such an analysis, and we found that abused children had poorer brain development than non-abused children. Would this demonstrate that abuse *causes* poorer brain development?  No.  Whenever we observe a statistical association between two variables, it is certainly possible that one of those two variables causes the other.  However, it is also possible that both of the variables are being influenced by a third variable; in this example, it could be that child abuse is associated with family stress, which could also cause poorer brain development through less intellectual engagement, food stress, or many other possible avenues.  The point is that a correlation between two variables generally tells us that something is *probably* causing somethign else, but it doesn't tell us what is causing what.
 
@@ -316,7 +314,8 @@ After reading this chapter, you should be able to:
 
 * Describe the concept of the correlation coefficient and its interpretation
 * Compute the correlation between two continuous variables
-* Describe the potential causal influences that can give rise to a correlation.
+* Describe the effect of outlier data points and how to address them.
+* Describe the potential causal influences that can give rise to an observed correlation.
 
 ## Suggested readings
 
