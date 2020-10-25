@@ -19,7 +19,7 @@ output:
   bookdown::gitbook:
     lib_dir: "book_assets"
     config:
-      edit: https://github.com/poldrack/psych10-book/edit/master/%s
+      edit: https://github.com/statsthinking21/statsthinking21-core/edit/master/%s
     includes:
       in_header:
         - google_analytics.html
