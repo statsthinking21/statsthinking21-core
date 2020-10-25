@@ -196,8 +196,9 @@ distDft1000 <- data.frame(x=seq(-4,4,0.01)) %>%
   mutate(normal=dt(x, df=1000), Distribution='t (df=1000)')
 
 p1 <- ggplot(rbind(distDfNormal, distDft4),aes(x=x, y=normal, color=Distribution)) + 
-  geom_line(aes(linetype=Distribution), size=1.5) + 
+  geom_line(aes(linetype=Distribution), size=2) + 
   ggtitle('df = 4') + 
+  ylab('density') + 
   theme(text = element_text(size=16)) +
   theme(legend.position=c(0.2, 0.8),
         legend.title = element_text(size = 20),
@@ -205,8 +206,9 @@ p1 <- ggplot(rbind(distDfNormal, distDft4),aes(x=x, y=normal, color=Distribution
 ) 
 
 p2 <-ggplot(rbind(distDfNormal, distDft1000),aes(x=x, y=normal, color=Distribution)) + 
-  geom_line(aes(linetype=Distribution), size=1.5) + 
+  geom_line(aes(linetype=Distribution), size=2) + 
   ggtitle('df = 1000') + 
+  ylab('density') + 
   theme(text = element_text(size=16)) +
   theme(legend.position=c(0.2, 0.8),
         legend.title = element_text(size = 20),
