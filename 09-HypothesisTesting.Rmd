@@ -187,22 +187,31 @@ where $\bar{X}_1$ and $\bar{X}_2$ are the means of the two groups, $S^2_1$ and $
 The *t* statistic is distributed according to a probability distribution known as a *t* distribution.  The *t* distribution looks quite similar to a normal distribution, but it differs depending on the number of degrees of freedom, which for this example is the number of observations minus 2, since we have computed two means and thus given up two degrees of freedom.  When the degrees of freedom are large (say 1000), then the *t* distribution looks essentially like the normal distribution, but when they are small then the *t* distribution has longer tails than the normal (see Figure \@ref(fig:tVersusNormal)).
 
 ```{r tVersusNormal,echo=FALSE,fig.cap="Each panel shows the t distribution (in blue dashed line) overlaid on the normal distribution (in solid red line).  The left panel shows a t distribution with 4 degrees of freedom, in which case the distribution is similar but has slightly wider tails.  The right panel shows a t distribution with 1000 degrees of freedom, in which case it is virtually identical to the normal.",fig.width=8,fig.height=4,out.height='50%'}
-distDf <- data.frame(x=seq(-4,4,0.01))
 
-p1 <- ggplot(distDf,aes(x)) + 
-  stat_function(fun = dnorm, n = 100,size=1.5,color='red') +
-  stat_function(fun = dt, args = list(df = 4),
-                n = 100,size=1.5,color='blue',
-                linetype='dashed') + 
-  ggtitle('df = 4')
+distDfNormal <- data.frame(x=seq(-4,4,0.01)) %>%
+  mutate(normal=dnorm(x), Distribution='Normal')
+distDft4 <- data.frame(x=seq(-4,4,0.01)) %>%
+  mutate(normal=dt(x, df=4), Distribution='t (df=4)')
+distDft1000 <- data.frame(x=seq(-4,4,0.01)) %>%
+  mutate(normal=dt(x, df=1000), Distribution='t (df=1000)')
 
-p2 <- ggplot(distDf,aes(x)) + 
-  stat_function(fun = dnorm, n = 100,size=1.5,color='red') +
-  stat_function(fun = dt, args = list(df = 1000),
-                n = 100,size=1.5,color='blue',
-                linetype='dashed') +
-  ggtitle('df = 1000')
+p1 <- ggplot(rbind(distDfNormal, distDft4),aes(x=x, y=normal, color=Distribution)) + 
+  geom_line(aes(linetype=Distribution), size=1.5) + 
+  ggtitle('df = 4') + 
+  theme(text = element_text(size=16)) +
+  theme(legend.position=c(0.2, 0.8),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 20)
+) 
 
+p2 <-ggplot(rbind(distDfNormal, distDft1000),aes(x=x, y=normal, color=Distribution)) + 
+  geom_line(aes(linetype=Distribution), size=1.5) + 
+  ggtitle('df = 1000') + 
+  theme(text = element_text(size=16)) +
+  theme(legend.position=c(0.2, 0.8),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 20)
+) 
 plot_grid(p1,p2)
 ```
 
