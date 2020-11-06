@@ -173,7 +173,7 @@ Note that the software automatically generated dummy variables that correspond t
 
 The first thing we want to do is to critique the model to make sure that it is appropriate. One thing we can do is to look at the residuals from the model. In Figure \@ref(fig:residualPlot), we plot the residuals for each individual grouped by diet. There are no obvious differences in the distributions of residuals across conditions, we can go ahead with the analysis.
 
-```{r residualPlot, echo=FALSE, fig.width=4, fig.height=4}
+```{r residualPlot, echo=FALSE, fig.cap="Distribution of residuals for for each condition", fig.width=4, fig.height=4}
 dietDf <- dietDf %>%
   mutate(lmResid=lmResult$residuals)
 
@@ -182,10 +182,10 @@ ggplot(dietDf, aes(x=lmResid, group=diet, color=diet)) +
   xlab('Residuals')
 ```
 
-Another important assumption of the statistical tests that we apply to linear models is that the residuals from the model are normally distributed. The right panel of Figure \@ref(fig:diagnosticsPlot) shows a Q-Q (quantile-quantile) plot, which plots the residuals against their expected values based on their quantiles in the normal distribution. If the residuals are normally distributed then the data points should fall along the dashed line --- in this case it looks pretty good, except for a couple of outliers that are apparent here.  Because this model is also relatively robust to violations of normality, and these are fairly small, we will go ahead and use the results.
+Another important assumption of the statistical tests that we apply to linear models is that the residuals from the model are normally distributed. The right panel of Figure \@ref(fig:diagnosticQQPlot) shows a Q-Q (quantile-quantile) plot, which plots the residuals against their expected values based on their quantiles in the normal distribution. If the residuals are normally distributed then the data points should fall along the dashed line --- in this case it looks pretty good, except for a couple of outliers that are apparent here.  Because this model is also relatively robust to violations of normality, and these are fairly small, we will go ahead and use the results.
 
 
-```{r diagnosticQQPlot, echo=FALSE, fig.width=4, fig.height=4}
+```{r diagnosticQQPlot, echo=FALSE, fig.cap="Q-Q plot of actual residual values against theoretical residual values", fig.width=4, fig.height=4}
 
 ggplot(dietDf, aes(sample = lmResid)) +
   stat_qq() + stat_qq_line()
