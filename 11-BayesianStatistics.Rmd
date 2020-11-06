@@ -307,7 +307,7 @@ In some cases the credible interval can be computed *numerically* based on a kno
 
 ### Effects of different priors
 
-In the previous example we used a *flat prior*, meaning that we didn't have any reason to believe that any particular value of $p_{respond}$ was more or less likely.  However, let's say that we had instead started with some previous data: In a previous study, researchers had tested 20 people and found that 10 of them had responded positively.  This would have lead us to start with a prior belief that the treatment has an effect in 50% of people.  We can do the same computation as above, but using the information from our previous study to inform our prior (see oanel A in Figure \@ref(fig:posteriorDistPrior)).  
+In the previous example we used a *flat prior*, meaning that we didn't have any reason to believe that any particular value of $p_{respond}$ was more or less likely.  However, let's say that we had instead started with some previous data: In a previous study, researchers had tested 20 people and found that 10 of them had responded positively.  This would have lead us to start with a prior belief that the treatment has an effect in 50% of people.  We can do the same computation as above, but using the information from our previous study to inform our prior (see panel A in Figure \@ref(fig:posteriorDistPrior)).  
 
 ```{r ,echo=FALSE}
 

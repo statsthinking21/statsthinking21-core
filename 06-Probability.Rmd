@@ -145,10 +145,10 @@ $$
 
 For the six-sided die, the probability of each individual outcome is 1/6. 
 
-This is nice, but de Méré was interested in more complex events, like what happens on multiple dice throws.  How do we compute the probability of a complex event (which is a *union* of single events), like rolling a one on the first *or* the second throw?  
-We represent the union of events mathematically using the $\cup$ symbol: for example, if the probability of rolling a one on the first throw is referred to as $P(Roll1_{throw1})$ and the probability of rolling a one on the second throw is $P(Roll1_{throw2})$, then the union is referred to as $P(Roll1_{throw1} \cup Roll1_{throw2})$.
+This is nice, but de Méré was interested in more complex events, like what happens on multiple dice throws.  How do we compute the probability of a complex event (which is a *union* of single events), like rolling a six on the first *or* the second throw?  
+We represent the union of events mathematically using the $\cup$ symbol: for example, if the probability of rolling a six on the first throw is referred to as $P(Roll1_{throw1})$ and the probability of rolling a six on the second throw is $P(Roll1_{throw2})$, then the union is referred to as $P(Roll1_{throw1} \cup Roll1_{throw2})$.
 
-de Méré thought (incorrectly, as we will see below) that he could simply add together the probabilities of the individual events to compute the probability of the combined event, meaning that the probability of rolling a one on the first or second roll would be computed as follows:
+de Méré thought (incorrectly, as we will see below) that he could simply add together the probabilities of the individual events to compute the probability of the combined event, meaning that the probability of rolling a six on the first or second roll would be computed as follows:
 
 $$
 P(Roll1_{throw1}) = 1/6
@@ -429,7 +429,7 @@ P_diabetes_given_inactive <-
 # P_diabetes_given_inactive
 ```
 
-Based on these joint probabilities, we can compute $P(diabetes|inactive)$.  One way oo do this in a computer program is to first determine the whether the PhysActive variable was equal to "No" for each indivdual, and then take the mean of those truth values.  Since TRUE/FALSE values are treated as 1/0 respectively by most programming languages (including R and Python), this allows us to easily identify the probability of a simple event by simply taking the mean of a logical variable representing its truth value. We then use that value to compute the conditional probability, where we find that the probability of someone having diabetes given that they are physically inactive is `r I(sprintf('%0.3f',P_diabetes_given_inactive))`.
+Based on these joint probabilities, we can compute $P(diabetes|inactive)$.  One way to do this in a computer program is to first determine the whether the PhysActive variable was equal to "No" for each indivdual, and then take the mean of those truth values.  Since TRUE/FALSE values are treated as 1/0 respectively by most programming languages (including R and Python), this allows us to easily identify the probability of a simple event by simply taking the mean of a logical variable representing its truth value. We then use that value to compute the conditional probability, where we find that the probability of someone having diabetes given that they are physically inactive is `r I(sprintf('%0.3f',P_diabetes_given_inactive))`.
 
 ## Independence
 
