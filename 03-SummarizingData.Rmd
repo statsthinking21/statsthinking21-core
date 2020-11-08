@@ -307,7 +307,7 @@ nhanes_slice <- NHANES_adult %>%
   dplyr::select(Height) %>%
   slice(45:50) 
 
-kable(nhanes_slice, caption='A few values from the NHANES data frame.', digits=1)
+kable(nhanes_slice %>% mutate(Height=formatC(Height, digits=1, format='f')), caption='A few values from the NHANES data frame.', digits=1)
 ```
 
 Panel C of Figure \@ref(fig:heightHistSep) shows a histogram that counts the density of each possible value. That histogram looks really jagged, which is because of the variability in specific decimal place values.  For example, the value 173.2 occurs `r I(sum(NHANES_adult$Height==173.2,na.rm=TRUE))` times, while the value 173.3 only occurs `r I(sum(NHANES_adult$Height==173.3,na.rm=TRUE))` times. We probably don't think that there is really such a big difference between the prevalence of these two heights; more likely this is just due to random variability in our sample of people.  

@@ -525,7 +525,7 @@ incomeDf <-
 ```
 
 ```{r echo=FALSE}
-kable(incomeDf %>% mutate(income=format(income, digits=0)), caption='Income for our five bar patrons plus Beyoncé Knowles.')
+kable(incomeDf %>% mutate(income=format(income, scientific=FALSE)), caption='Income for our five bar patrons plus Beyoncé Knowles.')
 
 ```
 
