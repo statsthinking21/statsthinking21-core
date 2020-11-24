@@ -27,7 +27,7 @@ When we summarize data, we are necessarily throwing away information, and one mi
 
 We summarize data in general because it provides us with a way to *generalize* - that is, to make general statements that extend beyond specific observations.  The importance of generalization was highlighted by the writer Jorge Luis Borges in his short story "Funes the Memorious", which describes an individual who loses the ability to forget.  Borges focuses in on the relation between generalization (i.e. throwing away data) and thinking: "To think is to forget a difference, to generalize, to abstract. In the overly replete world of Funes, there were nothing but details."  
 
-Psychologists have long studied all of the ways in which generalization is central to thinking.  One example is categorization: We are able to easily recognize different examples of the category of "birds" even though the individual examples may be very different in their surface features (such as an ostrich, a robin, and a chicken).  Importantly, generalization lets us make predictions about these individuals -- in the case of birds, we can predict that they can fly and eat worms, and that they probably can't drive a car or speak English.  These predictions won't always be right, but they are often good enough to be useful in the world.
+Psychologists have long studied all of the ways in which generalization is central to thinking.  One example is categorization: We are able to easily recognize different examples of the category of "birds" even though the individual examples may be very different in their surface features (such as an ostrich, a robin, and a chicken).  Importantly, generalization lets us make predictions about these individuals -- in the case of birds, we can predict that they can fly and eat seeds, and that they probably can't drive a car or speak English.  These predictions won't always be right, but they are often good enough to be useful in the world.
 
 ## Summarizing data using tables
 
@@ -70,7 +70,7 @@ PhysActive_table <- NHANES %>%
 
 ```{r PhysActiveTable, echo=FALSE}
 
-kable(PhysActive_table) #, label='PhysActiveTable',caption='Frequency distribution for PhysActive variable')
+kable(PhysActive_table, digits=3) #, label='PhysActiveTable',caption='Frequency distribution for PhysActive variable')
 ```
 
 This table shows the frequencies of each of the different values; there were `r I(PhysActive_table %>% subset(PhysActive=='No') %>% dplyr::select(AbsoluteFrequency))` individuals who responded "No" to the question, `r I(PhysActive_table %>% subset(PhysActive=='Yes') %>% dplyr::select(AbsoluteFrequency))` who responded "Yes", and `r I(PhysActive_table %>% subset(is.na(PhysActive)) %>% dplyr::select(AbsoluteFrequency))` for whom no response was given.  We call this a *frequency distribution* because it tells us how frequent each of the possible values is within our sample.
@@ -106,7 +106,7 @@ This lets us see that `r formatC(I(PhysActive_table_filtered %>% subset(PhysActi
 
 ### Cumulative distributions {#cumulative-distributions}
 
-The PhysActive variable that we examined above only had two possible values, but often we wish to summarize data that can have many more possible values. When those values are quantitative, then one useful way to summarize them is via what we call a *cumulative* frequency representation: rather than asking how many observations take on a specific value, we ask how many have a value of *at least* some specific value.  
+The PhysActive variable that we examined above only had two possible values, but often we wish to summarize data that can have many more possible values. When those values are quantitative, then one useful way to summarize them is via what we call a *cumulative* frequency representation: rather than asking how many observations take on a specific value, we ask how many have a value of *at most* some specific value.  
 
 Let's look at another variable in the NHANES dataset, called SleepHrsNight which records how many hours the participant reports sleeping on usual weekdays.  Let's create a frequency table as we did above, after removing anyone with missing data for this question.
 

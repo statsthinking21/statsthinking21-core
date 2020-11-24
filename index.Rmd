@@ -52,7 +52,7 @@ I apologize up front that the datasets are heavily US-centric.  This is primaril
 
 The only way to really learn statistics is to *do* statistics.  While historically many statistics courses were taught using point-and-click statistical software, it is increasingly common for statistical education to use open-source languages in which students can code their own analyses.  I think that being able to code one's analyses is essential in order to gain a deep appreciation for statistical analysis, which is why the students in my course at Stanford are expected to learn to use the R statistical programming language to analyze data, alongside the theoretical knowledge that they learn from this book.  
 
-There are two online companions to this textbook that can help the reader get started learning to program.  One of them, 
+There are two online companions to this textbook that can help the reader get started learning to program; [one focuses on the R programming language](https://statsthinking21.github.io/statsthinking21-R-site/), and [another focuses on the Python language](https://statsthinking21.github.io/statsthinking21-python/).  Both are currently works in progress -- please feel free to contribute!
 
 
 ## An open source book
