@@ -30,9 +30,9 @@ Informally, we usually think of probability as a number that describes the likel
 
 To formalize probability theory, we first need to define a few terms:
 
-- An **experiment** is any activity that produces or observes an outcome.  Examples are flipping a coin, rolling a 6-sided die, or trying a new route to work to see if it's faster than the old route.
-- The **sample space** is the set of possible outcomes for an experiment.  We represent these by listing them within a set of squiggly brackets. For a coin flip, the sample space is {heads, tails}.  For a six-sided die, the sample space is each of the possible numbers that can appear: {1,2,3,4,5,6}.  For the amount of time it takes to get to work, the sample space is all possible real numbers greater than zero (since it can't take a negative amount of time to get somewhere, at least not yet). We won't bother trying to write out all of those numbers within the brackets.
-- An **event** is a subset of the sample space.  In principle it could be one or more of possible outcomes in the sample space, but here we will focus primarily on *elementary events* which consist of exactly one possible outcome.  For example, this could be obtaining heads in a single coin flip, rolling a 4 on a throw of the die, or taking 21 minutes to get home by the new route. 
+- An **experiment** is any activity that produces or observes an outcome.  Examples are flipping a coin, rolling a 6-sided dice, or trying a new route to work to see if it's faster than the old route.
+- The **sample space** is the set of possible outcomes for an experiment.  We represent these by listing them within a set of squiggly brackets. For a coin flip, the sample space is {heads, tails}.  For a six-sided dice, the sample space is each of the possible numbers that can appear: {1,2,3,4,5,6}.  For the amount of time it takes to get to work, the sample space is all possible real numbers greater than zero (since it can't take a negative amount of time to get somewhere, at least not yet). We won't bother trying to write out all of those numbers within the brackets.
+- An **event** is a subset of the sample space.  In principle it could be one or more of possible outcomes in the sample space, but here we will focus primarily on *elementary events* which consist of exactly one possible outcome.  For example, this could be obtaining heads in a single coin flip, rolling a 4 on a throw of the dice, or taking 21 minutes to get home by the new route. 
 
 Now that we have those definitions, we can outline the formal features of a probability, which were first defined by the Russian mathematician Andrei Kolmogorov. These are the features that a value *has* to have if it is going to be a probability. If $P(X_i)$ is the probability of event $X_i$:
 
@@ -135,15 +135,15 @@ These two examples show that while large samples will ultimately converge on the
 
 It's unlikely that any of us has ever flipped a coin tens of thousands of times, but we are nonetheless willing to believe that the probability of flipping heads is 0.5.  This reflects the use of yet another approach to computing probabilities, which we refer to as *classical probability*.  In this approach, we compute the probability directly based on our knowledge of the situation.  
 
-Classical probability arose from the study of games of chance such as dice and cards.  A famous example arose from a problem encountered by a  French gambler who went by the name of Chevalier de Méré.  de Méré played two different dice games: In the first he bet on the chance of at least one six on four rolls of a six-sided die, while in the second he bet on the chance of at least one double-six on 24 rolls of two dice.  He expected to win money on both of these gambles, but he found that while on average he won money on the first gamble, he actually lost money on average when he played the second gamble many times. To understand this he turned to his friend, the mathematician Blaise Pascal, who is now recognized as one of the founders of probability theory. 
+Classical probability arose from the study of games of chance such as dice and cards.  A famous example arose from a problem encountered by a  French gambler who went by the name of Chevalier de Méré.  de Méré played two different dice games: In the first he bet on the chance of at least one six on four rolls of a six-sided dice, while in the second he bet on the chance of at least one double-six on 24 rolls of two dice.  He expected to win money on both of these gambles, but he found that while on average he won money on the first gamble, he actually lost money on average when he played the second gamble many times. To understand this he turned to his friend, the mathematician Blaise Pascal, who is now recognized as one of the founders of probability theory. 
 
-How can we understand this question using probability theory?  In classical probability, we start with the assumption that all of the elementary events in the sample space are equally likely; that is, when you roll a die, each of the possible outcomes ({1,2,3,4,5,6}) is equally likely to occur.  (No loaded dice allowed!)  Given this, we can compute the probability of any individual outcome as one divided by the number of possible outcomes:
+How can we understand this question using probability theory?  In classical probability, we start with the assumption that all of the elementary events in the sample space are equally likely; that is, when you roll a dice, each of the possible outcomes ({1,2,3,4,5,6}) is equally likely to occur.  (No loaded dice allowed!)  Given this, we can compute the probability of any individual outcome as one divided by the number of possible outcomes:
 
 $$
 P(outcome_i) = \frac{1}{\text{number of possible outcomes}}
 $$
 
-For the six-sided die, the probability of each individual outcome is 1/6. 
+For the six-sided dice, the probability of each individual outcome is 1/6. 
 
 This is nice, but de Méré was interested in more complex events, like what happens on multiple dice throws.  How do we compute the probability of a complex event (which is a *union* of single events), like rolling a six on the first *or* the second throw?  
 We represent the union of events mathematically using the $\cup$ symbol: for example, if the probability of rolling a six on the first throw is referred to as $P(Roll1_{throw1})$ and the probability of rolling a six on the second throw is $P(Roll1_{throw2})$, then the union is referred to as $P(Roll1_{throw1} \cup Roll1_{throw2})$.
@@ -176,7 +176,7 @@ where $\neg A$ means "not A". This rule derives directly from the axioms that we
 
 A second rule tells us how to compute the probability of a conjoint event -- that is, the probability that both of two events will occur. We refer to this as an *intersection*, which is signified by the $\cap$ symbol; thus, $P(A \cap B)$ means the probability that both A and B will occur.
 
-This version of the rule tells us how to compute this quantity in the special case when the two events are independent from one another; we will learn later exactly what the concept of *independence* means, but for now we can just take it for granted that the two die throws are independent events.  We compute the probability of the union of two independent events by simply multiplying the probabilities of the individual events:
+This version of the rule tells us how to compute this quantity in the special case when the two events are independent from one another; we will learn later exactly what the concept of *independence* means, but for now we can just take it for granted that the two dice throws are independent events.  We compute the probability of the union of two independent events by simply multiplying the probabilities of the individual events:
 
 $$
 P(A \cap B) = P(A) * P(B)\ \text{if and only if A and B are independent}
@@ -198,7 +198,7 @@ $$
 = \frac{1}{6} + \frac{1}{6} - \frac{1}{36} = \frac{11}{36}
 $$
 
-```{r ThrowMatrix, echo=FALSE,fig.cap='Each cell in this matrix represents one outcome of two throws of a die, with the columns representing the first throw and the rows representing the second throw. Cells shown in red represent the cells with a one in either the first or second throw; the rest are shown in blue.',fig.width=4,fig.height=4,out.height='50%'}
+```{r ThrowMatrix, echo=FALSE,fig.cap='Each cell in this matrix represents one outcome of two throws of a dice, with the columns representing the first throw and the rows representing the second throw. Cells shown in red represent the cells with a one in either the first or second throw; the rest are shown in blue.',fig.width=4,fig.height=4,out.height='50%'}
 imgmtx <-
   matrix(0, nrow = 6, ncol = 6) 
 
