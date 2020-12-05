@@ -325,7 +325,7 @@ This plot allows the viewer to make comparisons based on the the length of the b
 
 Often we are interested in plotting data where the variable of interest is affected by other factors than the one we are interested in.  For example, let's say that we want to understand how the price of gasoline has changed over time.  Figure \@ref(fig:gasPrices) shows historical gas price data, plotted either with or without adjustment for inflation. Whereas the unadjusted data show a huge increase, the adjusted data show that this is mostly just reflective of inflation.  Other examples where one needs to adjust data for other factors include population size and data collected across different seasons.
 
-```{r gasPrices,echo=FALSE,message=FALSE, warning=FALSE,fig.cap="The price of gasoline in the US from 1930 to 201 (obtained from http://www.thepeoplehistory.com/70yearsofpricechange.html) with or without correction for inflation (based on Consumer Price Index).",fig.width=4,fig.height=4,out.height='50%'}
+```{r gasPrices,echo=FALSE,message=FALSE, warning=FALSE,fig.cap="The price of gasoline in the US from 1930 to 2013 (obtained from http://www.thepeoplehistory.com/70yearsofpricechange.html) with or without correction for inflation (based on Consumer Price Index).",fig.width=4,fig.height=4,out.height='50%'}
 
 # Consumer Price Index data obtained from 
 # https://inflationdata.com/Inflation/Consumer_Price_Index/HistoricalCPI.aspx
