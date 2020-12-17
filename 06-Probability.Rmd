@@ -34,15 +34,15 @@ To formalize probability theory, we first need to define a few terms:
 - The **sample space** is the set of possible outcomes for an experiment.  We represent these by listing them within a set of squiggly brackets. For a coin flip, the sample space is {heads, tails}.  For a six-sided dice, the sample space is each of the possible numbers that can appear: {1,2,3,4,5,6}.  For the amount of time it takes to get to work, the sample space is all possible real numbers greater than zero (since it can't take a negative amount of time to get somewhere, at least not yet). We won't bother trying to write out all of those numbers within the brackets.
 - An **event** is a subset of the sample space.  In principle it could be one or more of possible outcomes in the sample space, but here we will focus primarily on *elementary events* which consist of exactly one possible outcome.  For example, this could be obtaining heads in a single coin flip, rolling a 4 on a throw of the dice, or taking 21 minutes to get home by the new route. 
 
-Now that we have those definitions, we can outline the formal features of a probability, which were first defined by the Russian mathematician Andrei Kolmogorov. These are the features that a value *has* to have if it is going to be a probability. If $P(X_i)$ is the probability of event $X_i$:
+Now that we have those definitions, we can outline the formal features of a probability, which were first defined by the Russian mathematician Andrei Kolmogorov. These are the features that a value *has* to have if it is going to be a probability. Let's say that we have a sample space defined by N independent events, ${E_1, E_2, ... , E_N}$, and $X$ is a random variable denoting which of the evets has happend.  $P(X=E_i)$ is the probability of event $i$:
 
-- Probability cannot be negative: $P(X_i) \ge 0$
-- The total probability of all outcomes in the sample space is 1; that is, if we take the probability of each element in the sample space and add them up, they *must* sum to 1. We can express this using the summation symbol $\sum$:
+- Probability cannot be negative: $P(X=E_i) \ge 0$
+- The total probability of all outcomes in the sample space is 1; that is,  if the , if we take the probability of each Ei and add them up, they must sum to 1. We can express this using the summation symbol $\sum$:
 $$
-\sum_{i=1}^N{P(X_i)} = P(X_1) + P(X_2) + ... + P(X_N) = 1
+\sum_{i=1}^N{P(X=E_i)} = P(X=E_1) + P(X=E_2) + ... + P(X=E_N) = 1
 $$
 This is interpreted as saying "Take all of the N elementary events, which we have labeled from 1 to N, and add up their probabilities. These must sum to one."  
-- The probability of any individual event cannot be greater than one: $P(X_i)\le 1$.  This is implied by the previous point; since they must sum to one, and they can't be negative, then any particular probability must be less than or equal to one.
+- The probability of any individual event cannot be greater than one: $P(X=E_i)\le 1$.  This is implied by the previous point; since they must sum to one, and they can't be negative, then any particular probability must be less than or equal to one.
 
 ## How do we determine probabilities?
 
