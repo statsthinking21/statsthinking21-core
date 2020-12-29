@@ -1,11 +1,11 @@
 ---
 output:
+  html_document: default
+  pdf_document: default
   bookdown::gitbook:
     lib_dir: "book_assets"
     includes:
       in_header: google_analytics.html
-  pdf_document: default
-  html_document: default
 ---
 # Fitting models to data {#fitting-models}
 
@@ -32,7 +32,7 @@ One of the fundamental activities in statistics is creating models that can summ
 
 In the physical world, "models" are generally simplifications of things in the real world that nonetheless convey the essence of the thing being modeled. A model of a building conveys the structure of the building while being small and light enough to pick up with one's hands; a model of a cell in biology is much larger than the actual thing, but again conveys the major parts of the cell and their relationships.  
 
-In statistics, a model is meant to provide a similarly condensed description, but for data rather than for a physical structure. Like physical models, a statistical model is generally much simpler than the data being described; it is meant to capture the structure of the data as simply as possible. In both cases, we realize that the model is a convenient fiction that necessarily glosses over some of the details of the actual thing being modeled. As the statistician George Box famously said: "All models are wrong but some are useful."
+In statistics, a model is meant to provide a similarly condensed description, but for data rather than for a physical structure. Like physical models, a statistical model is generally much simpler than the data being described; it is meant to capture the structure of the data as simply as possible. In both cases, we realize that the model is a convenient fiction that necessarily glosses over some of the details of the actual thing being modeled. As the statistician George Box famously said: "All models are wrong but some are useful."  It can also be useful to think of a statistical model as a theory of how the observed data were generated; our goal then becomes to find the model that most efficiently and accurately summarizes the way in which the data were actually generated. But as we will see below, the desires of efficiency and accuracy will often be diametrically opposed to one another.
 
 The basic structure of a statistical model is:
 
@@ -40,12 +40,23 @@ $$
 data = model + error
 $$
 
-This expresses the idea that the data can be described by a statistical model, which expresses what we expect to occur in the data, along with the difference between the model and the data, which we refer to as the *error*. 
+This expresses the idea that the data can be broken into two portions: one portion that is described by a statistical model, which expresses the values that we expect the data to take given our knowledge, and another portion that we refer to as the *error* that reflects the difference between the model's predictions and the observed data. 
 
+In essence we would like to use our model to predict the value of the data for any given observation. We would write the equation like this:
+
+$$
+\widehat{data_i} = model_i
+$$
+The "hat" over the data denotes that it's our prediction rather than the actual value of the data.This means that the predicted value of the data for observation $i$ is equal to the value of the model for that observation.   Once we have a prediction from the model, we can then compute the error:
+
+$$
+error_i = data_i - \widehat{data_i}
+$$
+That is, the error for any observation is the difference between the observed value of the data and the predicted value of the data from the model.
 
 ## Statistical modeling: An example
 
-Let's look at an example of fitting a model to data, using the data from NHANES.  In particular, we will try to build a model of the height of children in the NHANES sample. First let's load the data and plot them (see Figure \@ref(fig:childHeight)).
+Let's look at an example of building a model for data, using the data from NHANES.  In particular, we will try to build a model of the height of children in the NHANES sample. First let's load the data and plot them (see Figure \@ref(fig:childHeight)).
 
 ```{r childHeight,echo=FALSE,fig.cap="Histogram of height of children in NHANES.",fig.width=4,fig.height=4,out.height='50%'}
 
@@ -66,7 +77,15 @@ NHANES_child %>%
   geom_histogram(bins = 100)
 ```
 
-Remember that we want to describe the data as simply as possible while still capturing their important features. What is the simplest model we can imagine that might still capture the essence of the data?  How about the most common value in the dataset (which we call the *mode*)?  
+Remember that we want to describe the data as simply as possible while still capturing their important features. The simplest model that we can imagine would involve only a single number; that is, the model would predict the same value for each observation, regardless of what else we might know about those observations.  We generally describe a model in terms of its *parameters*, which are values that we can change in order to modify the predictions of the model.  Throughout the book we will refer to these using the Greek letter beta ($\beta$); when the model has more than one parameter, we will use subscripted numbers to denote the different betas (e.g. $\beta_1$).  It's also customary to refer to the values of the data using the letter $y$, and to use a subscripted version $y_i$ to refer to the individual observations.  
+
+We generally don't know the true values of the parameters, so we have to estimate them from the data.  For this reason, we will generally put a "hat" over the $\beta$ symbol to denote that we are using an estimate of the parameter value rather than its true value (which we generally don't know). Thus, our simple model for height using a single parameter would be:
+
+$$
+y_i = \hat{\beta}
+$$
+
+The subscript $i$ doesn't appear on the right side of the equation, which means that the prediction of the model doesn't depend on which observation we are looking at --- it's the same for all of them.  The question then becomes: how do we best estimate the values of the parameter(s) in the model? In this particular case, what single value value is the best estimate for $\hat{\beta}}$?  And, more importantly, how do we even define *best*?
 
 ```{r echo=FALSE}
 # create function to compute mode and apply to child height data from NHANES
@@ -78,38 +97,31 @@ getmode <- function(v) {
 
 height_mode <- getmode(NHANES_child$Height)
 
-```
-
-This redescribes the entire set of `r I(dim(NHANES_child)[1])` children in terms of a single number. If we wanted to predict the height of any new children, then our guess would be the same number: `r I(height_mode)` centimeters.  
-
-$$
-\hat{height_i} = 166.5
-$$
-We put the hat symbol over the name of the variable to show that this is our *predicted* value.  The error for this individual would then be the difference between the predicted value ($\hat{height_i}$)and their actual height ($height_i$):
-
-$$
-error_i = height_i - \hat{height_i}
-$$
-
-
-How good of a model is this?  In general we define the goodness of a model in terms of the error, which represents the difference between model and the data; all things being equal, the model that produces lower error is the better model. (Though as we will see later, all things are usually not equal...)
-
-```{r errorMode, echo=FALSE}
-# compute error compared to the mode and plot histogram
-
 error_mode <- NHANES_child$Height - height_mode
 
 ```
 
-What we find is that the average individual has a fairly large error of `r I(mean(error_mode))` centimeters compared to the mode. We would like to have a model where the average error is zero, and it turns out that if we use the arithmetic mean (commonly known as the *average*) as our model then this will be the case. 
+One very simple estimator that we might imagine is the *mode*, which is simply the most common value in the dataset. This redescribes the entire set of `r I(dim(NHANES_child)[1])` children in terms of a single number. If we wanted to predict the height of any new children, then our predicted value would be the same number:
 
-The mean (often denoted by a bar over the variable, such as $\bar{X}$) is the sum of all of the values, divided by the number of values.  Mathematically, we express this as:
+$$
+\hat{y_i} = 166.5
+$$
+The error for each individual would then be the difference between the predicted value ($\hat{y_i}$) and their actual height ($y_i$):
+
+$$
+error_i = y_i - \hat{y_i}
+$$
+
+How good of a model is this?  In general we define the goodness of a model in terms of the magnitude of the error, which represents the degree to which the data diverge from the model's predictions; all things being equal, the model that produces lower error is the better model. (Though as we will see later, all things are usually not equal...)
+What we find in this case is that the average individual has a fairly large error of `r I(mean(error_mode))` centimeters when we use the mode as our estimator for $\beta$, which doesn't seem very good on its face. 
+
+How might we find a better estimator for our model parameter?  We might start by trying to find an estimator that gives us an average error of zero. One good candidate is the arithmetic mean (that is, the *average*,  often denoted by a bar over the variable, such as $\bar{X}$), computed as the sum of all of the values divided by the number of values.  Mathematically, we express this as:
 
 $$
 \bar{X} = \frac{\sum_{i=1}^{n}x_i}{n}
 $$
 
-We can prove mathematically that the sum of errors from the mean (and thus the average error) is zero (see the proof at the end of the chapter if you are interested).  Given that the average error is zero, this seems like a better model.  
+It turns out that if we use the arithmetic mean as our estimator then the average error will indeed be zero (see the simple proof at the end of the chapter if you are interested).  Even though the average of errors from the mean is zero, we can see from the histogram in Figure \@ref(fig:meanError) that each individual still has some degree of error; some are positive and some are negative, and those cancel each other out. 
 
 ```{r meanError, echo=FALSE,fig.cap="Distribution of errors from the mean.",fig.width=4,fig.height=4,out.height='50%'}
 # compute error compared to the mean and plot histogram
@@ -125,7 +137,7 @@ ggplot(NULL, aes(error_mean)) +
 
 ```
 
-Even though the average of errors from the mean is zero, we can see from the histogram in Figure \@ref(fig:meanError) that each individual still has some degree of error; some are positive and some are negative, and those cancel each other out. For this reason, we generally summarize errors in terms of some kind of measure that counts both positive and negative errors as bad.  We could use the absolute value of each error value, but it's more common to use the squared errors, for reasons that we will see later in the course.  
+The fact that the negative and positive errors cancel each other out means that two different models could have errors of very different magnitude in absolute terms, but would still have the same average error.  This is exactly why the average error is not a good criterion for our estimator; we want a criterion that tries to minimize the overall error regardless of its direction.  For this reason, we generally summarize errors in terms of some kind of measure that counts both positive and negative errors as bad.  We could use the absolute value of each error value, but it's more common to use the squared errors, for reasons that we will see later in the book 
 
 There are several common ways to summarize the squared error that you will encounter at various points in this book, so it's important to understand how they relate to one another.  First, we could simply add them up; this is referred to as the *sum of squared errors*.  The reason we don't usually use this is that its magnitude depends on the number of data points, so it can be difficult to interpret unless we are looking at the same number of observations.  Second, we could  take the mean of the squared error values, which is referred to as the *mean squared error (MSE)*.  However, because we squared the values before averaging, they are not on the same scale as the original data; they are in $centimeters^2$.  For this reason, it's also common to take the square root of the MSE, which we refer to as the *root mean squared error (RMSE)*, so that the error is measured in the same units as the original values (in this example, centimeters).
 
@@ -137,7 +149,7 @@ rmse_mode <- sqrt(mean(error_mode**2))
 
 ```
 
-The mean has a pretty substantial amount of error -- any individual data point will be about `r I(sprintf('%.0f',rmse_mean))` cm from the mean on average -- but it's still much better than the mode, which has a root mean squared error of about `r I(sprintf('%.0f',rmse_mode))` cm.
+The mean has a pretty substantial amount of error -- any individual data point will be about `r I(sprintf('%.0f',rmse_mean))` cm from the mean on average -- but it's still much better than the mode, which has a root mean squared error of about `r I(sprintf('%.0f',rmse_mode))` cm.  
 
 ### Improving our model
 
@@ -189,10 +201,10 @@ plot_grid(p1,p2,p3,p4,ncol=2)
 The black points in Panel A of Figure \@ref(fig:childHeightLine) show individuals in the dataset, and there seems to be a strong relationship between height and age, as we would expect.  Thus, we might build a model that relates height to age:
 
 $$
-\hat{height_i} =  \beta * age_i
+\hat{y_i} =  \hat{\beta} * age_i
 $$
 
-where $\beta$ is a *parameter* that we multiply by age to get the smallest error.  
+where $\hat{\beta}$ is our estimate of the parameter that we multiply by age to generate the model prediction.  
 
 You may remember from algebra that a line is defined as follows:
 
@@ -200,13 +212,13 @@ $$
 y = slope*x + intercept
 $$
 
-If age is the $X$ variable, then that means that our prediction of height from age will be a line with a slope of $\beta$ and an intercept of zero - to see this, let's plot the best fitting line in blue on top of the data (Panel B in Figure \@ref(fig:childHeightLine)). Something is clearly wrong with this model, as the line doesn't seem to follow the data very well.  In fact, the RMSE for this model (`r I(rmse_heightOnly)`) is actually higher than the model that only includes the mean! The problem comes from the fact that our model only includes age, which means that the predicted value of height from the model must take on a value of zero when age is zero.  Even though the data do not include any children with an age of zero, the line is mathematically required to have a y-value of zero when x is zero, which explains why the line is pulled down below the younger datapoints.  We can fix this by including n intercept in our model, which basically represents the estimated height when age is equal to zero; even though an age of zero is not plausible in this dataset, this is a mathematical trick that will allow the model to account for the overall magnitude of the data.  The model is:
+If age is the $X$ variable, then that means that our prediction of height from age will be a line with a slope of $\beta$ and an intercept of zero - to see this, let's plot the best fitting line in blue on top of the data (Panel B in Figure \@ref(fig:childHeightLine)). Something is clearly wrong with this model, as the line doesn't seem to follow the data very well.  In fact, the RMSE for this model (`r I(rmse_heightOnly)`) is actually higher than the model that only includes the mean! The problem comes from the fact that our model only includes age, which means that the predicted value of height from the model must take on a value of zero when age is zero.  Even though the data do not include any children with an age of zero, the line is mathematically required to have a y-value of zero when x is zero, which explains why the line is pulled down below the younger datapoints.  We can fix this by including an intercept in our model, which basically represents the estimated height when age is equal to zero; even though an age of zero is not plausible in this dataset, this is a mathematical trick that will allow the model to account for the overall magnitude of the data.  The model is:
 
 $$
-\hat{height_i} = intercept + \beta * age_i
+\widehat{y_i} = \hat{\beta_0} + \hat{\beta_1} * age_i
 $$
 
-where *intercept* is a constant value added to the prediction for each individual; we call it the intercept because it maps onto the intercept in the equation for a straight line.  We will learn later how it is that we actually compute these parameter values for a particular dataset; for now, we will use the our statistical software to compute the values of the constant and $\beta$ that give us the smallest error for these particular data. Panel C in Figure \@ref(fig:childHeightLine) shows this model applied to the NHANES data, where we see that the line matches the data much better than the one without a constant. 
+where $\hat{\beta_0}$ is our estimate for the *intercept*, which is a constant value added to the prediction for each individual; we call it the intercept because it maps onto the intercept in the equation for a straight line.  We will learn later how it is that we actually estimate these parameter values for a particular dataset; for now, we will use our statistical software to estimate the parameter values that give us the smallest error for these particular data. Panel C in Figure \@ref(fig:childHeightLine) shows this model applied to the NHANES data, where we see that the line matches the data much better than the one without a constant. 
 
 ```{r ageHeightError,echo=FALSE,fig.cap="Distribution of errors from model including constant and age.",fig.width=4,fig.height=4,out.height='50%'}
 # find the best fitting model to predict height given age
@@ -245,7 +257,7 @@ rmse_age_gender <-
 
 ```
 
-Our error is much smaller using this model -- only `r I(rmse_age)` centimeters on average.  Can you think of other variables that might also be related to height? What about gender?  In Panel D of Figure \@ref(fig:childHeightLine) we plot the data with lines fitted separately for males and females. From the plot, it seems that there is a difference between males and females, but it is relatively small and only emerges after the age of puberty.  Let's estimate this model and see how the errors look.  In Figure \@ref(fig:msePlot) we plot the root mean squared error values across the different models. From this we see that the model got a little bit better going from mode to mean, much better going from mean to mean + age, and only very slightly better by including gender as well.
+Our error is much smaller using this model -- only `r I(rmse_age)` centimeters on average.  Can you think of other variables that might also be related to height? What about gender?  In Panel D of Figure \@ref(fig:childHeightLine) we plot the data with lines fitted separately for males and females. From the plot, it seems that there is a difference between males and females, but it is relatively small and only emerges after the age of puberty.   In Figure \@ref(fig:msePlot) we plot the root mean squared error values across the different models, including one with an additional parameter that models the effect of gender. From this we see that the model got a little bit better going from mode to mean, much better going from mean to mean + age, and only very slightly better by including gender as well.
 
 
 ```{r msePlot,echo=FALSE, fig.cap="Mean squared error plotted for each of the models tested above.",fig.width=4,fig.height=4,out.height='50%'}
@@ -329,9 +341,7 @@ In this example, reaction time goes up systematically with blood alcohol content
 
 We could also imagine data that show the same linear relationship, but have much more error, as in Panel B of Figure \@ref(fig:BACrt). Here we see that there is still a systematic increase of reaction time with BAC, but it's much more variable across individuals.  
 
-These were both examples where the *linear model* seems appropriate, and the error reflects noise in our measurement. The linear model specifies that the relationship between two variables follows a straight line. For example, in a linear model, a particularly increase in BAC is always associated with a specific increase in ReactionTime, regardless of the level of BAC.
-
-On the other hand, there are other situations where the linear model is incorrect, and error will be increased because the model is not properly specified.  Let's say that we are interested in the relationship between caffeine intake and performance on a test.  The relation between stimulants like caffeine and test performance is often *nonlinear* - that is, it doesn't follow a straight line.  This is because performance goes up with smaller amounts of caffeine (as the person becomes more alert), but then starts to decline with larger amounts (as the person becomes nervous and jittery). We can simulate data of this form, and then fit a linear model to the data (see Panel C of Figure \@ref(fig:BACrt)). The blue line shows the straight line that best fits these data; clearly, there is a high degree of error.  Although there is a very lawful relation between test performance and caffeine intake, it follows a curve rather than a straight line.  The linear model has high error because it's the wrong model for these data.
+These were both examples where the relationship between the two variables appears to be linear, and the error reflects noise in our measurement. On the other hand, there are other situations where the relationship between the variables is not linear, and error will be increased because the model is not properly specified.  Let's say that we are interested in the relationship between caffeine intake and performance on a test.  The relation between stimulants like caffeine and test performance is often *nonlinear* - that is, it doesn't follow a straight line.  This is because performance goes up with smaller amounts of caffeine (as the person becomes more alert), but then starts to decline with larger amounts (as the person becomes nervous and jittery). We can simulate data of this form, and then fit a linear model to the data (see Panel C of Figure \@ref(fig:BACrt)). The blue line shows the straight line that best fits these data; clearly, there is a high degree of error.  Although there is a very lawful relation between test performance and caffeine intake, it follows a curve rather than a straight line.  The model that assumes a linear relationship has high error because it's the wrong model for these data.
 
 ## Can a model be too good? {#overfitting}
 
@@ -444,11 +454,11 @@ plot_new_data  <-
 plot_grid(plot_original_data, plot_new_data)
 ```
 
-The left panel in Figure \@ref(fig:Overfitting) shows that the more complex model (in red) fits the data better than the simpler model (in blue).  However, we see the opposite when the same model is applied to a new dataset generated in the same way -- here we see that the simpler model fits the new data better than the more complex model.  Intuitively, we can see that the more complex model is influenced heavily by the specific data points in the first dataset; since the exact position of these data points was driven by random noise, this leads the more complex model to fit badly on the new dataset. This is a phenomenon that we call *overfitting*. For now it's important to keep in mind that our model fit needs to be good, but not too good. As Albert Einstein (1933) said: "It can scarcely be denied that the supreme goal of all theory is to make the irreducible basic elements as simple and as few as possible without having to surrender the adequate representation of a single datum of experience." Which is often paraphrased as: "Everything should be as simple as it can be, but not simpler."
+The left panel in Figure \@ref(fig:Overfitting) shows that the more complex model (in red) fits the data better than the simpler model (in blue).  However, we see the opposite when the same model is applied to a new dataset generated in the same way -- here we see that the simpler model fits the new data better than the more complex model.  Intuitively, we can see that the more complex model is influenced heavily by the specific data points in the first dataset; since the exact position of these data points was driven by random noise, this leads the more complex model to fit badly on the new dataset. This is a phenomenon that we call *overfitting*. For now it's simply important to keep in mind that our model fit needs to be good, but not too good. As Albert Einstein (1933) said: "It can scarcely be denied that the supreme goal of all theory is to make the irreducible basic elements as simple and as few as possible without having to surrender the adequate representation of a single datum of experience." Which is often paraphrased as: "Everything should be as simple as it can be, but not simpler."
 
-## The simplest model: The mean
+## Summarizing data using the mean
 
-We have already encountered the mean (or average), and in fact most people know about the average even if they have never taken a statistics class. It is commonly used to describe what we call the "central tendency" of a dataset -- that is, what value are the data centered around?  Most people don't think of computing a mean as fitting a model to data.  However, that's exactly what we are doing when we compute the mean.  
+We have already encountered the mean (or average) above, and in fact most people know about the average even if they have never taken a statistics class. It is commonly used to describe what we call the "central tendency" of a dataset -- that is, what value are the data centered around?  Most people don't think of computing a mean as fitting a model to data.  However, that's exactly what we are doing when we compute the mean.  
 
 We have already seen the formula for computing the mean of a sample of data:
 
@@ -463,9 +473,9 @@ $$
 $$
 where N is the size of the entire population.
 
-We have already seen that the mean is the summary statistic that is guaranteed to give us an average error of zero.  The mean also has another characteristic: It is the summary statistic that has the lowest possible value for the sum of squared errors (SSE). In statistics, we refer to this as being the "best" estimator. We could prove this mathematically, but instead we will demonstrate it graphically in Figure \@ref(fig:MinSSE).
+We have already seen that the mean is the estimator that is guaranteed to give us an average error of zero, but we also learned that the average error is not the best criterion; instead, we want an estimator that gives us the lowest sum of squared errors (SSE), which the mean also does. We could prove this using calculus, but instead we will demonstrate it graphically in Figure \@ref(fig:MinSSE).
 
-```{r MinSSE, echo=FALSE,fig.cap="A demonstration of the mean as the statistic that minimizes the sum of squared errors.  Using the NHANES child height data, we compute the mean (denoted by the blue bar). Then, we test a range of other values, and for each one we compute the sum of squared errors for each data point from that value, which are denoted by the black curve.  We see that the mean falls at the minimum of the squared error plot.",fig.width=4,fig.height=4,out.height='50%'}
+```{r MinSSE, echo=FALSE,fig.cap="A demonstration of the mean as the statistic that minimizes the sum of squared errors.  Using the NHANES child height data, we compute the mean (denoted by the blue bar). Then, we test a range of possible parameter estimates, and for each one we compute the sum of squared errors for each data point from that value, which are denoted by the black curve.  We see that the mean falls at the minimum of the squared error plot.",fig.width=4,fig.height=4,out.height='50%'}
 df_error <- 
   tibble(
     val = seq(100, 175, 0.05),
@@ -531,7 +541,7 @@ kable(incomeDf %>% mutate(income=format(income, scientific=FALSE)), caption='Inc
 
 The mean is now almost 10 million dollars, which is not really representative of any of the people in the bar -- in particular, it is heavily driven by the outlying value of Beyoncé.  In general, the mean is highly sensitive to extreme values, which is why it's always important to ensure that there are no extreme values when using the mean to summarize data.
 
-### The median
+### Summarizing data robustly using the median
 
 If we want to summarize the data in a way that is less sensitive to outliers, we can use another statistic called the *median*.  If we were to sort all of the values in order of their magnitude, then the median is the value in the middle.  If there is an even number of values then there will be two values tied for the middle place, in which case we take the mean (i.e. the halfway point) of those two numbers.
 
@@ -600,13 +610,13 @@ $$
 \sigma^2 = \frac{SSE}{N} = \frac{\sum_{i=1}^n (x_i - \mu)^2}{N}
 $$
 
-where $\mu$ is the population mean. The standard deviation is simply the square root of this -- that is, the *root mean squared error* that we saw before.  The standard deviation is useful because the errors are in the same units as the original data (undoing the squaring that we applied to the errors).
+where $\mu$ is the population mean. The population standard deviation is simply the square root of this -- that is, the *root mean squared error* that we saw before.  The standard deviation is useful because the errors are in the same units as the original data (undoing the squaring that we applied to the errors).
 
 We usually don't have access to the entire population, so we have to compute the variance using a sample, which we refer to as $\hat{\sigma}^2$, with the "hat" representing the fact that this is an estimate based on a sample. The equation for  $\hat{\sigma}^2$ is similar to the one for  $\sigma^2$:
 
 
 $$
-\hat{\sigma}^2 = \frac{\sum_{i=1}^N (x_i - \bar{X})^2}{n-1}
+\hat{\sigma}^2 = \frac{\sum_{i=1}^n (x_i - \bar{X})^2}{n-1}
 $$
 
 The only difference between the two equations is that we divide by n - 1 instead of N. This relates to a fundamental statistical concept: *degrees of freedom*.  Remember that in order to compute the sample variance, we first had to estimate the sample mean $\bar{X}$.  Having estimated this, one value in the data is no longer free to vary.  For example, let's say we have the following data points for a variable $x$: [3, 5, 7, 9, 11], the mean of which is 7. Because we know that the mean of this dataset is 7, we can compute what any specific value would be if it were missing. For example, let's say we were to obscure the first value (3). Having done this, we still know that its value must be 3, because the mean of 7 implies that the sum of all of the values is $7 * n = 35$ and $35 - (5 + 7 + 9 + 11) = 3$.  
@@ -682,7 +692,7 @@ caCrimeData <-
 Having characterized a distribution in terms of its central tendency and variability, it is often useful to express the individual scores in terms of where they sit with respect to the overall distribution.  Let's say that we are interested in characterizing the relative level of crimes across different states, in order to determine whether California is a particularly dangerous place. We can ask this question using data for 2014 from the [FBI's Uniform Crime Reporting site](https://www.ucrdatatool.gov/Search/Crime/State/RunCrimeOneYearofData.cfm). The left panel of Figure \@ref(fig:crimeHist) shows a histogram of the number of violent crimes per state, highlighting the value for California. Looking at these data, it seems like California is terribly dangerous, with `r I(caCrimeData$Violent.crime.total)` crimes in that year.  We can visualize these data by generating a map showing the distribution of a variable across states, which is presented in the right panel of Figure \@ref(fig:crimeHist).
 
 
-```{r crimeHist,echo=FALSE,fig.cap="Left: Histogram of the number of violent crimes.  The value for CA is plotted in blue. Right: A map of the same data, with number of crimes plotted for each state in color.", fig.width=8,fig.height=4,out.height='50%'}
+```{r crimeHist,echo=FALSE,fig.cap="Left: Histogram of the number of violent crimes.  The value for CA is plotted in blue. Right: A map of the same data, with number of crimes (in thousands) plotted for each state in color.", fig.width=8,fig.height=4,out.height='50%'}
 p1 <- crimeData %>% 
   ggplot(aes(Violent.crime.total)) +
   geom_histogram(bins = 25) + 
@@ -696,13 +706,14 @@ data("fifty_states") # this line is optional due to lazy data loading
 
 crimeData <- 
   crimeData %>%
-  mutate(StateLower = tolower(State))
+  mutate(StateLower = tolower(State),
+         Violent.crime.thousands=Violent.crime.total/1000)
 
 # map_id creates the aesthetic mapping to the state name column in your data
 plot_map <- 
   ggplot(crimeData, aes(map_id = StateLower)) +
   # map points to the fifty_states shape data
-  geom_map(aes(fill = Violent.crime.total), map = fifty_states) +
+  geom_map(aes(fill = Violent.crime.thousands), map = fifty_states) +
   scale_x_continuous(breaks = NULL) +
   scale_y_continuous(breaks = NULL) +
   theme(
