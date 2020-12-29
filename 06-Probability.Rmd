@@ -17,6 +17,7 @@ library(ggplot2)
 library(knitr)
 library(readr)
 library(cowplot)
+library(janitor)
 # load the NHANES data library
 library(NHANES)
 
@@ -34,7 +35,7 @@ To formalize probability theory, we first need to define a few terms:
 - The **sample space** is the set of possible outcomes for an experiment.  We represent these by listing them within a set of squiggly brackets. For a coin flip, the sample space is {heads, tails}.  For a six-sided die, the sample space is each of the possible numbers that can appear: {1,2,3,4,5,6}.  For the amount of time it takes to get to work, the sample space is all possible real numbers greater than zero (since it can't take a negative amount of time to get somewhere, at least not yet). We won't bother trying to write out all of those numbers within the brackets.
 - An **event** is a subset of the sample space.  In principle it could be one or more of possible outcomes in the sample space, but here we will focus primarily on *elementary events* which consist of exactly one possible outcome.  For example, this could be obtaining heads in a single coin flip, rolling a 4 on a throw of the die, or taking 21 minutes to get home by the new route. 
 
-Now that we have those definitions, we can outline the formal features of a probability, which were first defined by the Russian mathematician Andrei Kolmogorov. These are the features that a value *has* to have if it is going to be a probability. Let's say that we have a sample space defined by N independent events, ${E_1, E_2, ... , E_N}$, and $X$ is a random variable denoting which of the evets has happend.  $P(X=E_i)$ is the probability of event $i$:
+Now that we have those definitions, we can outline the formal features of a probability, which were first defined by the Russian mathematician Andrei Kolmogorov. These are the features that a value *has* to have if it is going to be a probability. Let's say that we have a sample space defined by N independent events, ${E_1, E_2, ... , E_N}$, and $X$ is a random variable denoting which of the events has occurred.  $P(X=E_i)$ is the probability of event $i$:
 
 - Probability cannot be negative: $P(X=E_i) \ge 0$
 - The total probability of all outcomes in the sample space is 1; that is,  if the , if we take the probability of each Ei and add them up, they must sum to 1. We can express this using the summation symbol $\sum$:
@@ -42,7 +43,7 @@ $$
 \sum_{i=1}^N{P(X=E_i)} = P(X=E_1) + P(X=E_2) + ... + P(X=E_N) = 1
 $$
 This is interpreted as saying "Take all of the N elementary events, which we have labeled from 1 to N, and add up their probabilities. These must sum to one."  
-- The probability of any individual event cannot be greater than one: $P(X=E_i)\le 1$.  This is implied by the previous point; since they must sum to one, and they can't be negative, then any particular probability must be less than or equal to one.
+- The probability of any individual event cannot be greater than one: $P(X=E_i)\le 1$.  This is implied by the previous point; since they must sum to one, and they can't be negative, then any particular probability cannot exceed one.
 
 ## How do we determine probabilities?
 
@@ -146,22 +147,22 @@ $$
 For the six-sided die, the probability of each individual outcome is 1/6. 
 
 This is nice, but de Méré was interested in more complex events, like what happens on multiple dice throws.  How do we compute the probability of a complex event (which is a *union* of single events), like rolling a six on the first *or* the second throw?  
-We represent the union of events mathematically using the $\cup$ symbol: for example, if the probability of rolling a six on the first throw is referred to as $P(Roll1_{throw1})$ and the probability of rolling a six on the second throw is $P(Roll1_{throw2})$, then the union is referred to as $P(Roll1_{throw1} \cup Roll1_{throw2})$.
+We represent the union of events mathematically using the $\cup$ symbol: for example, if the probability of rolling a six on the first throw is referred to as $P(Roll6_{throw1})$ and the probability of rolling a six on the second throw is $P(Roll6_{throw2})$, then the union is referred to as $P(Roll6_{throw1} \cup Roll6_{throw2})$.
 
 de Méré thought (incorrectly, as we will see below) that he could simply add together the probabilities of the individual events to compute the probability of the combined event, meaning that the probability of rolling a six on the first or second roll would be computed as follows:
 
 $$
-P(Roll1_{throw1}) = 1/6
+P(Roll6_{throw1}) = 1/6
 $$
 $$
-P(Roll1_{throw2}) = 1/6
+P(Roll6_{throw2}) = 1/6
 $$
 
 $$
 de Méré's \ error:
 $$
 $$
-P(Roll1_{throw1} \cup Roll1_{throw2}) = P(Roll1_{throw1}) + P(Roll1_{throw2}) = 1/6 + 1/6 = 1/3
+P(Roll6_{throw1} \cup Roll6_{throw2}) = P(Roll6_{throw1}) + P(Roll6_{throw2}) = 1/6 + 1/6 = 1/3
 $$
 
 de Méré reasoned based on this incorrect assumption that the probability of at least one six in four rolls was the sum of the probabilities on each of the individual throws: $4*\frac{1}{6}=\frac{2}{3}$.  Similarly, he reasoned that since the probability of a double-six when throwing two dice is 1/36, then the probability of at least one double-six on 24 rolls of two dice would be $24*\frac{1}{36}=\frac{2}{3}$.  Yet, while he consistently won money on the first bet, he lost money on the second bet.  What gives?
@@ -176,7 +177,7 @@ where $\neg A$ means "not A". This rule derives directly from the axioms that we
 
 A second rule tells us how to compute the probability of a conjoint event -- that is, the probability that both of two events will occur. We refer to this as an *intersection*, which is signified by the $\cap$ symbol; thus, $P(A \cap B)$ means the probability that both A and B will occur.
 
-This version of the rule tells us how to compute this quantity in the special case when the two events are independent from one another; we will learn later exactly what the concept of *independence* means, but for now we can just take it for granted that the two die throws are independent events.  We compute the probability of the union of two independent events by simply multiplying the probabilities of the individual events:
+This version of the rule tells us how to compute this quantity in the special case when the two events are independent from one another; we will learn later exactly what the concept of *independence* means, but for now we can just take it for granted that the two die throws are independent events.  We compute the probability of the intersection of two independent events by simply multiplying the probabilities of the individual events:
 
 $$
 P(A \cap B) = P(A) * P(B)\ \text{if and only if A and B are independent}
@@ -192,18 +193,18 @@ In a sense, this prevents us from counting those instances twice, and that's wha
 
 
 $$
-P(Roll1_{throw1} \cup Roll1_{throw2}) = P(Roll1_{throw1}) + P(Roll1_{throw2}) - P(Roll1_{throw1} \cap Roll1_{throw2}) 
+P(Roll6_{throw1} \cup Roll6_{throw2}) = P(Roll6_{throw1}) + P(Roll6_{throw2}) - P(Roll6_{throw1} \cap Roll6_{throw2}) 
 $$
 $$
 = \frac{1}{6} + \frac{1}{6} - \frac{1}{36} = \frac{11}{36}
 $$
 
-```{r ThrowMatrix, echo=FALSE,fig.cap='Each cell in this matrix represents one outcome of two throws of a die, with the columns representing the first throw and the rows representing the second throw. Cells shown in red represent the cells with a one in either the first or second throw; the rest are shown in blue.',fig.width=4,fig.height=4,out.height='50%'}
+```{r ThrowMatrix, echo=FALSE,fig.cap='Each cell in this matrix represents one outcome of two throws of a die, with the columns representing the first throw and the rows representing the second throw. Cells shown in red represent the cells with a six in either the first or second throw; the rest are shown in blue.',fig.width=4,fig.height=4,out.height='50%'}
 imgmtx <-
   matrix(0, nrow = 6, ncol = 6) 
 
 imgmtx[, 1] <- 1
-imgmtx[1, ] <- 1
+imgmtx[6, ] <- 1
 
 plot <- 
   imgmtx %>% 
@@ -221,7 +222,7 @@ for (i in seq(0.5, 6.5)) {
     plot <- 
       plot + annotate(
         "text", 
-        x = i + 0.5, y = j + 0.5, 
+        x = i + 0.5, y = 6.5 - j, # j + 0.5, 
         label = sprintf("%d,%d", i + 0.5, j + 0.5), 
         color = "white")
   }
@@ -243,7 +244,7 @@ plot +
 
 ```
 
-Let's use a graphical depiction to get a different view of this rule. Figure \@ref(fig:ThrowMatrix) shows a matrix representing all possible combinations of results across two throws, and highlights the cells that involve a one on either the first or second throw. If you count up the cells in red you will see that there are 11 such cells. This shows why the addition rule gives a different answer from de Méré's; if we were to simply add together the probabilities for the two throws as he did, then we would count (1,1) towards both, when it should really only be counted once.
+Let's use a graphical depiction to get a different view of this rule. Figure \@ref(fig:ThrowMatrix) shows a matrix representing all possible combinations of results across two throws, and highlights the cells that involve a six on either the first or second throw. If you count up the cells in red you will see that there are 11 such cells. This shows why the addition rule gives a different answer from de Méré's; if we were to simply add together the probabilities for the two throws as he did, then we would count (1,1) towards both, when it should really only be counted once.
 
 ### Solving de Méré's problem
 
@@ -439,11 +440,11 @@ $$
 P(A|B) = P(A)
 $$
 
-That is, the probability of A given some value of B is just the same as the overall probability of A.  Looking at it this way, we see that many cases of what we would call "independence" in the real world are not actually statistically independent.  For example, there is currently a move by a small group of California citizens to declare a new independent state called Jefferson, which would comprise a number of counties in northern California and Oregon. If this were to happen, then the probability that a current California resident would now live in the state of Jefferson would be $P(\text{Jeffersonian})=0.014$, whereas the probability that they would remain a California resident would be $P(\text{Californian})=0.986$.  The new states might be politically independent, but they would *not* be statistically independent, because $P(\text{Californian|Jeffersonian}) = 0$!  That is, while independence in common language often refers to sets that are exclusive, statistical independence refers to the case where one cannot predict anything about one variable from the value of another variable.  For example, knowing a person's hair color is unlikely to tell you whether they prefer chocolate or strawberry ice cream.  
+That is, the probability of A given some value of B is just the same as the overall probability of A.  Looking at it this way, we see that many cases of what we would call "independence" in the real world are not actually statistically independent.  For example, there is currently a move by a small group of California citizens to declare a new independent state called Jefferson, which would comprise a number of counties in northern California and Oregon. If this were to happen, then the probability that a current California resident would now live in the state of Jefferson would be $P(\text{Jeffersonian})=0.014$, whereas the probability that they would remain a California resident would be $P(\text{Californian})=0.986$.  The new states might be politically independent, but they would *not* be statistically independent, because if we know that a person is Jeffersonian, then we can be sure that they are *not* Californian!  That is, while independence in common language often refers to sets that are exclusive, statistical independence refers to the case where one cannot predict anything about one variable from the value of another variable.  For example, knowing a person's hair color is unlikely to tell you whether they prefer chocolate or strawberry ice cream.  
 
-Let's look at another example, using the NHANES data: Are physical health and mental health independent of one another?  NHANES includes two relevant questions: *PhysActive*, which asks whether the individual is physically active, and *DaysMentHlthBad*, which asks how many days out of the last 30 that the individual experienced bad mental health.  Let's consider anyone who had more than 7 days of bad mental health in the last month to be in bad mental health.  Based on this, we can define a new variable called *badMentalHealth* as a logical variable telling whether each person had more than 7 days of bad mental health or not. Using this new variable, we can then determine whether mental health and physical activity are independent by asking whether the simple probability of bad mental health is different from the conditional probability of bad mental health given that one is physically active.
+Let's look at another example, using the NHANES data: Are physical health and mental health independent of one another?  NHANES includes two relevant questions: *PhysActive*, which asks whether the individual is physically active, and *DaysMentHlthBad*, which asks how many days out of the last 30 that the individual experienced bad mental health.  Let's consider anyone who had more than 7 days of bad mental health in the last month to be in bad mental health.  Based on this, we can define a new variable called *badMentalHealth* as a logical variable telling whether each person had more than 7 days of bad mental health or not.  We can first summarize the data to show how many individuals fall into each combination of the two variables:
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 # compute probabilities for mental health and physical activity
 NHANES_adult <- 
   NHANES %>%
@@ -452,21 +453,49 @@ NHANES_adult <-
     !is.na(PhysActive),
     !is.na(DaysMentHlthBad)
   ) %>% 
-  mutate(badMentalHealth = DaysMentHlthBad > 7)
+  mutate(badMentalHealth = DaysMentHlthBad > 7,
+         badMentalHealth = case_when(
+      badMentalHealth == TRUE ~ "Bad Mental Health",
+      badMentalHealth == FALSE ~ "Good Mental Health"
+    )) 
 
-NHANES_MentalHealth_summary <-
-  NHANES_adult %>%
-  summarize(badMentalHealth = mean(badMentalHealth))
+NHANES_mentalhealth_by_physactive_counts <- NHANES_adult %>% tabyl(PhysActive, badMentalHealth) %>% adorn_totals(c("row", "col"))
 
-NHANES_MentalHealth_by_PhysActive <-
-  NHANES_adult %>%
-  group_by(PhysActive) %>%
-  summarize(badMentalHealth = mean(badMentalHealth)) 
-
-kable(NHANES_MentalHealth_by_PhysActive)
+kable(NHANES_mentalhealth_by_physactive_counts)
 ```
 
-The overall probability of bad mental health $P(\text{bad mental health})$ is `r I(NHANES_MentalHealth_summary$badMentalHealth)` while the conditional probability $P(\text{bad mental health|physically active})$ is `r I(NHANES_MentalHealth_by_PhysActive$badMentalHealth[2])`.  Thus, it seems that the conditional probability is somewhat smaller than the overall probability, suggesting that they are not independent, though we can't know for sure just by looking at the numbers, since these numbers might be different due to random variability in our sample. Later in the course we will encounter tools that will let us more directly test whether two variables are independent.
+
+We can divide by the total number of observations to create a table of proportions:
+
+```{r echo=FALSE, message=FALSE}
+total_n <- NHANES_mentalhealth_by_physactive_counts[3,4]
+# there doesn't seem to be a simple way to do this in R
+NHANES_mentalhealth_by_physactive_p <- NHANES_mentalhealth_by_physactive_counts[,2:4]/NHANES_mentalhealth_by_physactive_counts[3,4]
+NHANES_mentalhealth_by_physactive_p <- NHANES_mentalhealth_by_physactive_p %>%
+  mutate(PhysActive=NHANES_mentalhealth_by_physactive_counts[,1])
+NHANES_mentalhealth_by_physactive_p <- NHANES_mentalhealth_by_physactive_p[, c('PhysActive', "Bad Mental Health", "Good Mental Health", "Total" )]
+kable(NHANES_mentalhealth_by_physactive_p)
+```
+
+This shows us the proportion of all observations that fall into each cell. However, what we want to know here is the conditional probability of bad mental health, depending on whether one is physically active or not. To compute this, we divide each physical activity group by its total number of observations, so that each row now sums to one:
+
+
+```{r echo=FALSE, message=FALSE}
+total_n <- NHANES_mentalhealth_by_physactive_counts[3,4]
+# there doesn't seem to be a simple way to do this in R
+NHANES_mentalhealth_by_physactive_condp <- NHANES_mentalhealth_by_physactive_counts
+
+for (i in 1:3){
+  NHANES_mentalhealth_by_physactive_condp[i, 2:4] <- NHANES_mentalhealth_by_physactive_condp[i, 2:4] / NHANES_mentalhealth_by_physactive_condp[i, 4]
+
+}
+
+kable(NHANES_mentalhealth_by_physactive_condp)
+```
+Now we see the conditional probabilities of bad or good mental health for each physical activity group (in the top two rows) along with the overall probability of good or bad mental health in the third row.  To determine whether mental health and physical activity are independent, we would compare the simple probability of bad mental health (in the third row) to the conditional probability of bad mental health given that one is physically active (in the second row).
+
+
+The overall probability of bad mental health $P(\text{bad mental health})$ is `r I(NHANES_mentalhealth_by_physactive_condp[3, 2])` while the conditional probability $P(\text{bad mental health|physically active})$ is `r I(NHANES_mentalhealth_by_physactive_condp[2, 2])`.  Thus, it seems that the conditional probability is somewhat smaller than the overall probability, suggesting that they are not independent, though we can't know for sure just by looking at the numbers, since these numbers might be different due to random variability in our sample. Later in the book we will discuss statistical tools that will let us directly test whether two variables are independent.
 
 ## Reversing a conditional probability: Bayes' rule {#bayestheorem}
 
