@@ -85,7 +85,7 @@ $$
 y_i = \hat{\beta}
 $$
 
-The subscript $i$ doesn't appear on the right side of the equation, which means that the prediction of the model doesn't depend on which observation we are looking at --- it's the same for all of them.  The question then becomes: how do we best estimate the values of the parameter(s) in the model? In this particular case, what single value value is the best estimate for $\hat{\beta}}$?  And, more importantly, how do we even define *best*?
+The subscript $i$ doesn't appear on the right side of the equation, which means that the prediction of the model doesn't depend on which observation we are looking at --- it's the same for all of them.  The question then becomes: how do we best estimate the values of the parameter(s) in the model? In this particular case, what single value value is the best estimate for $\hat{\beta}$?  And, more importantly, how do we even define *best*?
 
 ```{r echo=FALSE}
 # create function to compute mode and apply to child height data from NHANES
