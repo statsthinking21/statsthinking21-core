@@ -185,113 +185,6 @@ plot_grid(p1,p2)
 
 The Central Limit Theorem is important for statistics because it allows us to safely assume that the sampling distribution of the mean will be normal in most cases. This means that we can take advantage of statistical techniques that assume a normal distribution, as we will see in the next section.  It's also important because it tells us why normal distributions are so common in the real world; any time we combine many different factors into a single number, the result is likely to be a normal distribution. For example, the height of any adult depends on a complex mixture of their genetics and experience; even if those individual contributions may not be normally distributed, when we combine them the result is a normal distribution.
 
-## Confidence intervals {#confidence-intervals}
-
-Most people are familiar with the idea of a "margin of error" for political polls. These polls usually try to provide an answer that is accurate within +/- 3 percent. For example, when a candidate is estimated to win an election by 9 percentage points with a margin of error of 3, the percentage by which they will win is estimated to fall within 6-12 percentage points. In statistics we refer to this range of values as the *confidence interval*, which provides a measure of our degree of uncertainty about our estimate of the population parameter: The larger the confidence interval, the greater our uncertainty. 
-
-We saw in the previous section that with sufficient sample size, the sampling distribution of the mean is normally distributed, and that the standard error describes the standard deviation of this sampling distribution.  Using this knowledge, we can ask: What is the range of values within which we would expect to capture 95% of all estimates of the mean?  To answer this, we can use the normal distribution, for which we know the values between which we expect 95% of all sample means to fall; in statistical software, we generally refer to these as *quantiles*. Specifically, we need to determine the 2.5% and 97.5% quantiles of the of the distribution.  We choose these points because we want to find the 95% of values in the center of the distribution, so we need to cut off 2.5% on each end in order to end up with 95% in the middle.  Figure \@ref(fig:normalCutoffs) shows that this occurs for $Z \pm 1.96$.
-
-
-```{r normalCutoffs, echo=FALSE, fig.cap="Normal distribution, with the orange section in the center denoting the range in which we expect 95 percent of all values to fall.  The green sections show the portions of the distribution that are more extreme, which we would expect to occur less than 5 percent of the time.",fig.width=4,fig.height=4,out.height='50%'}
-
-# create utility functions
-
-dnormfun <- function(x){
-  return(dnorm(x,248))
-}
-
-
-plot_CI_cutoffs <- function(pct,zmin=-4,zmax=4,zmean=0,zsd=1) {
-  zcut <- qnorm(1 - (1-pct)/2,mean=zmean,sd=zsd)
-  zmin <- zmin*zsd + zmean
-  zmax <- zmax*zsd + zmean
-  x <- seq(zmin,zmax,0.1*zsd)
-  zdist <- dnorm(x,mean=zmean,sd=zsd)
-  area <- pnorm(zcut) - pnorm(-zcut)
-
-  p2 <- ggplot(data.frame(zdist=zdist,x=x),aes(x,zdist)) +
-    xlab('Z score') + xlim(zmin,zmax) + ylab('density')+
-    geom_line(aes(x,zdist),color='red',size=2) +
-    stat_function(fun = dnorm, args=list(mean=zmean,sd=zsd),
-                  xlim = c(zmean -zcut*zsd,zmean + zsd*zcut),
-                  geom = "area",fill='orange')  +
-    stat_function(fun = dnorm, args=list(mean=zmean,sd=zsd),
-                  xlim = c(zmin,zmean -zcut*zsd),
-                  geom = "area",fill='green')  +
-    stat_function(fun = dnorm, args=list(mean=zmean,sd=zsd),
-                  xlim = c(zmean +zcut*zsd,zmax),
-                  geom = "area",fill='green')  +
-    annotate('text',x=zmean,
-             y=dnorm(zmean,mean=zmean,sd=zsd)/2,
-             label=sprintf('%0.1f%%',area*100))  +
-    annotate('text',x=zmean - zsd*zcut,
-             y=dnorm(zmean-zcut*zsd,mean=zmean,sd=zsd)+0.05/zsd,
-             label=sprintf('%0.2f',zmean - zsd*zcut))  +
-    annotate('text',x=zmean + zsd*zcut,
-             y=dnorm(zmean-zcut*zsd,mean=zmean,sd=zsd)+0.05/zsd,
-             label=sprintf('%0.2f',zmean + zsd*zcut)) 
-  
-    print(p2)
-    return(zcut)
-}
-
-zcut <- plot_CI_cutoffs(0.95)
-
-```
-
-Using these cutoffs, we can create a confidence interval for the estimate of the mean:
-
-$$
-CI_{95\%} = \bar{X} \pm 1.96*SEM
-$$
-
-Let's compute the confidence interval for the NHANES height data.
-
-```{r echo=FALSE}
-# compute confidence intervals
-
-NHANES_sample <- sample_n(NHANES_adult,250)
-
-sample_summary <- NHANES_sample %>%
-    summarize(mean=mean(Height),
-            sem=sd(Height)/sqrt(sampSize)) %>%
-    mutate(CI_lower=mean-1.96*sem,
-           CI_upper=mean+1.96*sem)
-names(sample_summary) = c('Sample mean', 'SEM', 'Lower bound of CI', 'Upper bound of CI')
-kable(sample_summary)
-
-```
-
-
-
-```{r echo=FALSE}
-# compute how often the confidence interval contains the true population mean
-nsamples <- 2500
-sampSize <- 100
-
-ci_contains_mean <- array(NA,nsamples)
-
-for (i in 1:nsamples) {
-  NHANES_sample <- sample_n(NHANES_adult, sampSize)
-  sample_summary <- 
-    NHANES_sample %>%
-    summarize(
-      mean = mean(Height),
-      sem = sd(Height) / sqrt(sampSize)
-    ) %>%
-    mutate(
-      CI_upper = mean + 1.96 * sem,
-      CI_lower = mean - 1.96 * sem
-    )
-  ci_contains_mean[i] <- 
-    (sample_summary$CI_upper > mean(NHANES_adult$Height)) & 
-    (sample_summary$CI_lower < mean(NHANES_adult$Height))
-}
-
-
-```
-
-Confidence intervals are notoriously confusing, primarily because they don't mean what we would hope they mean. It seems natural to think that the 95% confidence interval tells us that there is a 95% chance that the population mean falls within the interval.  However, as we will see throughout the course, concepts in statistics often don't mean what we think they should mean.  In the case of confidence intervals, we can't interpret them in this way because the population parameter has a fixed value -- it either is or isn't in the interval, so it doesn't make sense to talk about the probability of that occurring.  The proper interpretation of the 95% confidence interval is that it is an interval that will contain the true population mean 95% of the time, and in fact we can confirm that using simulation. We will learn more about confidence intervals later in the course after we discuss hypothesis testing.
 
 ## Learning objectives
 
@@ -301,7 +194,6 @@ Having read this chapter, you should be able to:
 * Describe the concepts of sampling error and sampling distribution
 * Compute the standard error of the mean
 * Describe how the Central Limit Theorem determines the nature of the sampling distribution of the mean
-* Compute a confidence interval for the mean based on the normal distribution, and describe its appropriate interpretation
 
 ## Suggested readings
 
