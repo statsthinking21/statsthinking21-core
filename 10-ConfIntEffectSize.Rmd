@@ -42,6 +42,7 @@ NHANES_adult <-
 ## Confidence intervals
 
 
+
 ```{r echo=FALSE}
 # take a sample from adults in NHANES and summarize their weight
 
@@ -57,11 +58,16 @@ sample_summary <-
 # knitr(sample_summary,)
 ```
 
-So far in the book we have focused on estimating the specific value of a statistic.  For example, let's say we want to estimate the mean weight of adults in the NHANES dataset.  Let's take a sample from the dataset and estimate the mean. In this sample, the mean weight was `r I(sample_summary$meanWeight)` kilograms.  We refer to this as a *point estimate* since it provides us with a single number to describe our estimate of the population parameter.  However, we know from our earlier discussion of sampling error that there is some uncertainty about this estimate, which is described by the standard error.  You should also remember that the standard error is determined by two components: the population standard deviation (which is the numerator), and the square root of the sample size (which is in the denominator).  The population standard deviation is a generally unknown but fixed parameter that is not under our control, whereas the sample size *is* under our control.  Thus, we can decrease our uncertainty about the estimate by increasing our sample size -- up to the limit of the entire population size, at which point there is no uncertainty at all because we can just calculate the population parameter directly from the data of the entire population.
+So far in the book we have focused on estimating a single value statistic.  For example, let's say we want to estimate the mean weight of adults in the NHANES dataset, so we take a sample from the dataset and estimate the mean. In this sample, the mean weight was `r I(sample_summary$meanWeight)` kilograms.  We refer to this as a *point estimate* since it provides us with a single number to describe our estimate of the population parameter.  However, we know from our earlier discussion of sampling error that there is some uncertainty about this estimate, which is described by the standard error.  You should also remember that the standard error is determined by two components: the population standard deviation (which is the numerator), and the square root of the sample size (which is in the denominator).  The population standard deviation is a generally unknown but fixed parameter that is not under our control, whereas the sample size *is* under our control.  Thus, we can decrease our uncertainty about the estimate by increasing our sample size -- up to the limit of the entire population size, at which point there is no uncertainty at all because we can just calculate the population parameter directly from the data of the entire population.
 
-You may also remember that earlier we introduced the concept of a *confidence interval*, which is a way of describing our uncertainty about a statistical estimate.  Remember that a confidence interval describes an interval that will on average contain the true population parameter with a given probability; for example, the 95% confidence interval is an interval that will capture the true population parameter 95% of the time.  Note again that this is not a statement about the population parameter; any particular confidence interval either does or does not contain the true parameter.  As Jerzy Neyman, the inventor of the confidence interval, said:
+We would often like to have a way to more directly describe our uncertainty about a statistical estimate, which we can accomplish using a *confidence interval*.  
+Most people are familiar with confidence intervals through the idea of a “margin of error” for political polls. These polls usually try to provide an answer that is accurate within +/- 3 percent. For example, when a candidate is estimated to win an election by 9 percentage points with a margin of error of 3, the percentage by which they will win is estimated to fall within 6-12 percentage points. In statistics we refer to this kind of range of values as a confidence interval, which provides a measure of our degree of uncertainty about how close our particular estimate based on a single sample is to the true population parameter: The larger the confidence interval, the greater our uncertainty.
+
+Confidence intervals are notoriously confusing, primarily because they don’t mean what we might intuitively think they mean. If I tell you that I have computed a "95% confidence interval" for my statistic, then it would seem natural to think that we can have 95% confidence that the true parameter value falls within this interval. However, as we will see throughout the course, concepts in statistics often don’t mean what we think they should mean. In the case of confidence intervals, we can’t interpret them in this way because the population parameter has a fixed value – it either is or isn’t in the interval, so it doesn’t make sense to talk about the probability of that occurring. s Jerzy Neyman, the inventor of the confidence interval, said:
 
 >"The parameter is an unknown constant and no probability statement concerning its value may be made."[@Neyman37]
+
+Instead, we have to view the confidence interval procedure from the same standpoint that we viewed hypothesis testing:  As a procedure that in the long run will allow us to make  correct statements with a particular probability.  Thus, the proper interpretation of the 95% confidence interval is that it is an interval that will contain the true population mean 95% of the time, and in fact we can confirm that using simulation, as you will see below.
 
 The confidence interval for the mean is computed as:
 
@@ -69,7 +75,7 @@ $$
 CI = \text{point estimate} \pm \text{critical value} * \text{standard error}
 $$
 
-where the critical value is determined by the sampling distribution of the estimate.  The important question, then, is what that sampling distribution is.
+where the critical value is determined by the sampling distribution of the estimate.  The important question, then, is how we obtain our estimate for that sampling distribution.
 
 ### Confidence intervals using the normal distribution
 
