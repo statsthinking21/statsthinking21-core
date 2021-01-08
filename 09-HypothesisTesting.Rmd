@@ -176,13 +176,13 @@ ggplot(NHANES_sample,aes(PhysActive,BMI)) +
 
 We next want to use the data to compute a statistic that will ultimately let us decide whether the null hypothesis is rejected or not.  To do this, the model needs to quantify the amount of evidence in favor of the alternative hypothesis, relative to the variability in the data. Thus we can think of the test statistic as providing a measure of the size of the effect compared to the variability in the data.  In general, this test statistic will have a probability distribution associated with it, because that allows us to determine how likely our observed value of the statistic is under the null hypothesis.  
 
-For the BMI example, we need a test statistic that allows us to test for a difference between two means, since the hypotheses are stated in terms of mean BMI for each group.  One statistic that is often used to compare two means is the *t* statistic, first developed by the statistician William Sealy Gossett, who worked for the Guiness Brewery in Dublin and wrote under the pen name "Student" - hence, it is often called "Student's*t* statistic".  The *t* statistic is appropriate for comparing the means of two groups when the sample sizes are relatively small and the population standard deviation is unknown.  The *t* statistic for comparison of two independent groups is computed as:
+For the BMI example, we need a test statistic that allows us to test for a difference between two means, since the hypotheses are stated in terms of mean BMI for each group.  One statistic that is often used to compare two means is the *t* statistic, first developed by the statistician William Sealy Gossett, who worked for the Guiness Brewery in Dublin and wrote under the pen name "Student" - hence, it is often called "Student's *t* statistic".  The *t* statistic is appropriate for comparing the means of two groups when the sample sizes are relatively small and the population standard deviation is unknown.  The *t* statistic for comparison of two independent groups is computed as:
 
 $$
 t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2}}}
 $$
 
-where $\bar{X}_1$ and $\bar{X}_2$ are the means of the two groups, $S^2_1$ and $S^2_2$ are the estimated variances of the groups, and $n_1$ and $n_2$ are the sizes of the two groups.  Note that the denominator is basically an average of the standard error of the mean for the two samples.  Thus, one can view the the *t* statistic as a way of quantifying how large the difference between groups is in relation to the sampling variability of the means that are being compared.
+where $\bar{X}_1$ and $\bar{X}_2$ are the means of the two groups, $S^2_1$ and $S^2_2$ are the estimated variances of the groups, and $n_1$ and $n_2$ are the sizes of the two groups. Because the variance of a difference between two variables is the sum of the variances of each individual variable ($var(A - B) = var(A) + var(B)$), we add the variances for each group divided by their sample sizes in order to compute the standard error of the difference.  Thus, one can view the the *t* statistic as a way of quantifying how large the difference between groups is in relation to the sampling variability of the differnce between means.
 
 The *t* statistic is distributed according to a probability distribution known as a *t* distribution.  The *t* distribution looks quite similar to a normal distribution, but it differs depending on the number of degrees of freedom, which for this example is the number of observations minus 2, since we have computed two means and thus given up two degrees of freedom.  When the degrees of freedom are large (say 1000), then the *t* distribution looks essentially like the normal distribution, but when they are small then the *t* distribution has longer tails than the normal (see Figure \@ref(fig:tVersusNormal)).
 
@@ -217,18 +217,21 @@ p2 <-ggplot(rbind(distDfNormal, distDft1000),aes(x=x, y=normal, color=Distributi
 plot_grid(p1,p2)
 ```
 
-### Step 5: Determine the probability of the data under the null hypothesis
+### Step 5: Determine the probability of the result under the null hypothesis
 
-This is the step where NHST starts to violate our intuition -- rather than determining the likelihood that the null hypothesis is true given the data, we instead determine the likelihood of the data under the null hypothesis - because we started out by assuming that the null hypothesis is true!  To do this, we need to know the probability distribution for the statistic under the null hypothesis, so that we can ask how likely the data are under that distribution. We can obtain this "null distribution" either using a theoretical distribution (like the *t* distribution), or using randomization. Before we move to our BMI example, let's start with some simpler examples. 
+This is the step where NHST starts to violate our intuition. Rather than determining the likelihood that the null hypothesis is true given the data, we instead determine the likelihood under the null hypothesis of observing a statistic at least as extreme as one that we have observed --- because we started out by assuming that the null hypothesis is true!  To do this, we need to know the expected probability distribution for the statistic under the null hypothesis, so that we can ask how likely the result would be under that distribution.  Note that when I say "how likely the result would be", what I really mean is "how likely the observed result or one more extreme would be".  There are (at least) two reasons that we need to add this caveat. The first is that when we are talking about continuous values, the probability of any particular value is zero (as you might remember if you've taken a calculus class).  More importantly, we are trying to determine how weird our result would be if the null hypothesis were true, and any result that is more extreme will be even more weird, so we want to count all of those weirder possibilities when we compute the probability of our result under the null hypothesis.
+
+
+We can obtain this "null distribution" either using a theoretical distribution (like the *t* distribution), or using randomization. Before we move to our BMI example, let's start with some simpler examples. 
 
 #### Randomization: A very simple example {#randomization-very-simple}
 
-Let's say that we wish to determine whether a coin is fair.  To collect data, we flip the coin 100 times, and let's say we count 70 heads.  In this example, $H_0: P(heads)=0.5$ and $H_A: P(heads) \neq 0.5$, and our test statistic is simply the number of heads that we counted.  The question that we then want to ask is: How likely is it that we would observe 70 heads in 100 coin flips if the true probability of heads is 0.5?  We can imagine that this might happen very occasionally just by chance, but doesn't seem very likely. To quantify this probability, we can use the *binomial distribution*:
+Let's say that we wish to determine whether a coin is biased towards landing heads.  To collect data, we flip the coin 100 times, and let's say we count 70 heads.  In this example, $H_0: P(heads)=0.5$ and $H_A: P(heads) \neq 0.5$, and our test statistic is simply the number of heads that we counted.  The question that we then want to ask is: How likely is it that we would observe 70 or more heads in 100 coin flips if the true probability of heads is 0.5?  We can imagine that this might happen very occasionally just by chance, but doesn't seem very likely. To quantify this probability, we can use the *binomial distribution*:
 
 $$
 P(X \le k) = \sum_{i=0}^k \binom{N}{k} p^i (1-p)^{(n-i)}
 $$
-This equation will tell us the probability of a certain number of heads or fewer, given a particular probability of heads and number of events  However, what we really want to know is the probability of a certain number or more, which we can obtain by subtracting from one, based on the rules of probability:
+This equation will tell us the probability of a certain number of heads ($k$) or fewer, given a particular probability of heads ($p$) and number of events ($N$).  However, what we really want to know is the probability of a certain number or more, which we can obtain by subtracting from one, based on the rules of probability:
 
 $$
 P(X \ge k) = 1 - P(X < k)
