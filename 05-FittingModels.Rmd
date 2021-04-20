@@ -82,10 +82,10 @@ Remember that we want to describe the data as simply as possible while still cap
 We generally don't know the true values of the parameters, so we have to estimate them from the data.  For this reason, we will generally put a "hat" over the $\beta$ symbol to denote that we are using an estimate of the parameter value rather than its true value (which we generally don't know). Thus, our simple model for height using a single parameter would be:
 
 $$
-y_i = \hat{\beta}
+y_i = \beta + \epsilon
 $$
 
-The subscript $i$ doesn't appear on the right side of the equation, which means that the prediction of the model doesn't depend on which observation we are looking at --- it's the same for all of them.  The question then becomes: how do we best estimate the values of the parameter(s) in the model? In this particular case, what single value value is the best estimate for $\hat{\beta}$?  And, more importantly, how do we even define *best*?
+The subscript $i$ doesn't appear on the right side of the equation, which means that the prediction of the model doesn't depend on which observation we are looking at --- it's the same for all of them.  The question then becomes: how do we estimate the best values of the parameter(s) in the model? In this particular case, what single value value is the best estimate for $\beta$?  And, more importantly, how do we even define *best*?
 
 ```{r echo=FALSE}
 # create function to compute mode and apply to child height data from NHANES
@@ -121,7 +121,7 @@ $$
 \bar{X} = \frac{\sum_{i=1}^{n}x_i}{n}
 $$
 
-It turns out that if we use the arithmetic mean as our estimator then the average error will indeed be zero (see the simple proof at the end of the chapter if you are interested).  Even though the average of errors from the mean is zero, we can see from the histogram in Figure \@ref(fig:meanError) that each individual still has some degree of error; some are positive and some are negative, and those cancel each other out. 
+It turns out that if we use the arithmetic mean as our estimator then the average error will indeed be zero (see the simple proof at the end of the chapter if you are interested).  Even though the average of errors from the mean is zero, we can see from the histogram in Figure \@ref(fig:meanError) that each individual still has some degree of error; some are positive and some are negative, and those cancel each other out to give an average error of zero. 
 
 ```{r meanError, echo=FALSE,fig.cap="Distribution of errors from the mean.",fig.width=4,fig.height=4,out.height='50%'}
 # compute error compared to the mean and plot histogram
@@ -347,7 +347,7 @@ These were both examples where the relationship between the two variables appear
 
 Error sounds like a bad thing, and usually we will prefer a model that has lower error over one that has higher error. However, we mentioned above that there is a tension between the ability of a model to accurately fit the current dataset and its ability to generalize to new datasets, and it turns out that the model with the lowest error often is much worse at generalizing to new datasets!  
 
-To see this, let's once again generate some data so that we know the true relation between the variables.  We will create two simulated datasets, which are generated in exactly the same way -- they just have different random noise added to them.  
+To see this, let's once again generate some data so that we know the true relation between the variables.  We will create two simulated datasets, which are generated in exactly the same way -- they just have different random noise added to them.  That is, the equation for both of them is $y = \beta * X + \epsilon$; the only difference is that different random noise was used for $\epsilon$ in each case.
 
 ```{r Overfitting,echo=FALSE,message=FALSE,warning=FALSE, fig.cap='An example of overfitting. Both datasets were generated using the same model, with different random noise added to generate each set.  The left panel shows the data used to fit the model, with a simple linear fit in blue and a complex (8th order polynomial) fit in red.  The root mean square error (RMSE) values for each model are shown in the figure; in this case, the complex model has a lower RMSE than the simple model.  The right panel shows the second dataset, with the same model overlaid on it and the RMSE values computed using the model obtained from the first dataset.  Here we see that the simpler model actually fits the new dataset better than the more complex model, which was overfitted to the first dataset.',fig.width=8,fig.height=4,out.height='50%'}
 
@@ -466,7 +466,7 @@ $$
 \bar{X} = \frac{\sum_{i=1}^{n}x_i}{n}
 $$
 
-Note that I said that this formula was specifically for a *sample* of data, which is a set of data points selected from a larger population. Using a sample, we wish to characterize a larger population -- the full set of individuals that we are interested in. For example, if we are a political pollster our population of interest might be all registered voters, whereas our sample might just include a few thousand people sampled from this population.  Later in the course we will talk in more detail about sampling, but for now the important point is that statisticians generally like to use different symbols to differentiate *statistics* that describe values for a sample from *parameters* that describe the true values for a population; in this case, the formula for the population mean (denoted as $\mu$) is:
+Note that I said that this formula was specifically for a *sample* of data, which is a set of data points selected from a larger population. Using a sample, we wish to characterize a larger population -- the full set of individuals that we are interested in. For example, if we are a political pollster our population of interest might be all registered voters, whereas our sample might just include a few thousand people sampled from this population.  In Chapter 7 we will talk in more detail about sampling, but for now the important point is that statisticians generally like to use different symbols to differentiate *statistics* that describe values for a sample from *parameters* that describe the true values for a population; in this case, the formula for the population mean (denoted as $\mu$) is:
 
 $$
 \mu = \frac{\sum_{i=1}^{N}x_i}{N}
@@ -505,7 +505,7 @@ df_error %>%
 
 ```
 
-This minimization of SSE is a good feature, and it's why the mean is the most commonly used statistic to summarize data.  However, the mean also has a dark side.  Let's say that five people are in a bar, and we examine each person's  income:
+This minimization of SSE is a good feature, and it's why the mean is the most commonly used statistic to summarize data.  However, the mean also has a dark side.  Let's say that five people are in a bar, and we examine each person's  income (Table \@ref(tab:income1)):
 
 ```{r echo=FALSE}
 # create income data frame
@@ -518,11 +518,11 @@ incomeDf <-
 
 ```
 
-```{r, echo=FALSE}
+```{r income1, echo=FALSE}
 kable(incomeDf, caption='Income for our five bar patrons')
 ```
 
-The mean (`r I(sprintf("%0.2f", mean(incomeDf$income)))`) seems to be a pretty good summary of the income of those five people.  Now let's look at what happens if Beyoncé Knowles walks into the bar:
+The mean (`r I(sprintf("%0.2f", mean(incomeDf$income)))`) seems to be a pretty good summary of the income of those five people.  Now let's look at what happens if Beyoncé Knowles walks into the bar (Table \@ref(tab:income2)).
 
 ```{r echo=FALSE}
 # add Beyonce to income data frame
@@ -534,7 +534,7 @@ incomeDf <-
 
 ```
 
-```{r echo=FALSE}
+```{r income2, echo=FALSE}
 kable(incomeDf %>% mutate(income=format(income, scientific=FALSE)), caption='Income for our five bar patrons plus Beyoncé Knowles.')
 
 ```
@@ -560,17 +560,7 @@ If we sort those values:
 
 Then the median is the middle value -- in this case, the 5th of the 9 values.
 
-Whereas the mean minimizes the sum of squared errors, the median minimizes a slighty different quantity: The sum of *absolute* errors.  This explains why it is less sensitive to outliers -- squaring is going to exacerbate the effect of large errors compared to taking the absolute value.  We can see this in the case of the income example: The median is much more representative of the group as a whole, and less sensitive to the one large outlier.
-
-
-```{r echo=FALSE}
-income_summary_df <- data.frame(Statistic=c('Mean','Median'), 
-                                Value=c(mean(incomeDf$income),
-                                        median(incomeDf$income)))
-kable(income_summary_df, caption='Summary statistics for income after arrival of Beyoncé Knowles.')
-
-```
-
+Whereas the mean minimizes the sum of squared errors, the median minimizes a slighty different quantity: The sum of the *absolute value* of errors.  This explains why it is less sensitive to outliers -- squaring is going to exacerbate the effect of large errors compared to taking the absolute value.  We can see this in the case of the income example: The median income (\$65,000) is much more representative of the group as a whole than the mean (\$9,051,333), and less sensitive to the one large outlier.
 
 Given this, why would we ever use the mean?  As we will see in a later chapter, the mean is the "best" estimator in the sense that it will vary less from sample to sample compared to other estimators.  It's up to us to decide whether that is worth the sensitivity to potential outliers -- statistics is all about tradeoffs.
 
@@ -625,11 +615,11 @@ So when we say that we have "lost" a degree of freedom, it means that there is a
 
 ## Using simulations to understand statistics
 
-I am a strong believer in the use of computer simulations to understand statistical concepts, and in later chapters we will dig deeply into their use.  Here we will introduce the idea by asking whether we can confirm the need to subtract 1 from the sample size in computing the sample variance.
+I am a strong believer in the use of computer simulations to understand statistical concepts, and in later chapters we will dig more deeply into their use.  Here we will introduce the idea by asking whether we can confirm the need to subtract 1 from the sample size in computing the sample variance.
 
 Let's treat the entire sample of children from the NHANES data as our "population", and see how well the calculations of sample variance using either $n$ or $n-1$ in the denominator will estimate variance of this population, across a large number of simulated random samples from the data.  We will return to the details of how to do this in a later chapter.
 
-```{r echo=FALSE}
+```{r varsim, echo=FALSE}
 # compare variance estimates using N or N-1 in denominator
 
 population_variance <- 
@@ -664,7 +654,7 @@ summary_df <- data.frame(Estimate=c("Population variance",
 kable(summary_df, caption='Variance estimates using n versus n-1; the estimate using n-1 is closer to the population value')
 ```
 
-This shows us that the theory outlined above was correct: The variance estimate using $n - 1$ as the denominator is very close to the variance computed on the full data (i.e, the population), whereas the variance computed using $n$ as the denominator is biased (smaller) compared to the true value.
+The results in \@ref(tab:varsim) show us that the theory outlined above was correct: The variance estimate using $n - 1$ as the denominator is very close to the variance computed on the full data (i.e, the population), whereas the variance computed using $n$ as the denominator is biased (smaller) compared to the true value.
 
 ## Z-scores
 
@@ -781,7 +771,7 @@ $$
 Z(x) = \frac{x - \mu}{\sigma}
 $$
 
-Intuitively, you can think of a Z-score as telling you how far away any data point is from the mean, in units of standard deviation.  We can compute this for the crime rate data, as shown in Figure \@ref(fig:crimeZplot).
+Intuitively, you can think of a Z-score as telling you how far away any data point is from the mean, in units of standard deviation.  We can compute this for the crime rate data, as shown in Figure \@ref(fig:crimeZplot). which plots the Z-scores against the original scores.
 
 ```{r crimeZplot,echo=FALSE,fig.cap="Scatterplot of original crime rate data against Z-scored data.",fig.width=4,fig.height=4,out.height='50%'}
 crimeData <- 
@@ -1103,11 +1093,11 @@ plot_grid(p1,p2)
 
 Because Z-scores are directly comparable, we can also compute a *difference score* that expresses the relative rate of violent to non-violent (property) crimes across states. We can then plot those scores against population (see right panel of Figure \@ref(fig:crimeTypePopPlot)). This shows how we can use Z-scores to bring different variables together on a common scale.
 
-It is worth noting that the smallest states appear to have the largest differences in both directions. While it might be tempting to look at each state and try to determine why it has a high or low difference score, this probably  reflects the fact that the estimates obtained from smaller samples are necessarily going to be more variable, as we will discuss in the later chapter on Sampling.
+It is worth noting that the smallest states appear to have the largest differences in both directions. While it might be tempting to look at each state and try to determine why it has a high or low difference score, this probably  reflects the fact that the estimates obtained from smaller samples are necessarily going to be more variable, as we will discuss in Chapter 7.
 
 ## Learning objectives
 
-* Describe the basic equation for statistical models (outcome=model + error)
+* Describe the basic equation for statistical models (data=model + error)
 * Describe different measures of central tendency and dispersion, how they are computed, and which are appropriate under what circumstances.
 * Compute a Z-score and describe why they are useful.
 
