@@ -31,7 +31,7 @@ It's important to also distinguish between two different ways of sampling: with 
 ## Sampling error {#samplingerror}
 Regardless of how representative our sample is, it's likely that the statistic that we compute from the sample is going to differ at least slightly from the population parameter.  We refer to this as *sampling error*. If we take multiple samples, the value of our statistical estimate will also vary from sample to sample; we refer to this distribution of our statistic across samples as the *sampling distribution*.  
 
-Sampling error is directly related to the quality of our measurement of the population. Clearly we want the estimates obtained from our sample to be as close as possible to the true value of the population parameter.  However, even if our statistic is unbiased (that is, in the long run we expect it to have the same value as the population parameter), the value for any particular estimate will differ from the population value, and those differences will be greater when the sampling error is greater.  Thus, reducing sampling error is an important step towards better measurement.
+Sampling error is directly related to the quality of our measurement of the population. Clearly we want the estimates obtained from our sample to be as close as possible to the true value of the population parameter.  However, even if our statistic is unbiased (that is, we expect it to have the same value as the population parameter), the value for any particular estimate will differ from the population value, and those differences will be greater when the sampling error is greater.  Thus, reducing sampling error is an important step towards better measurement.
 
 We will use the NHANES dataset as an example; we are going to assume that the NHANES dataset is the entire population of interest,  and then we will draw random samples from this population. We will have more to say in the next chapter about exactly how the generation of "random" samples works in a computer.
 
@@ -54,9 +54,9 @@ NHANES_adult <-
 
 ```
 
-In this example, we know the adult population mean (`r I(mean(NHANES_adult$Height))`) and standard deviation (`r I(sd(NHANES_adult$Height))`) for height because we are assuming that the NHANES dataset *is* the population. Now let's take a few samples of 50 individuals from the NHANES population, and look at the resulting statistics.
+In this example, we know the adult population mean (`r I(mean(NHANES_adult$Height))`) and standard deviation (`r I(sd(NHANES_adult$Height))`) for height because we are assuming that the NHANES dataset *is* the population. Table \@ref(tab:sampleExample) shows the statistics computed from a few samples of 50 individuals from the NHANES population.
 
-```{r echo=FALSE}
+```{r sampleExample, echo=FALSE}
 # sample 50 individuals from NHANES dataset
 sample_df <- data.frame(sampnum=seq(5), sampleMean=0, sampleSD=0)
 
@@ -92,7 +92,7 @@ sampMeans_df <- tibble(sampMeans = sampMeans)
 
 ```
 
-The sample mean and standard deviation are similar but not exactly equal to the population values.  Now let's take a large number of samples of 50 individuals, compute the mean for each sample, and look at the resulting sampling distribution of means. We have to decide how many samples to take in order to do a good job of estimating the sampling distribution -- in this case, let's take 5000 samples so that we are really confident in the answer. Note that simulations like this one can sometimes take a few minutes to run, and might make your computer huff and puff. The histogram in Figure \@ref(fig:samplePlot) shows that the means estimated for each of the samples of 50 individuals vary somewhat, but that overall they are centered around the population mean.  The average of the 5000 sample means (`r I(formatC(mean(sampMeans), digits=2, format='f'))`) is very close to the true population mean (`r I(formatC(mean(NHANES_adult$Height), digits=2, format='f'))`).
+The sample mean and standard deviation are similar but not exactly equal to the population values.  Now let's take a large number of samples of 50 individuals, compute the mean for each sample, and look at the resulting sampling distribution of means. We have to decide how many samples to take in order to do a good job of estimating the sampling distribution -- in this case we will take 5000 samples so that we are very confident in the answer. Note that simulations like this one can sometimes take a few minutes to run, and might make your computer huff and puff. The histogram in Figure \@ref(fig:samplePlot) shows that the means estimated for each of the samples of 50 individuals vary somewhat, but that overall they are centered around the population mean.  The average of the 5000 sample means (`r I(formatC(mean(sampMeans), digits=4, format='f'))`) is very close to the true population mean (`r I(formatC(mean(NHANES_adult$Height), digits=4, format='f'))`).
 
 
 ```{r samplePlot,echo=FALSE,fig.cap="The blue histogram shows the sampling distribution of the mean over 5000 random samples from the NHANES dataset.  The histogram for the full dataset is shown in gray for reference.",fig.width=8,fig.height=4,out.height='50%'}
@@ -123,7 +123,7 @@ sampMeans_df %>%
 
 ## Standard error of the mean {#standard-error-of-the-mean}
 
-Later in the course it will become essential to be able to characterize how variable our samples are, in order to make inferences about the sample statistics. For the mean, we do this using a quantity called the *standard error* of the mean (SEM), which one can think of as the standard deviation of the sampling distribution. To compute the standard error of the mean for our sample, we divide the estimated standard deviation by the square root of the sample size:
+Later in the book it will become essential to be able to characterize how variable our samples are, in order to make inferences about the sample statistics. For the mean, we do this using a quantity called the *standard error* of the mean (SEM), which one can think of as the standard deviation of the sampling distribution of the mean. To compute the standard error of the mean for our sample, we divide the estimated standard deviation by the square root of the sample size:
 
 $$
 SEM = \frac{\hat{\sigma}}{\sqrt{n}}
