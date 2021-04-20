@@ -51,11 +51,11 @@ Now that we know what a probability is, how do we actually figure out what the p
 
 ### Personal belief
 
-Let's say that I asked you what the probability was that the Beatles would have been equally successful if they had not replaced their original drummer Pete Best with Ringo Starr in 1962.  We will define "success" in terms of the number of number-one hits on the Billboard Hot 100 (which we refer to as $N_{hits}$); the Beatles had 20 such number-one hits, so the sample space is {$N_{hits} < 20$,$N_{hits} \ge 20$ }.  We can't actually do the experiment to find the outcome. However, most people with knowledge of the Beatles would be willing to at least offer a guess at the probability of this event.  In many cases personal knowledge and/or opinion is the only guide we have determining the probability of an event, but this is not very scientifically satisfying.
+Let's say that I asked you what the probability was that Bernie Sanders would have won the 2016 presidential election if he had been the democratic nominee instead of Hilary Clinton?   We can't actually do the experiment to find the outcome. However, most people with knowledge of American politics would be willing to at least offer a guess at the probability of this event.  In many cases personal knowledge and/or opinion is the only guide we have determining the probability of an event, but this is not very scientifically satisfying.
 
 ### Empirical frequency {#empirical-frequency}
 
-Another way to determine the probability of an event is to do the experiment many times and count how often each event happens.  From the relative frequency of the different outcomes, we can compute the probability of each outcome.  For example, let's say that we are interested in knowing the probability of rain in San Francisco.  We first have to define the experiment --- let's say that we will look at the National Weather Service data for each day in 2017 and determine whether there was any rain at the downtown San Francisco weather station.
+Another way to determine the probability of an event is to do the experiment many times and count how often each event happens.  From the relative frequency of the different outcomes, we can compute the probability of each outcome.  For example, let's say that we are interested in knowing the probability of rain in San Francisco.  We first have to define the experiment --- let's say that we will look at the National Weather Service data for each day in 2017 and determine whether there was any rain at the downtown San Francisco weather station. According to these data, in 2017 there were 73 rainy days.  To compute the probability of rain in San Francisco, we simply divide the number of rainy days by the number of days counted (365), giving P(rain in SF in 2017) = 0.2.
 
 ```{r RainInSF,echo=FALSE,warning=FALSE,message=FALSE}
 # load data on rain in San Francisco and compute probability
@@ -75,11 +75,8 @@ SFrain_summary <-
     pRainInSF = nRainyDays / nDaysMeasured
   ) 
 names(SFrain_summary) <- c('Number of rainy days','Number of days measured', 'P(rain)')
-kable(SFrain_summary)
+# kable(SFrain_summary)
 ```
-
-
-According to these data, in 2017 there were 73 rainy days.  To compute the probability of rain in San Francisco, we simply divide the number of rainy days by the number of days counted (365), giving P(rain in SF in 2017) = 0.2.
 
 How do we know that empirical probability gives us the right number? The answer to this question comes from the *law of large numbers*, which shows that the empirical probability will approach the true probability as the sample size increases.  We can see this by simulating a large number of coin flips, and looking at our estimate of the probability of heads after each flip.  We will spend more time discussing simulation in a later chapter; for now, just assume that we have a computational way to generate a random outcome for each coin flip.
 
@@ -130,7 +127,7 @@ p2 <- electionReturns %>%
 plot_grid(p1, p2)
 ```
 
-These two examples show that while large samples will ultimately converge on the true probability, the results with small samples can be far off.  Unfortunately, many people forget this and overinterpret results from small samples.  This was referred to as the *law of small numbers* by the psychologists Danny Kahneman and Amos Tversky, who showed that people (even trained researchers) often behave as if the law of large numbers applies even to small samples, giving too much credence to results from small datasets.  We will see examples throughout the course of just how unstable statistical results can be when they are generated on the basis of small samples.
+These two examples show that while large samples will ultimately converge on the true probability, the results with small samples can be far off.  Unfortunately, many people forget this and overinterpret results from small samples.  This was referred to as the *law of small numbers* by the psychologists Danny Kahneman and Amos Tversky, who showed that people (even trained researchers) often behave as if the law of large numbers applies even to small samples, giving too much credence to results based on small datasets.  We will see examples throughout the course of just how unstable statistical results can be when they are generated on the basis of small samples.
 
 ### Classical probability
 
@@ -146,8 +143,7 @@ $$
 
 For the six-sided die, the probability of each individual outcome is 1/6. 
 
-This is nice, but de Méré was interested in more complex events, like what happens on multiple dice throws.  How do we compute the probability of a complex event (which is a *union* of single events), like rolling a six on the first *or* the second throw?  
-We represent the union of events mathematically using the $\cup$ symbol: for example, if the probability of rolling a six on the first throw is referred to as $P(Roll6_{throw1})$ and the probability of rolling a six on the second throw is $P(Roll6_{throw2})$, then the union is referred to as $P(Roll6_{throw1} \cup Roll6_{throw2})$.
+This is nice, but de Méré was interested in more complex events, like what happens on multiple dice throws.  How do we compute the probability of a complex event (which is a *union* of single events), like rolling a six on the first *or* the second throw?  We represent the union of events mathematically using the $\cup$ symbol: for example, if the probability of rolling a six on the first throw is referred to as $P(Roll6_{throw1})$ and the probability of rolling a six on the second throw is $P(Roll6_{throw2})$, then the union is referred to as $P(Roll6_{throw1} \cup Roll6_{throw2})$.
 
 de Méré thought (incorrectly, as we will see below) that he could simply add together the probabilities of the individual events to compute the probability of the combined event, meaning that the probability of rolling a six on the first or second roll would be computed as follows:
 
@@ -175,9 +171,7 @@ $$
 
 where $\neg A$ means "not A". This rule derives directly from the axioms that we discussed above; because A and $\neg A$ are the only possible outcomes, then their total probability must sum to 1.  For example, if the probability of rolling a one in a single throw is $\frac{1}{6}$, then the probability of rolling anything other than a one is $\frac{5}{6}$.
 
-A second rule tells us how to compute the probability of a conjoint event -- that is, the probability that both of two events will occur. We refer to this as an *intersection*, which is signified by the $\cap$ symbol; thus, $P(A \cap B)$ means the probability that both A and B will occur.
-
-This version of the rule tells us how to compute this quantity in the special case when the two events are independent from one another; we will learn later exactly what the concept of *independence* means, but for now we can just take it for granted that the two die throws are independent events.  We compute the probability of the intersection of two independent events by simply multiplying the probabilities of the individual events:
+A second rule tells us how to compute the probability of a conjoint event -- that is, the probability that both of two events will occur. We refer to this as an *intersection*, which is signified by the $\cap$ symbol; thus, $P(A \cap B)$ means the probability that both A and B will occur.  We will focus on a version of the rule that tells us how to compute this quantity in the special case when the two events are independent from one another; we will learn later exactly what the concept of *independence* means, but for now we can just take it for granted that the two die throws are independent events.  We compute the probability of the intersection of two independent events by simply multiplying the probabilities of the individual events:
 
 $$
 P(A \cap B) = P(A) * P(B)\ \text{if and only if A and B are independent}
@@ -271,11 +265,11 @@ $$
 P(\text{at least one double six in 24 rolls}) = 1 - \bigg(\frac{35}{36}\bigg)^{24}=0.491
 $$
 
-The probability of this outcome was slightly below 0.5, showing why de Méré lost money on average on this bet.  
+The probability of this outcome was slightly below 0.5, showing why de Méré lost money on average on this bet. 
 
 ## Probability distributions
 
-A *probability distribution* describes the probability of all of the possible outcomes in an experiment. For example, on Jan 20 2018, the basketball player Steph Curry hit only 2 out of 4 free throws in a game against the Houston Rockets. We know that Curry's overall probability of hitting free throws across the entire season was 0.91, so it seems pretty unlikely that he would hit only 50% of his free throws in a game, but exactly how unlikely is it?  We can determine this using a theoretical probability distribution; during this course we will encounter a number of these probability distributions, each of which is appropriate to describe different types of data.  In this case, we use the *binomial* distribution, which provides a way to compute the probability of some number of successes out of a number of trials on which there is either success or failure and nothing in between (known as "Bernoulli trials")  given some known probability of success on each trial.  This distribution is defined as:
+A *probability distribution* describes the probability of all of the possible outcomes in an experiment. For example, on Jan 20 2018, the basketball player Steph Curry hit only 2 out of 4 free throws in a game against the Houston Rockets. We know that Curry's overall probability of hitting free throws across the entire season was 0.91, so it seems pretty unlikely that he would hit only 50% of his free throws in a game, but exactly how unlikely is it?  We can determine this using a theoretical probability distribution; throughout this book we will encounter a number of these probability distributions, each of which is appropriate to describe different types of data.  In this case, we use the *binomial* distribution, which provides a way to compute the probability of some number of successes out of a number of trials on which there is either success or failure and nothing in between (known as "Bernoulli trials"),  given some known probability of success on each trial.  This distribution is defined as:
 
 $$
 P(k; n,p) = P(X=k) = \binom{n}{k} p^k(1-p)^{n-k}
@@ -292,6 +286,7 @@ $$
 n! = \prod_{i=1}^n i = n*(n-1)*...*2*1 
 $$
 
+The product operator $\prod$ is similar to the summation operator $\sum$, except that it multiplies instead of adds.  In this case, it is multiplying together all numbers from one to $n$.
 
 In the example of Steph Curry's free throws:
 
@@ -303,7 +298,7 @@ This shows that given Curry's overall free throw percentage, it is very unlikely
 
 ### Cumulative probability distributions
 
-Often we want to know not just how likely a specific value is, but how likely it is to find a value that is as extreme or more than a particular value; this will become very important when we discuss hypothesis testing in a later chapter.  To answer this question, we can use a *cumulative* probability distribution; whereas a standard probability distribution tells us the probability of some specific value, the cumulative distribution tells us the probability of a value as large or larger (or as small or smaller) than some specific value.  
+Often we want to know not just how likely a specific value is, but how likely it is to find a value that is as extreme or more than a particular value; this will become very important when we discuss hypothesis testing in Chapter 9.  To answer this question, we can use a *cumulative* probability distribution; whereas a standard probability distribution tells us the probability of some specific value, the cumulative distribution tells us the probability of a value as large or larger (or as small or smaller) than some specific value.  
 
 In the free throw example, we might want to know: What is the probability that Steph Curry hits 2 *or fewer* free throws out of four, given his overall free throw probability of 0.91. To determine this, we could simply use the the binomial probability equation and plug in all of the possible values of k and add them together:
 
@@ -311,7 +306,7 @@ $$
 P(k\le2)= P(k=2) + P(k=1) + P(k=0) = 6e^{-5} + .002 + .040 = .043  
 $$
 
-In many cases the number of possible outcomes would be too large for us to compute the cumulative probability by enumerating all possible values; fortunately, it can be computed directly for any theoretical probability distribution. The table below shows the cumulative probability of each possible number of successful free throws in the example from above:
+In many cases the number of possible outcomes would be too large for us to compute the cumulative probability by enumerating all possible values; fortunately, it can be computed directly for any theoretical probability distribution. Table \@ref(tab:freethrow) shows the cumulative probability of each possible number of successful free throws in the example from above, from which we can see that the probability of Curry landing 2 or fewer free throws out of 4 attempts is 0.043.
 
 ```{r echo=FALSE}
 # compute cumulative probability distribution for Curry's free throws
@@ -320,16 +315,15 @@ curry_df <- tibble(
   numSuccesses = seq(0, 4)
 ) %>%
   mutate(
+    Probability = dbinom(numSuccesses, size = 4, prob = 0.91),
     CumulativeProbability = pbinom(numSuccesses, size = 4, prob = 0.91)
   )
 
 ```
 
-```{r echo=FALSE}
-kable(curry_df, caption='Cumulative probability distribution for number of successful free throws by Steph Curry in 4 attempts.', digits=3)
+```{r freethrow, echo=FALSE}
+kable(curry_df, caption='Simple and cumulative probability distributions for number of successful free throws by Steph Curry in 4 attempts.', digits=3)
 ```
-
-From the table we can see that the probability of Curry landing 2 or fewer free throws out of 4 attempts is 0.043.
 
 ## Conditional probability {#conditional-probability}
 
@@ -354,7 +348,7 @@ It can be useful to think of this graphically. Figure \@ref(fig:conditionalProba
 
 ## Computing conditional probabilities from data
 
-We can also compute conditional probabilities directly from data. Let's say that we are interested in the following question: What is the probability that someone has diabetes, given that they are not physically active? -- that is, $P(diabetes|inactive)$. The NHANES dataset includes two variables that address the two parts of this question.  The first (```Diabetes```) asks whether the person has ever been told that they have diabetes, and the second (```PhysActive```) records whether the person engages in sports, fitness, or recreational activities that are at least of moderate intensity.  Let's first compute the simple probabilities.
+We can also compute conditional probabilities directly from data. Let's say that we are interested in the following question: What is the probability that someone has diabetes, given that they are not physically active? -- that is, $P(diabetes|inactive)$. The NHANES dataset includes two variables that address the two parts of this question.  The first (```Diabetes```) asks whether the person has ever been told that they have diabetes, and the second (```PhysActive```) records whether the person engages in sports, fitness, or recreational activities that are at least of moderate intensity.  Let's first compute the simple probabilities, which are shown in Table \@ref(tab:simpleProb).  The table shows that the probability that someone in the NHANES dataset has diabetes is .1, and the probability that someone is inactive is .45.  
 
 ```{r echo=FALSE}
 # Summarize NHANES data for diabetes and physical activity
@@ -379,7 +373,7 @@ physactive_summary <- NHANES_diabetes_activity %>%
 
 ```
 
-```{r echo=FALSE}
+```{r simpleProb, echo=FALSE}
 all_summary <- data.frame(Answer=diabetes_summary$Diabetes, 
                           N_diabetes=diabetes_summary$n,
                           P_diabetes=diabetes_summary$prob,
@@ -390,10 +384,7 @@ kable(all_summary, caption='Summary data for diabetes and physical activity')
 
 ```
 
-
-The table shows that the probability that someone in the NHANES dataset has diabetes is .1, and the probability that someone is inactive is .45.  
-
-```{r echo=FALSE}
+```{r jointProb, echo=FALSE}
 # compute joint probabilities for diabetes and physical activity
 
 NHANES_diabetes_stats_by_activity <- 
@@ -406,7 +397,6 @@ NHANES_diabetes_stats_by_activity <-
 kable(NHANES_diabetes_stats_by_activity, caption='Joint probabilities for Diabetes and PhysActive variables.')
 ```
 
-To compute  $P(diabetes|inactive)$ we would also need to know the joint probability of being diabetic *and* inactive, in addition to the simple probabilities of each.
 
 
 ```{r echo=FALSE}
@@ -430,6 +420,7 @@ P_diabetes_given_inactive <-
 # P_diabetes_given_inactive
 ```
 
+To compute  $P(diabetes|inactive)$ we would also need to know the joint probability of being diabetic *and* inactive, in addition to the simple probabilities of each.  These are shown in Table \@ref(tab:jointProb).
 Based on these joint probabilities, we can compute $P(diabetes|inactive)$.  One way to do this in a computer program is to first determine the whether the PhysActive variable was equal to "No" for each indivdual, and then take the mean of those truth values.  Since TRUE/FALSE values are treated as 1/0 respectively by most programming languages (including R and Python), this allows us to easily identify the probability of a simple event by simply taking the mean of a logical variable representing its truth value. We then use that value to compute the conditional probability, where we find that the probability of someone having diabetes given that they are physically inactive is `r I(sprintf('%0.3f',P_diabetes_given_inactive))`.
 
 ## Independence
@@ -442,9 +433,10 @@ $$
 
 That is, the probability of A given some value of B is just the same as the overall probability of A.  Looking at it this way, we see that many cases of what we would call "independence" in the real world are not actually statistically independent.  For example, there is currently a move by a small group of California citizens to declare a new independent state called Jefferson, which would comprise a number of counties in northern California and Oregon. If this were to happen, then the probability that a current California resident would now live in the state of Jefferson would be $P(\text{Jeffersonian})=0.014$, whereas the probability that they would remain a California resident would be $P(\text{Californian})=0.986$.  The new states might be politically independent, but they would *not* be statistically independent, because if we know that a person is Jeffersonian, then we can be sure that they are *not* Californian!  That is, while independence in common language often refers to sets that are exclusive, statistical independence refers to the case where one cannot predict anything about one variable from the value of another variable.  For example, knowing a person's hair color is unlikely to tell you whether they prefer chocolate or strawberry ice cream.  
 
-Let's look at another example, using the NHANES data: Are physical health and mental health independent of one another?  NHANES includes two relevant questions: *PhysActive*, which asks whether the individual is physically active, and *DaysMentHlthBad*, which asks how many days out of the last 30 that the individual experienced bad mental health.  Let's consider anyone who had more than 7 days of bad mental health in the last month to be in bad mental health.  Based on this, we can define a new variable called *badMentalHealth* as a logical variable telling whether each person had more than 7 days of bad mental health or not.  We can first summarize the data to show how many individuals fall into each combination of the two variables:
+Let's look at another example, using the NHANES data: Are physical health and mental health independent of one another?  NHANES includes two relevant questions: *PhysActive*, which asks whether the individual is physically active, and *DaysMentHlthBad*, which asks how many days out of the last 30 that the individual experienced bad mental health.  Let's consider anyone who had more than 7 days of bad mental health in the last month to be in bad mental health.  Based on this, we can define a new variable called *badMentalHealth* as a logical variable telling whether each person had more than 7 days of bad mental health or not.  We can first summarize the data to show how many individuals fall into each combination of the two variables (shown in Table \@ref(tab:mhCounts)), and then divide by the total number of observations to create a table of proportions (shown in Table \@ref(tab:mhProps)):
 
-```{r echo=FALSE, message=FALSE}
+
+```{r mhCounts, echo=FALSE, message=FALSE}
 # compute probabilities for mental health and physical activity
 NHANES_adult <- 
   NHANES %>%
@@ -465,9 +457,8 @@ kable(NHANES_mentalhealth_by_physactive_counts)
 ```
 
 
-We can divide by the total number of observations to create a table of proportions:
 
-```{r echo=FALSE, message=FALSE}
+```{r mhProps, echo=FALSE, message=FALSE}
 total_n <- NHANES_mentalhealth_by_physactive_counts[3,4]
 # there doesn't seem to be a simple way to do this in R
 NHANES_mentalhealth_by_physactive_p <- NHANES_mentalhealth_by_physactive_counts[,2:4]/NHANES_mentalhealth_by_physactive_counts[3,4]
@@ -477,10 +468,10 @@ NHANES_mentalhealth_by_physactive_p <- NHANES_mentalhealth_by_physactive_p[, c('
 kable(NHANES_mentalhealth_by_physactive_p)
 ```
 
-This shows us the proportion of all observations that fall into each cell. However, what we want to know here is the conditional probability of bad mental health, depending on whether one is physically active or not. To compute this, we divide each physical activity group by its total number of observations, so that each row now sums to one:
+This shows us the proportion of all observations that fall into each cell. However, what we want to know here is the conditional probability of bad mental health, depending on whether one is physically active or not. To compute this, we divide each physical activity group by its total number of observations, so that each row now sums to one (shown in Table  \@ref(tab:condProb)). Here we see the conditional probabilities of bad or good mental health for each physical activity group (in the top two rows) along with the overall probability of good or bad mental health in the third row.  To determine whether mental health and physical activity are independent, we would compare the simple probability of bad mental health (in the third row) to the conditional probability of bad mental health given that one is physically active (in the second row).
 
 
-```{r echo=FALSE, message=FALSE}
+```{r condProb, echo=FALSE, message=FALSE}
 total_n <- NHANES_mentalhealth_by_physactive_counts[3,4]
 # there doesn't seem to be a simple way to do this in R
 NHANES_mentalhealth_by_physactive_condp <- NHANES_mentalhealth_by_physactive_counts
@@ -492,7 +483,7 @@ for (i in 1:3){
 
 kable(NHANES_mentalhealth_by_physactive_condp)
 ```
-Now we see the conditional probabilities of bad or good mental health for each physical activity group (in the top two rows) along with the overall probability of good or bad mental health in the third row.  To determine whether mental health and physical activity are independent, we would compare the simple probability of bad mental health (in the third row) to the conditional probability of bad mental health given that one is physically active (in the second row).
+
 
 
 The overall probability of bad mental health $P(\text{bad mental health})$ is `r I(NHANES_mentalhealth_by_physactive_condp[3, 2])` while the conditional probability $P(\text{bad mental health|physically active})$ is `r I(NHANES_mentalhealth_by_physactive_condp[2, 2])`.  Thus, it seems that the conditional probability is somewhat smaller than the overall probability, suggesting that they are not independent, though we can't know for sure just by looking at the numbers, since these numbers might be different due to random variability in our sample. Later in the book we will discuss statistical tools that will let us directly test whether two variables are independent.
@@ -589,7 +580,7 @@ This tells us that the odds of having cancer are increased by 2.62 times given t
 
 It might strike you that it is a bit odd to talk about the probability of a person having cancer depending on a test result; after all, the person either has cancer or they don't.  Historically, there have been two different ways that probabilities have been interpreted.  The first (known as the *frequentist* interpretation) interprets probabilities in terms of long-run frequencies.  For example, in the case of a coin flip, it would reflect the relative frequencies of heads in the long run after a large number of flips.  While this interpretation might make sense for events that can be repeated many times like a coin flip, it makes less sense for events that will only happen once, like an individual person's life or a particular presidential election; and as the economist John Maynard Keynes famously said, "In the long run, we are all dead."
 
-The other interpretation of probablities (known as the *Bayesian* interpretation) is as a degree of belief in a particular proposition. If I were to ask you "How likely is it that the US will return to the moon by 2026", you can provide an answer to this question based on your knowledge and beliefs, even though there are no relevant frequencies to compute a frequentist probability.  One way that we often frame subjective probabilities is in terms of one's willingness to accept a particular gamble.  For example, if you think that the probability of the US landing on the moon by 2026 is 0.1 (i.e. odds of 9 to 1), then that means that you should be willing to accept a gamble that would pay off with anything more than 9 to 1 odds if the event occurs.  
+The other interpretation of probablities (known as the *Bayesian* interpretation) is as a degree of belief in a particular proposition. If I were to ask you "How likely is it that the US will return to the moon by 2040", you can provide an answer to this question based on your knowledge and beliefs, even though there are no relevant frequencies to compute a frequentist probability.  One way that we often frame subjective probabilities is in terms of one's willingness to accept a particular gamble.  For example, if you think that the probability of the US landing on the moon by 2040 is 0.1 (i.e. odds of 9 to 1), then that means that you should be willing to accept a gamble that would pay off with anything more than 9 to 1 odds if the event occurs.  
 
 As we will see, these two different definitions of probability are very relevant to the two different ways that statisticians think about testing statistical hypotheses, which we will encounter in later chapters.
 
@@ -610,6 +601,7 @@ Having read this chapter, you should be able to:
 ## Suggested readings
 
 - *The Drunkard's Walk: How Randomness Rules Our Lives*, by Leonard Mlodinow
+- *Ten Great Ideas about Chance*, by Persi Diaconis and Brian Skyrms
 
 ## Appendix
 

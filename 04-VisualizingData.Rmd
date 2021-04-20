@@ -35,7 +35,7 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 
 On January 28, 1986, the Space Shuttle Challenger exploded 73 seconds after takeoff, killing all 7 of the astronauts on board.  As when any such disaster occurs, there was an official investigation into the cause of the accident, which found that an O-ring connecting two sections of the solid rocket booster leaked, resulting in failure of the joint and explosion of the large liquid fuel tank (see figure \@ref(fig:srbLeak)).
 
-```{r srbLeak, echo=FALSE,fig.cap="An image of the solid rocket booster leaking fuel, seconds before the explosion. By NASA (Great Images in NASA Description) [Public domain], via Wikimedia Commons",fig.height=3,out.height='20%'}
+```{r srbLeak, echo=FALSE,fig.cap="An image of the solid rocket booster leaking fuel, seconds before the explosion. The small flame visible on the side of the rocket is the site of the O-ring failure. By NASA (Great Images in NASA Description) [Public domain], via Wikimedia Commons",fig.height=3,out.height='20%'}
 knitr::include_graphics("images/Booster_Rocket_Breach_-_GPN-2000-001425.jpg")
 ```
 
@@ -215,7 +215,7 @@ knitr::include_graphics('images/excel_chartjunk.png')
 It's often possible to use visualization to distort the message of a dataset.  A very common one is use of different axis scaling to either exaggerate or hide a pattern of data.  For example, let's say that we are interested in seeing whether rates of violent crime have changed in the US.  In Figure \@ref(fig:crimePlotAxes), we can see these data plotted in ways that either make it look like crime has remained constant, or that it has plummeted.  The same data can tell two very different stories!
 
 
-```{r crimePlotAxes,echo=FALSE,fig.cap="Crime data from 1990 to 2014 plotted over time.  Panels A and B show the same data, but with different axis ranges. Data obtained from https://www.ucrdatatool.gov/Search/Crime/State/RunCrimeStatebyState.cfm",fig.width=8,fig.height=4,out.height='50%'}
+```{r crimePlotAxes,echo=FALSE,fig.cap="Crime data from 1990 to 2014 plotted over time.  Panels A and B show the same data, but with different ranges of values along the Y axis. Data obtained from https://www.ucrdatatool.gov/Search/Crime/State/RunCrimeStatebyState.cfm",fig.width=8,fig.height=4,out.height='50%'}
 
 
 crimeData=read.table('data/CrimeStatebyState.csv',sep=',',header=TRUE) %>%
@@ -285,7 +285,7 @@ Humans have both perceptual and cognitive limitations that can make some visuali
 
 ### Perceptual limitations
 
-One important perceptual limitation that many people (including myself) suffer from is color blindness.  This can make it very difficult to perceive the information in a figure (like the one in Figure \@ref(fig:badColors)) where there is only color contrast between the elements but no brightness contrast. It is always helpful to use graph elements that differ substantially in brightness and/or texture, in addition to color.  There are also ["colorblind-friendly" palettes](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette) available for use in R.
+One important perceptual limitation that many people (including myself) suffer from is color blindness.  This can make it very difficult to perceive the information in a figure (like the one in Figure \@ref(fig:badColors)) where there is only color contrast between the elements but no brightness contrast. It is always helpful to use graph elements that differ substantially in brightness and/or texture, in addition to color.  There are also ["colorblind-friendly" palettes](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette) available for use with many visualization tools.
 
 ```{r badColors,echo=FALSE,fig.cap="Example of a bad figure that relies solely on color contrast.",fig.width=8,fig.height=4,out.height='50%'}
 exampleDf = data.frame(value=c(3,5,4,6,2,5,8,8),
