@@ -36,7 +36,7 @@ NHANES_adult <-
 
 ```
 
-In this chapter we will take up the approach to statistical modeling and inference that stands in contrast to the null hypothesis testing framework that you encountered in Chapter \@ref(hypothesis-testing).  This is known as "Bayesian statistics" after the Reverend Thomas Bayes, whose theorem you have already encountered in Chapter \@ref(probability).  In this chapter you will learn how Bayes' theorem provides a way of understanding data that solves many of the conceptual problems that we discussed regarding null hypothesis testing.
+In this chapter we will take up the approach to statistical modeling and inference that stands in contrast to the null hypothesis testing framework that you encountered in Chapter \@ref(hypothesis-testing).  This is known as "Bayesian statistics" after the Reverend Thomas Bayes, whose theorem you have already encountered in Chapter \@ref(probability).  In this chapter you will learn how Bayes' theorem provides a way of understanding data that solves many of the conceptual problems that we discussed regarding null hypothesis testing, while also introducing some new challenges.
 
 ## Generative models
 
@@ -59,7 +59,7 @@ The reason that Bayesian statistics has its name is because it takes advantage o
 # *TBD: MOTIVATE SWITCH FROM 7 To 7 OR MORE*
 ```
 
-The resulting probability is `r I(sprintf("%.3f",pbinom(7, 10, .5, lower.tail = FALSE)))`.  That is a fairly small number, but this number doesn't really answer the question that we are asking -- it is telling us about the likelihood of 7 or more heads given some particular probability of heads, whereas what we really want to know is the probability of heads. This should sound familiar, as it's exactly the situation that we were in with null hypothesis testing, which told us about the likelihood of data rather than the likelihood of hypotheses.
+The resulting probability is `r I(sprintf("%.3f",pbinom(7, 10, .5, lower.tail = FALSE)))`.  That is a fairly small number, but this number doesn't really answer the question that we are asking -- it is telling us about the likelihood of 7 or more heads given some particular probability of heads, whereas what we really want to know is the true probability of heads for this particular coin. This should sound familiar, as it's exactly the situation that we were in with null hypothesis testing, which told us about the likelihood of data rather than the likelihood of hypotheses.
 
 Remember that Bayes' theorem provides us with the tool that we need to invert a conditional probability:
 
@@ -91,7 +91,7 @@ What the security staff want to know is what is the likelihood that a person is 
 
 ### Specifying the prior
 
-To use Bayes' theorem, we first need to specify the prior probability for the hypothesis.  In this case, we don't know the real number but we can assume that it's quite small.  According to the [FAA](https://www.faa.gov/air_traffic/by_the_numbers/media/Air_Traffic_by_the_Numbers_2018.pdf), there were 971,595,898 air passengers in the U.S. in 2017.  Let's say that one out of those travelers was carrying an explosive in their bag --- that would give a prior probability of 1 out of 971 million, which is very small!  The security personnel may have reasonably held a stronger prior in the months after the 9/11 attack, so let's say that their subjective belief was that one out of every million flyers was carrying an explosive.
+To use Bayes' theorem, we first need to specify the prior probability for the hypothesis.  In this case, we don't know the real number but we can assume that it's quite small.  According to the [FAA](https://www.faa.gov/air_traffic/by_the_numbers/media/Air_Traffic_by_the_Numbers_2018.pdf), there were 971,595,898 air passengers in the U.S. in 2017.  Let's say that one of those travelers was carrying an explosive in their bag --- that would give a prior probability of 1 out of 971 million, which is very small!  The security personnel may have reasonably held a stronger prior in the months after the 9/11 attack, so let's say that their subjective belief was that one out of every million flyers was carrying an explosive.
 
 ```{r echo=FALSE}
 bayes_df = data.frame(prior=NA, 
@@ -187,7 +187,7 @@ We need some data in order to estimate the effect of the drug.  Let's say that w
 
 ### Computing the likelihood
 
-We can compute the likelihood of the data under any particular value of the effectiveness parameter using the `dbinom()` function in R. In Figure \@ref(fig:like2) you can see the likelihood curves over numbers of responders for several different values of $P_{respond}$. Looking at this, it seems that our observed data are relatively more likely under the hypothesis of $P_{respond}=0.7$, somewhat less likely under the hypothesis of $P_{respond}=0.5$, and quite unlikely under the hypothesis of $P_{respond}=0.3$.  One of the fundamental ideas of Bayesian inference is that we should upweight our belief in values of our parameter of interest in proportion to how likely the data are under those values, balanced against what we believe about the parameter values before having seen the data (our prior knowledge).
+We can compute the likelihood of the observed data under any particular value of the effectiveness parameter using the binomial density function. In Figure \@ref(fig:like2) you can see the likelihood curves over numbers of responders for several different values of $P_{respond}$. Looking at this, it seems that our observed data are relatively more likely under the hypothesis of $P_{respond}=0.7$, somewhat less likely under the hypothesis of $P_{respond}=0.5$, and quite unlikely under the hypothesis of $P_{respond}=0.3$.  One of the fundamental ideas of Bayesian inference is that we should upweight our belief in values of our parameter of interest in proportion to how likely the data are under those values, balanced against what we believed about the parameter values before having seen the data (our prior knowledge).
 
 
 ```{r like2,echo=FALSE,fig.cap='Likelihood of each possible number of responders under several different hypotheses (p(respond)=0.5 (solid), 0.7 (dotted), 0.3 (dashed).  Observed value shown in the vertical line',fig.width=4,fig.height=4,out.height='50%'}
@@ -301,7 +301,7 @@ Often we would like to know not just a single estimate for the posterior, but an
 
 ```
 
-The interpretation of this credible interval is much closer to what we had hoped we could get from a confidence interval (but could not): It tells us that there is a 95% probability that the value of $p_{respond}$ falls between these two values.  Importantly, it shows that we have high confidence that $p_{respond} > 0.0$, meaning that the drug seems to have a positive effect.
+The interpretation of this credible interval is much closer to what we had hoped we could get from a confidence interval (but could not): It tells us that there is a 95% probability that the value of $p_{respond}$ falls between these two values.  Importantly, in this case it shows that we have high confidence that $p_{respond} > 0.0$, meaning that the drug seems to have a positive effect.
 
 In some cases the credible interval can be computed *numerically* based on a known distribution, but it's more common to generate a credible interval by sampling from the posterior distribution and then to compute quantiles of the samples. This is particularly useful when we don't have an easy way to express the posterior distribution numerically, which is often the case in real Bayesian data analysis.  One such method (rejection sampling) is explained in more detail in the Appendix at the end of this chapter.
 
@@ -435,12 +435,11 @@ In panel C of Figure \@ref(fig:posteriorDistPrior) we see that there is zero den
 
 The impact of priors on the resulting inferences are the most controversial aspect of Bayesian statistics. What is the right prior to use? If the choice of prior determines the results (i.e., the posterior), how can you be sure you results are trustworthy? These are difficult questions, but we should not back away just because we are faced with hard questions. As we discussed previously, Bayesian analyses give us interpretable results (credible intervals, etc.). This alone should inspire us to think hard about these questions so that we can arrive with results that are reasonable and interpretable.
 
-There are various ways to choose one's priors, which (as we saw above) can impact the resulting inferences. Sometimes we have a very specific prior, as in the case where we expected our coin to lands heads 50% of the time, but in many cases we don't have such strong a starting point. *Uninformative priors* attempt to influence the resulting posterior as little as possible, as we saw in the example of the uniform prior above.  It's also common to use *weakly informative priors* (or *default priors*), which influence the result only very slightly. For example, if we had used a binomial distribution based on one heads out of two coin flips, the prior would have been centered around 0.5 but fairly flat, influence the posterior only slightly.  
-It is also possible to use priors based on the scientific literature or pre-existing data, which we would call *empirical priors*.  In general, however, we will stick to the use of uninformative/weakly informative priors, since they raise the least concern about influencing our results.  
+There are various ways to choose one's priors, which (as we saw above) can impact the resulting inferences. Sometimes we have a very specific prior, as in the case where we expected our coin to lands heads 50% of the time, but in many cases we don't have such strong a starting point. *Uninformative priors* attempt to influence the resulting posterior as little as possible, as we saw in the example of the uniform prior above.  It's also common to use *weakly informative priors* (or *default priors*), which influence the result only very slightly. For example, if we had used a binomial distribution based on one heads out of two coin flips, the prior would have been centered around 0.5 but fairly flat, influence the posterior only slightly.  It is also possible to use priors based on the scientific literature or pre-existing data, which we would call *empirical priors*.  In general, however, we will stick to the use of uninformative/weakly informative priors, since they raise the least concern about influencing our results.  
 
 ## Bayesian hypothesis testing
 
-Having learned how to perform Bayesian estimation, we now turn to the use of Bayesian methods for hypothesis testing.  Let's say that there are two politicians who differ in their beliefs about whether the public is in favor an extra tax to support the national parks. Senator Smith thinks that only 40% of people are in favor of the tax, whereas Senator Jones thinks that 60% of people are in favor.  They arrange to have a poll done to test this, which asks 1000 randomly selected people whether they support such a tax. The results are that 490 of the people in the polled sample were in favor of the tax. Based on these data, we would like to know: Do the data support the claims of one senator over the other,and by how much?  We can test this using a concept known as the [Bayes factor](https://bayesfactor.blogspot.com/2014/02/the-bayesfactor-package-this-blog-is.html),which quantifies which hypothesis is better by comparing how well each predicts the observed data.
+Having learned how to perform Bayesian estimation, we now turn to the use of Bayesian methods for hypothesis testing.  Let's say that there are two politicians who differ in their beliefs about whether the public is in favor an extra tax to support the national parks. Senator Smith thinks that only 40% of people are in favor of the tax, whereas Senator Jones thinks that 60% of people are in favor.  They arrange to have a poll done to test this, which asks 1000 randomly selected people whether they support such a tax. The results are that 490 of the people in the polled sample were in favor of the tax. Based on these data, we would like to know: Do the data support the claims of one senator over the other,and by how much?  We can test this using a concept known as the [Bayes factor](https://bayesfactor.blogspot.com/2014/02/the-bayesfactor-package-this-blog-is.html), which quantifies which hypothesis is better by comparing how well each predicts the observed data.
 
 
 ### Bayes factors {#Bayes-factors}
@@ -560,7 +559,7 @@ How do we know whether a Bayes factor of 2 or 20 is good or bad? There is a gene
 |20 to 150| strong|
 |>150 | very strong|
 
-Based on this, even though the statisical result is significant, the amount of evidence in favor of the alternative vs. the point null hypothesis is weak enough that it's not worth even mentioning, whereas the evidence for the directional hypothesis is relatively strong.
+Based on this, even though the statisical result is significant, the amount of evidence in favor of the alternative vs. the point null hypothesis is weak enough that it's hardly worth even mentioning, whereas the evidence for the directional hypothesis is relatively strong.
 
 
 ### Assessing evidence for the null hypothesis
@@ -584,9 +583,9 @@ After reading this chapter, should be able to:
 
 ### Rejection sampling
 
-We will generate samples from our posterior distribution using a simple algorithm known as [*rejection sampling*](https://am207.github.io/2017/wiki/rejectionsampling.html).  The idea is that we choose a random value of x (in this case $p_{respond}$) and a random value of y (in this case, the posterior probability of $p_{respond}$) each from a uniform distribution. We then only accept the sample if $y < f(x)$ - in this case, if the randomly selected value of y is less than the actual posterior probability of y.  Figure \@ref(fig:rejectionSampling) shows an example of a histogram of samples using rejection sampling, along with the 95% credible intervals obtained using this method.  
+We will generate samples from our posterior distribution using a simple algorithm known as [*rejection sampling*](https://am207.github.io/2017/wiki/rejectionsampling.html).  The idea is that we choose a random value of x (in this case $p_{respond}$) and a random value of y (in this case, the posterior probability of $p_{respond}$) each from a uniform distribution. We then only accept the sample if $y < f(x)$ - in this case, if the randomly selected value of y is less than the actual posterior probability of y.  Figure \@ref(fig:rejectionSampling) shows an example of a histogram of samples using rejection sampling, along with the 95% credible intervals obtained using this method (with the values presented in Table \@ref(tab:credInt))
 
-```{r}
+```{r credInt, echo=FALSE}
 # Compute credible intervals for example
 
 nsamples <- 100000
