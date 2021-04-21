@@ -11,7 +11,7 @@ output:
 
 In the previous chapter we discussed how we can use data to test hypotheses.  Those methods provided a binary answer: we either reject or fail to reject the null hypothesis. However, this kind of decision overlooks a couple of important questions.  First, we would like to know how much uncertainty we have about the answer (regardless of which way it goes).  In addition, sometimes we don't have a clear null hypothesis, so we would like to see what range of estimates are consistent with the data.  Second, we would like to know how large the effect actually is, since as we saw in the weight loss example in the previous chapter, a statistically significant effect is not necessarily a practically important effect.
 
-In this chapter we will discuss methods to address these two questions: confidence intervals to provide a measure of our uncertainty about our estimates, and effect sizes to provide a standardized way to understand how large the effects are. We will also discuss the concept of *statistical power* which tells us how well we can expect to find any true effects that might exist.
+In this chapter we will discuss methods to address these two questions: confidence intervals to provide a measure of our uncertainty about our estimates, and effect sizes to provide a standardized way to understand how large the effects are. We will also discuss the concept of *statistical power* which tells us likely we are to find any true effects that actually exist.
 
 ```{r echo=FALSE,warning=FALSE,message=FALSE}
 library(tidyverse)
@@ -60,10 +60,9 @@ sample_summary <-
 
 So far in the book we have focused on estimating a single value statistic.  For example, let's say we want to estimate the mean weight of adults in the NHANES dataset, so we take a sample from the dataset and estimate the mean. In this sample, the mean weight was `r I(sample_summary$meanWeight)` kilograms.  We refer to this as a *point estimate* since it provides us with a single number to describe our estimate of the population parameter.  However, we know from our earlier discussion of sampling error that there is some uncertainty about this estimate, which is described by the standard error.  You should also remember that the standard error is determined by two components: the population standard deviation (which is the numerator), and the square root of the sample size (which is in the denominator).  The population standard deviation is a generally unknown but fixed parameter that is not under our control, whereas the sample size *is* under our control.  Thus, we can decrease our uncertainty about the estimate by increasing our sample size -- up to the limit of the entire population size, at which point there is no uncertainty at all because we can just calculate the population parameter directly from the data of the entire population.
 
-We would often like to have a way to more directly describe our uncertainty about a statistical estimate, which we can accomplish using a *confidence interval*.  
-Most people are familiar with confidence intervals through the idea of a “margin of error” for political polls. These polls usually try to provide an answer that is accurate within +/- 3 percent. For example, when a candidate is estimated to win an election by 9 percentage points with a margin of error of 3, the percentage by which they will win is estimated to fall within 6-12 percentage points. In statistics we refer to this kind of range of values as a confidence interval, which provides a measure of our degree of uncertainty about how close our particular estimate based on a single sample is to the true population parameter: The larger the confidence interval, the greater our uncertainty.  Another way to think about the confidence interval is that it tells us the range of values for our statistic that are consistent with our sample data, rather than just giving us a single estimate based on the data.
+We would often like to have a way to more directly describe our uncertainty about a statistical estimate, which we can accomplish using a *confidence interval*.  Most people are familiar with confidence intervals through the idea of a “margin of error” for political polls. These polls usually try to provide an answer that is accurate within +/- 3 percent. For example, when a candidate is estimated to win an election by 9 percentage points with a margin of error of 3, the percentage by which they will win is estimated to fall within 6-12 percentage points. In statistics we refer to this kind of range of values as a confidence interval, which provides a range of values for our parameter estimate that are consistent with our sample data, rather than just giving us a single estimate based on the data. The wider the confidence interval, the more uncertain we are about our parameter estimate.
 
-Confidence intervals are notoriously confusing, primarily because they don’t mean what we might intuitively think they mean. If I tell you that I have computed a "95% confidence interval" for my statistic, then it would seem natural to think that we can have 95% confidence that the true parameter value falls within this interval. However, as we will see throughout the course, concepts in statistics often don’t mean what we think they should mean. In the case of confidence intervals, we can’t interpret them in this way because the population parameter has a fixed value – it either is or isn’t in the interval, so it doesn’t make sense to talk about the probability of that occurring. s Jerzy Neyman, the inventor of the confidence interval, said:
+Confidence intervals are notoriously confusing, primarily because they don’t mean what we might intuitively think they mean. If I tell you that I have computed a "95% confidence interval" for my statistic, then it would seem natural to think that we can have 95% confidence that the true parameter value falls within this interval. However, as we will see throughout the course, concepts in statistics often don’t mean what we think they should mean. In the case of confidence intervals, we can’t interpret them in this way because the population parameter has a fixed value – it either is or isn’t in the interval, so it doesn’t make sense to talk about the probability of that occurring. Jerzy Neyman, the inventor of the confidence interval, said:
 
 >"The parameter is an unknown constant and no probability statement concerning its value may be made."[@Neyman37]
 
@@ -79,7 +78,7 @@ where the critical value is determined by the sampling distribution of the estim
 
 ### Confidence intervals using the normal distribution
 
-If we know the population standard deviation, then we can use the normal distribution to compute a confidence interval. We usually don't, but for our example of the NHANES dataset we do (it's `r I(sd(NHANES_adult$Weight))` for weight).  
+If we know the population standard deviation, then we can use the normal distribution to compute a confidence interval. We usually don't, but for our example of the NHANES dataset we do, since we are treating the entire dataset as the population (it's `r I(sd(NHANES_adult$Weight))` for weight).  
 
 Let's say that we want to compute a 95% confidence interval for the mean. The critical value would then be the values of the standard normal distribution that capture 95% of the distribution; these are simply the 2.5th percentile and the 97.5th percentile of the distribution, which we can compute using our statistical software, and come out to $\pm 1.96$.  Thus, the confidence interval for the mean ($\bar{X}$) is:
 
@@ -91,7 +90,7 @@ Using the estimated mean from our sample (`r I(sample_summary$meanWeight)`) and 
 
 ### Confidence intervals using the t distribution
 
-As stated above, if we knew the population standard deviation, then we could use the normal distribution to compute our confidence intervals. However, in general we don't -- in which case the *t* distribution is more appropriate as a sampling distribution. Remember that the t distribution is slightly broader than the normal distribution, especially for smaller samples, which means that the confidence intervals will be slightly wider than they would if we were using the normal distribution. This incorporates the extra uncertainty that arises when we make conclusions based on small samples.
+As stated above, if we knew the population standard deviation, then we could use the normal distribution to compute our confidence intervals. However, in general we don't -- in which case the *t* distribution is more appropriate as a sampling distribution. Remember that the t distribution is slightly broader than the normal distribution, especially for smaller samples, which means that the confidence intervals will be slightly wider than they would if we were using the normal distribution. This incorporates the extra uncertainty that arises when we estimate parameters based on small samples.
 
 
 ```{r echo=FALSE, message=FALSE}
@@ -221,7 +220,7 @@ Things get trickier if we want to compare the means of two conditions [@sche:gen
 
 ## Effect sizes
 
-> "Statistical significance is the least interesting thing about the results. You should describe the results in terms of measures of magnitude – not just, does a treatment affect people, but how much does it affect them." Gene Glass (REF)
+> "Statistical significance is the least interesting thing about the results. You should describe the results in terms of measures of magnitude – not just, does a treatment affect people, but how much does it affect them." Gene Glass, quoted in [@Sullivan:2012ta]
 
 In the previous chapter, we discussed the idea that statistical significance may not necessarily reflect practical significance.  In order to discuss practical significance, we need a standard way to describe the size of an effect in terms of the actual data, which we refer to as an *effect size*.  In this section we will introduce the concept and discuss various ways that effect sizes can be calculated.
 
@@ -242,9 +241,9 @@ s = \sqrt{\frac{(n_1 - 1)s^2_1 + (n_2 - 1)s^2_2 }{n_1 +n_2 -2}}
 $$
 where $n_1$ and $n_2$ are the sample sizes and $s^2_1$ and $s^2_2$ are the standard deviations for the two groups respectively. Note that this is very similar in spirit to the t statistic --- the main difference is that the denominator in the t statistic is based on the standard error of the mean, whereas the denominator in Cohen's D is based on the standard deviation of the data.  This means that while the t statistic will grow as the sample size gets larger, the value of Cohen's D will remain the same.
 
-There is a commonly used scale for interpreting the size of an effect in terms of Cohen's d:
 
-```{r echo=FALSE}
+
+```{r dInterp, echo=FALSE}
 dInterp=tibble("D"=c('0.0 - 0.2',
                      '0.2 - 0.5',
                      '0.5 - 0.8',
@@ -284,7 +283,7 @@ d_height_gender <- (hsum$meanHeight[2] - hsum$meanHeight[1]) / s_height_gender
 
 ```
 
-It can be useful to look at some commonly understood effects to help understand these interpretations.  For example, the effect size for gender differences in height (d = `r I(d_height_gender)`) is very large by reference to our table above.  We can also see this by looking at the distributions of male and female heights in a sample from the NHANES dataset.  Figure \@ref(fig:genderHist) shows that the two distributions are quite well separated, though still overlapping, highlighting the fact that even when there is a very large effect size for the difference between two groups, there will be individuals from each group that are more like the other group.
+There is a commonly used scale for interpreting the size of an effect in terms of Cohen's d, shown in Table \@ref(tab:dInterp). It can be useful to look at some commonly understood effects to help understand these interpretations.  For example, the effect size for gender differences in adult height (d = `r I(d_height_gender)`) is very large by reference to our table above.  We can also see this by looking at the distributions of male and female heights in a sample from the NHANES dataset.  Figure \@ref(fig:genderHist) shows that the two distributions are quite well separated, though still overlapping, highlighting the fact that even when there is a very large effect size for the difference between two groups, there will be individuals from each group that are more like the other group.
 
 ```{r genderHist,echo=FALSE,fig.cap="Smoothed histogram plots for male and female heights in the NHANES dataset, showing clearly distinct but also clearly overlapping distributions.",fig.width=4,fig.height=4,out.height='50%'}
 ggplot(NHANES_sample,aes(x=Height,color=Gender)) + 
@@ -293,7 +292,7 @@ ggplot(NHANES_sample,aes(x=Height,color=Gender)) +
   
 ```
 
-It is also worth noting that we rarely encounter effects of this magnitude in science, in part because they are such obvious effects that we don't need scientific research to find them.  As we will see in Chapter \@ref(doing-reproducible-research) on reproducibility, very large reported effects in scientific research often reflect the use of questionable research practices rather than truly huge effects in nature. It is also worth noting that even for such a huge effect, the two distributions still overlap - there will be some females who are taller than the average male, and vice versa. For most interesting scientific effects, the degree of overlap will be much greater, so we shouldn't immediately jump to strong conclusions about individual from different populations based on even a large effect size.
+It is also worth noting that we rarely encounter effects of this magnitude in science, in part because they are such obvious effects that we don't need scientific research to find them.  As we will see in Chapter \@ref(doing-reproducible-research) on reproducibility, very large reported effects in scientific research often reflect the use of questionable research practices rather than truly huge effects in nature. It is also worth noting that even for such a huge effect, the two distributions still overlap - there will be some females who are taller than the average male, and vice versa. For most interesting scientific effects, the degree of overlap will be much greater, so we shouldn't immediately jump to strong conclusions about individuals from different populations based on even a large effect size.
 
 ### Pearson's r
 
@@ -328,9 +327,9 @@ $$
 
 We also discussed the *odds ratio*, which is simply the ratio of two odds. The odds ratio is a useful way to describe effect sizes for binary variables.
 
-For example, let's take the case of smoking and lung cancer.  A study published in the International Journal of Cancer in 2012 [@pesc:kend:gust:2012] combined data regarding the occurrence of lung cancer in smokers and individuals who have never smoked across a number of different studies.  Note that these data come from case-control studies, which means that participants in the studies were recruited because they either did or did not have cancer; their smoking status was then examined. These numbers thus do not represent the prevalence of cancer amongst smokers in the general population -- but they can tell us about the relationship between cancer and smoking.
+For example, let's take the case of smoking and lung cancer.  A study published in the International Journal of Cancer in 2012 [@pesc:kend:gust:2012] combined data regarding the occurrence of lung cancer in smokers and individuals who have never smoked across a number of different studies.  Note that these data come from case-control studies, which means that participants in the studies were recruited because they either did or did not have cancer; their smoking status was then examined. These numbers (shown in Table \@ref(tab:smokingData) thus do not represent the prevalence of cancer amongst smokers in the general population -- but they can tell us about the relationship between cancer and smoking.
 
-```{r echo=FALSE}
+```{r smokingData, echo=FALSE}
 # create table for cancer occurrence depending on smoking status
 smokingDf <- tibble(
   Status = c("No Cancer", "Cancer"),
@@ -370,7 +369,7 @@ $$
 power = 1 - \beta
 $$
 
-Another important aspect of the Neyman-Pearson model that we didn't discuss earlier is the fact that in addition to specifying the acceptable levels of Type I and Type II errors, we also have to describe a specific alternative hypothesis -- that is, what is the size of the effect that we wish to detect?   Otherwise, we can't interpret $\beta$ -- the likelihood of finding a large effect is always going to be higher than finding a small effect, so $\beta$ will be different depending on the size of effect we are trying to detect.
+Another important aspect of the Neyman-Pearson model that we didn't discuss earlier is the fact that in addition to specifying the acceptable levels of Type I and Type II errors, we also have to describe a specific alternative hypothesis -- that is, what is the size of the effect that we wish to detect?   Otherwise, we can't interpret $\beta$ -- the likelihood of finding a large effect is always going to be higher than finding a small effect, so $\beta$ will differ depending on the size of effect we are trying to detect.
 
 There are three factors that can affect statistical power:
 
@@ -439,7 +438,7 @@ There are at least two important reasons to care about statistical power. First,
 
 Fortunately, there are tools available that allow us to determine the statistical power of an experiment. The most common use of these tools is in planning an experiment, when we would like to determine how large our sample needs to be in order to have sufficient power to find our effect of interest.
 
-Let's say that we are interested in running a study of how a particular personality trait differs between users of iOS versus Android devices.  Our plan is collect two groups of individuals and measure them on the personality trait, and then compare the two groups using a t-test.  In order to determine the necessary sample size, we can use power function from our statistical sofware:
+Let's say that we are interested in running a study of how a particular personality trait differs between users of iOS versus Android devices.  Our plan is collect two groups of individuals and measure them on the personality trait, and then compare the two groups using a t-test.  In this case, we would think that a medium effect ($d = 0.5$) is of scientific interest, so we will use that level for our power analysis.  In order to determine the necessary sample size, we can use power function from our statistical software:
 
 ```{r echo=FALSE}
 power.t.test(d = 0.5, power = 0.8, sig.level = 0.05)
@@ -453,7 +452,7 @@ It might have occurred to you that if the effect size is large enough, then the 
 pwr.t.test(d = 2, power = 0.8, sig.level = 0.05)
 ```
 
-However, it's rare in science to be doing an experiment where we expect to find such a large effect -- just as we don't need statistics to tell us that 16-year-olds are taller than than 6-year-olds.  When we run a power analysis, we need to specify an effect size that is plausible for our study, which would usually come from previous research.  However, in Chapter \@ref(doing-reproducible-research) we will discuss a phenomenon known as the "winner's curse" that likely results in published effect sizes being larger than the true effect size, so this should also be kept in mind.  
+However, it's rare in science to be doing an experiment where we expect to find such a large effect -- just as we don't need statistics to tell us that 16-year-olds are taller than than 6-year-olds.  When we run a power analysis, we need to specify an effect size that is plausible and/or scientifically interesting for our study, which would usually come from previous research.  However, in Chapter \@ref(doing-reproducible-research) we will discuss a phenomenon known as the "winner's curse" that likely results in published effect sizes being larger than the true effect size, so this should also be kept in mind.  
 
 ## Learning objectives
 
