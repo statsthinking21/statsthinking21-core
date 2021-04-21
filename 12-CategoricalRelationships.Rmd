@@ -68,7 +68,7 @@ candyDf <- candyDf %>%
   mutate(nullExpectation =c(1 / 3, 1 / 3, 1 / 3) * sum(candyDf$count),
          `squared difference`=(count - nullExpectation)**2)
 
-kable(candyDf, digits=2, caption='Observed counts, expectations under the null hypothesis, and squared differences in the candy data')
+kable(candyDf, digits=3, caption='Observed counts, expectations under the null hypothesis, and squared differences in the candy data')
 
 chisqVal <- 
   sum(
@@ -153,9 +153,9 @@ stopData <-
   rename(searched = search_conducted)
 ```
 
-The standard way to represent data from a categorical analysis is through a *contingency table*, which presents the number or proportion of observations falling into each possible combination of values for each of the variables. The table below shows the contingency table for the police search data.  It can also be useful to look at the contingency table using proportions rather than raw numbers, since they are easier to compare visually, so we include both absolute and relative numbers here.
+The standard way to represent data from a categorical analysis is through a *contingency table*, which presents the number or proportion of observations falling into each possible combination of values for each of the variables. Table \@ref(tab:policeCT) below shows the contingency table for the police search data.  It can also be useful to look at the contingency table using proportions rather than raw numbers, since they are easier to compare visually, so we include both absolute and relative numbers here.
 
-```{r echo=FALSE}
+```{r policeCT, echo=FALSE}
 # compute and print two-way contingency table
 summaryDf2way <-
   stopData %>%
@@ -245,7 +245,7 @@ summaryDf2way <-
 chisq <- sum(summaryDf2way$stdSqDiff)
 pval <- pchisq(chisq, df = 1, lower.tail = FALSE)
 
-kable(summaryDf2way, digits=2,caption='Summary of the 2-way contingency table for police search data')
+#kable(summaryDf2way, digits=2,caption='Summary of the 2-way contingency table for police search data')
 ```
 
 We then compute the chi-squared statistic, which comes out to `r I(chisq)`.
@@ -267,16 +267,16 @@ chisqTestResult
 
 ## Standardized residuals
 
-When we find a significant effect with the chi-squared test, this tells us that the data are unlikely under the null hypothesis, but it doesn't tell us *how* the data differ.  To get a deeper insight into how the data differ from what we would expect under the null hypothesis, we can examine the residuals from the model, which reflects the deviation of the data (i.e., the observed frequencies) from the model (i.e., the expected frequencies) in each cell. Rather than looking at the raw residuals (which will vary simply depending on the number of observations in the data), it's more common to look at the *standardized residuals*, which are computed as:
+When we find a significant effect with the chi-squared test, this tells us that the data are unlikely under the null hypothesis, but it doesn't tell us *how* the data differ.  To get a deeper insight into how the data differ from what we would expect under the null hypothesis, we can examine the residuals from the model, which reflects the deviation of the data (i.e., the observed frequencies) from the model (i.e., the expected frequencies) in each cell. Rather than looking at the raw residuals (which will vary simply depending on the number of observations in the data), it's more common to look at the *standardized residuals* (sometimes called *Pearson residuals*), which are computed as:
 
 $$
 standardized\ residual_{ij} = \frac{observed_{ij} - expected_{ij}}{\sqrt{expected_{ij}}}
 $$
 where $i$ and $j$ are the indices for the rows and columns respectively.  
 
-The table shows these for the police stop data.  These standardized residuals can be interpreted as Z scores -- in this case, we see that the number of searches for Black individuals are substantially higher than expected based on independence, and the number of searches for white individuals are substantially lower than expected. This provides us with the context that we need to interpret the signficant chi-squared result.
+Table \@ref(tab:stdRes) shows these for the police stop data.  These standardized residuals can be interpreted as Z scores -- in this case, we see that the number of searches for Black individuals are substantially higher than expected based on independence, and the number of searches for white individuals are substantially lower than expected. This provides us with the context that we need to interpret the signficant chi-squared result.
 
-```{r echo=FALSE}
+```{r stdRes, echo=FALSE}
 # compute standardized residuals
 summaryDfResids <- 
   summaryDf2way %>% 
@@ -310,7 +310,7 @@ We discussed Bayes factors in the earlier chapter on Bayesian statistics -- you 
 $$ 
 K = \frac{P(data|H_A)}{P(data|H_0)} = \frac{P(H_A|data)*P(H_A)}{P(H_0|data)*P(H_0)}
 $$
-We can compute the Bayes factor for the police search data using a special package for the R statistical software:
+We can compute the Bayes factor for the police search data using our statistical software:
 
 ```{r echo=FALSE}
 # compute Bayes factor 
@@ -326,7 +326,7 @@ bf
 
 ```
 
-This shows that the evidence in favor of a relationship between driver race and police searches in this dataset is exceedingly strong.
+This shows that the evidence in favor of a relationship between driver race and police searches in this dataset is exceedingly strong --- $1.8 * 10^{142}$ is about as close to infinity as we can imagine getting in statistics.
 
 ## Categorical analysis beyond the 2 X 2 table
 
@@ -377,7 +377,7 @@ bf <-
 bf
 ```
 
-Here we see that the Bayes factor is very large, showing that the evidence in favor of a relation between depression and sleep problems is very strong.
+Here we see that the Bayes factor is very large ($1.8 * 10^{35}$), showing that the evidence in favor of a relation between depression and sleep problems is very strong.
 
 ## Beware of Simpson's paradox
 
