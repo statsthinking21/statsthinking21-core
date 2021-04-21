@@ -345,7 +345,7 @@ p1 <- ggplot(squatDf,aes(x=group,y=squat)) +
 # create a scrambled version of the group membership variable
 
 
-p2 <- ggplot(dfScram,aes(x=scrambledGroup,y=squat)) +
+p2 <- ggplot(squatDf,aes(x=group,y=shuffledSquat)) +
   geom_boxplot() +
   ylab('max squat (lbs)')
 
@@ -606,10 +606,11 @@ Let's look at an example to see how this might work.  There is great interest in
 Let's imagine what would happen if the researchers simply asked whether the test was significant at p<.05 at each location, when in fact there is no true effect at any of the locations.  To do this, we generate a large number of simulated *t* values from a null distribution, and ask how many of them are significant at p<.05.  Let's do this many times, and each time count up how many of the tests come out as significant (see Figure \@ref(fig:nullSim)).  
 
 ```{r echo=FALSE}
+set.seed(5)
 # simulate 1500 studies with 10,000 tests each, thresholded at p < .05
 
-nRuns <- 1500 # number of simulated studies to run
-nTests <- 10000 # number of simulated genes to test in each run
+nRuns <- 1000 # number of simulated studies to run
+nTests <- 1000000 # number of simulated genes to test in each run
 
 uncAlpha <- 0.05 # alpha level
 
@@ -630,7 +631,7 @@ corOutcome <- replicate(nRuns, sum(rnorm(nTests) < (qnorm(corAlpha))))
 
 ```
 
-```{r nullSim,echo=FALSE,fig.cap="Left: A histogram of the number of significant results in each set of 1 million statistical tests, when there is in fact no true effect. Right: A histogram of the number of significant results across all simulation runs after applying the Bonferroni correction for multiple tests.",fig.width=8,fig.height=4,out.height='50%'}
+```{r nullSim,echo=FALSE,fig.cap="Left: A histogram of the number of significant results in each set of one million statistical tests, when there is in fact no true effect. Right: A histogram of the number of significant results across all simulation runs after applying the Bonferroni correction for multiple tests.",fig.width=8,fig.height=4,out.height='50%'}
 
 p1 <- data.frame(nsig=uncOutcome) %>%
   ggplot(aes(nsig)) +
