@@ -41,7 +41,7 @@ Let's say that we are interested in a research project on how children choose wh
   
 ## How science (sometimes) actually works
 
-Brian Wansink is well known for his books on "Mindless Eating", and his fee for corporate speaking engagements is in the tens of thousands of dollars.  In 2017, a set of researchers began to scrutinize some of his published research, starting with a set of papers about how much pizza people ate at a buffet.  The researchers asked Wansink to share the data from the studies but he refused, so they dug into his published papers and found a large number of inconsistencies and statistical problems in the papers.  The publicity around this analysis led a number of others to dig into Wansink's past, including obtaining emails between Wansink and his collaborators.  As [reported by Stephanie Lee at Buzzfeed](https://www.buzzfeednews.com/article/stephaniemlee/brian-wansink-cornell-p-hacking), these emails showed just how far Wansink's actual research practices were from the naive model:
+Brian Wansink is well known for his books on "Mindless Eating", and his fee for corporate speaking engagements was at one point in the tens of thousands of dollars.  In 2017, a set of researchers began to scrutinize some of his published research, starting with a set of papers about how much pizza people ate at a buffet.  The researchers asked Wansink to share the data from the studies but he refused, so they dug into his published papers and found a large number of inconsistencies and statistical problems in the papers.  The publicity around this analysis led a number of others to dig into Wansink's past, including obtaining emails between Wansink and his collaborators.  As [reported by Stephanie Lee at Buzzfeed](https://www.buzzfeednews.com/article/stephaniemlee/brian-wansink-cornell-p-hacking), these emails showed just how far Wansink's actual research practices were from the naive model:
 
 >…back in September 2008, when Payne was looking over the data soon after it had been collected, he found no strong apples-and-Elmo link — at least not yet. ... 
 “I have attached some initial results of the kid study to this message for your report,” Payne wrote to his collaborators. “Do not despair. It looks like stickers on fruit may work (with a bit more wizardry).” ... 
@@ -129,7 +129,7 @@ ggplot(df,aes(power,PPV,linetype=as.factor(priorVal))) +
 
 Unfortunately, statistical power remains low in many areas of science [@smal:mcel:2016], suggesting that many published research findings are false. 
 
-An amusing example of this was seen in a paper by Jonathan Schoenfeld and John Ioannidis, titled "Is everything we eat associated with cancer? A systematic cookbook review"[scho:ioan:2013].  They examined a large number of papers that had assessed the relation between different foods and cancer risk, and found that 80% of ingredients had been associated with either increased or decreased cancer risk.  In most of these cases, the statistical evidence was weak, and when the results were combined across studies, the result was null.
+An amusing example of this was seen in a paper by Jonathan Schoenfeld and John Ioannidis, titled "Is everything we eat associated with cancer? A systematic cookbook review"[@scho:ioan:2013].  They examined a large number of papers that had assessed the relation between different foods and cancer risk, and found that 80% of ingredients had been associated with either increased or decreased cancer risk.  In most of these cases, the statistical evidence was weak, and when the results were combined across studies, the result was null.
 
 ### The winner's curse
 
@@ -137,7 +137,7 @@ Another kind of error can also occur when statistical power is low: Our estimate
 
 We can simulate this in order to see how the estimated effect size for significant results is related to the actual underlying effect size. Let's generate data for which there is a true effect size of d = 0.2, and estimate the effect size for those results where there is a significant effect detected. The left panel of Figure \@ref(fig:CurseSim) shows that when power is low, the estimated effect size for significant results can be highly inflated compared to the actual effect size.
 
-```{r CurseSim, echo=FALSE,message=FALSE,fig.cap="Left: A simulation of the winner's curse as a function of statistical power (x axis). The solid line shows the estimated effect size, and the dotted line shows the actual effect size. Right: A histogram showing sample sizes for a number of samples from a dataset, with significant results shown in blue and non-significant results in red. ",fig.width=8,fig.height=4,out.height='50%'}
+```{r CurseSim, echo=FALSE,message=FALSE,fig.cap="Left: A simulation of the winner's curse as a function of statistical power (x axis). The solid line shows the estimated effect size, and the dotted line shows the actual effect size. Right: A histogram showing effect size estimates for a number of samples from a dataset, with significant results shown in blue and non-significant results in red. ",fig.width=8,fig.height=4,out.height='50%'}
 
 trueEffectSize=0.2
 dfCurse=data.frame(sampSize=seq(20,300,20)) %>%
@@ -264,6 +264,7 @@ One of the hallmarks of science is the idea of *replication* -- that is, other r
 It's important to keep a couple of things in mind with regard to replication.  First, the fact that a replication attempt fails does not necessarily mean that the original finding was false; remember that with the standard level of 80% power, there is still a one in five chance that the result will be nonsignificant, even if there is a true effect. For this reason, we generally want to see multiple replications of any important finding before we decide whether or not to believe it.  Unfortunately, many fields including psychology have failed to follow this advice in the past, leading to "textbook" findings that turn out to be likely false.  With regard to Daryl Bem's studies of ESP, a large replication attempt involving 7 studies failed to replicate his findings [@gala:lebo:nels:2012].
 
 Second, remember that the p-value doesn't provide us with a measure of the likelihood of a finding to replicate.  As we discussed previously, the p-value is a statement about the likelihood of one's data under a specific null hypothesis; it doesn't tell us anything about the probability that the finding is actually true (as we learned in the chapter on Bayesian analysis).  In order to know the likelihood of replication we need to know the probability that the finding is true, which we generally don't know.
+
 
 ## Doing reproducible data analysis
 
