@@ -167,7 +167,7 @@ lmResult <- lm(BMIChange12Months ~ diet, data = dietDf)
 summary(lmResult)
 ```
 
-Note that the software automatically generated dummy variables that correspond to three of the four diets, leaving the Atkins diet without a dummy variable. This means that the intercept models the Atkins diet, and the other three variables model the difference between each of those diets and the Atkins diet. Atkins was chosen as the unmodeled baseline variable simply because it is first in alphabetical order.
+Note that the software automatically generated dummy variables that correspond to three of the four diets, leaving the Atkins diet without a dummy variable. This means that the intercept represents the mean of the Atkins diet group, and the other three variables model the difference between the means for each of those diets and the mean for the Atkins diet. Atkins was chosen as the unmodeled baseline variable simply because it is first in alphabetical order.
 
 ### 6. Criticize the model to make sure it fits properly
 
@@ -182,7 +182,7 @@ ggplot(dietDf, aes(x=lmResid, group=diet, color=diet)) +
   xlab('Residuals')
 ```
 
-Another important assumption of the statistical tests that we apply to linear models is that the residuals from the model are normally distributed. The right panel of Figure \@ref(fig:diagnosticQQPlot) shows a Q-Q (quantile-quantile) plot, which plots the residuals against their expected values based on their quantiles in the normal distribution. If the residuals are normally distributed then the data points should fall along the dashed line --- in this case it looks pretty good, except for a couple of outliers that are apparent here.  Because this model is also relatively robust to violations of normality, and these are fairly small, we will go ahead and use the results.
+Another important assumption of the statistical tests that we apply to linear models is that the residuals from the model are normally distributed. The right panel of Figure \@ref(fig:diagnosticQQPlot) shows a Q-Q (quantile-quantile) plot, which plots the residuals against their expected values based on their quantiles in the normal distribution. If the residuals are normally distributed then the data points should fall along the dashed line --- in this case it looks pretty good, except for a couple of outliers that are apparent at the very bottom  Because this model is also relatively robust to violations of normality, and these are fairly small, we will go ahead and use the results.
 
 
 ```{r diagnosticQQPlot, echo=FALSE, fig.cap="Q-Q plot of actual residual values against theoretical residual values", fig.width=4, fig.height=4}
@@ -211,7 +211,7 @@ multcomp::cld(leastsquare$emmeans,
 
 ```
 
-The letters in the rightmost column show us which of the groups differ from one another, using a method that adjusts for the number of comparisons being performed.  This shows that Atkins and LEARN diets don't differ from one another (since they share the letter a), and the LEARN, Ornish, and Zone diets don't differ from one another (since they share the letter b), but the Atkins diet differs from the Ornish and Zone diets (since they share no letters).
+The letters in the rightmost column show us which of the groups differ from one another, using a method that adjusts for the number of comparisons being performed; conditions that share a letter are not significantly different from one another.  This shows that Atkins and LEARN diets don't differ from one another (since they share the letter a), and the LEARN, Ornish, and Zone diets don't differ from one another (since they share the letter b), but the Atkins diet differs from the Ornish and Zone diets (since they share no letters).
 
 #### Bayes factor
 
@@ -225,7 +225,8 @@ brmReducedModel <- brm(BMIChange12Months ~ 1, data = dietDf,
                       save_all_pars = TRUE)
 ```
 
-```{r echo=FALSE, results='hide',message=FALSE}
+```{r echo=FALSE,,message=FALSE}
+# removed  results='hide'
 bayes_factor(brmFullModel,brmReducedModel)
 ```
 
@@ -233,9 +234,9 @@ This shows us that there is very strong evidence (Bayes factor of nearly 100) fo
 
 ### What about possible confounds?
 
-If we look more closely at the Garder paper, we will see that they also report statistics on how many individuals in each group had been diagnosed with *metabolic syndrome*, which is a syndrome characterized by high blood pressure, high blood glucose, excess body fat around the waist, and abnormal cholesterol levels and is associated with increased risk for cardiovascular problems. Here are the data from the Gardner paper:
+If we look more closely at the Garder paper, we will see that they also report statistics on how many individuals in each group had been diagnosed with *metabolic syndrome*, which is a syndrome characterized by high blood pressure, high blood glucose, excess body fat around the waist, and abnormal cholesterol levels and is associated with increased risk for cardiovascular problems. The data from the Gardner paper are presented in Table \@ref(tab:metsymData).
 
-```{r echo=FALSE}
+```{r metsymData, echo=FALSE}
 summaryDf <- 
   summaryDf %>% 
   mutate(
