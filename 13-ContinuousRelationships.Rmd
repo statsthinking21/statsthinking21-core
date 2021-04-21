@@ -87,9 +87,9 @@ $$
 covariance = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{N - 1}
 $$
 
-This value will be far from zero when individual data points deviate by similar amounts from their respective means; if they are deviant in the same direction then the covariance is positive, whereas if they are deviant in opposite directions the covariance is negative.  Let's look at a toy example first.  The data are shown in the table, along with their individual deviations from the mean and their crossproducts.
+This value will be far from zero when individual data points deviate by similar amounts from their respective means; if they are deviant in the same direction then the covariance is positive, whereas if they are deviant in opposite directions the covariance is negative.  Let's look at a toy example first.  The data are shown in Table \@ref(tab:covTable), along with their individual deviations from the mean and their crossproducts.
 
-```{r echo=FALSE}
+```{r covTable, echo=FALSE}
 # create data for toy example of covariance
 df <-
   tibble(x = c(3, 5, 8, 10, 12)) %>%
@@ -140,9 +140,9 @@ cor.test(
 )
 ```
 
-This test shows that the likelihood of an r value this extreme or more is quite low, so we would reject the null hypothesis of $r=0$.  Note that this test assumes that both variables are normally distributed.
+This test shows that the likelihood of an r value this extreme or more is quite low under the null hypothesis, so we would reject the null hypothesis of $r=0$.  Note that this test assumes that both variables are normally distributed.
 
-We could also test this by randomization, in which we repeatedly shuffle the values of one of the variables and compute the correlation, and then compare our observed correlation value to this null distribution to determine how likely our observed value would be under the null hypothesis. The results are shown in Figure \@ref(fig:shuffleCorr).  The p-value computed using randomization is reasonably similar to the answer give by the t-test.
+We could also test this by randomization, in which we repeatedly shuffle the values of one of the variables and compute the correlation, and then compare our observed correlation value to this null distribution to determine how likely our observed value would be under the null hypothesis. The results are shown in Figure \@ref(fig:shuffleCorr).  The p-value computed using randomization is reasonably similar to the answer given by the t-test.
 
 ```{r echo=FALSE}
 # compute null distribution by shuffling order of variable values
