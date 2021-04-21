@@ -66,7 +66,7 @@ bt <- binom.test(npos, nrow(NHANES_sample), alternative='greater')
 bt
 ```
 
-Here we see that the proportion of individuals with positive signs is not very surprising under the null hypothesis of $p=0.5$. 
+Here we see that the proportion of individuals with positive signs is not very surprising under the null hypothesis of $p \le 0.5$, which should not surprise us given that the observed value is actually less than $0.5$. 
 
 We can also ask this question using Student's t-test, which you have already encountered earlier in the book.  We will refer to the mean as $\bar{X}$ and the hypothesized population mean as $\mu$.  Then, the t test for a single mean is:
 
@@ -135,7 +135,6 @@ lm_summary <- summary(lm(TVHrsNum ~ RegularMarij, data = NHANES_sample))
 ttresult <- t.test(
   TVHrsNum ~ RegularMarij,
   data = NHANES_sample,
-  var.equal = TRUE,
   alternative = 'less'
 )
 
@@ -159,7 +158,7 @@ $$
 t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2}}}
 $$
 
-where $\bar{X}_1$ and $\bar{X}_2$ are the means of the two groups, $S^2_1$ and $S^2_2$ are the variances for each of the groups, and $n_1$ and $n_2$ are the sizes of the two groups.  Under the null hypothesis of no difference between means, this statistic is distributed according to a t distribution with N - 2 degrees of freedom (since we have computed two parameter estimates, namely the means of the two groups). In this case, we started with the specific hypothesis that smoking marijuana is associated with greater TV watching, so we will use a one-tailed test.  Here are the results from our statistical software:
+where $\bar{X}_1$ and $\bar{X}_2$ are the means of the two groups, $S^2_1$ and $S^2_2$ are the variances for each of the groups, and $n_1$ and $n_2$ are the sizes of the two groups.  Under the null hypothesis of no difference between means, this statistic is distributed according to a t distribution, with degrees of freedom computed using the Welch test (as discussed previously) since the number of individuals differs between the two groups. In this case, we started with the specific hypothesis that smoking marijuana is associated with greater TV watching, so we will use a one-tailed test.  Here are the results from our statistical software:
 
 ```{r echo=FALSE,warning=FALSE}
 # compute t test for tv watching as function of marijuana use
@@ -175,7 +174,7 @@ The t-test is often presented as a specialized tool for comparing means, but it 
 $$
 \hat{TV} = \hat{\beta_1}*Marijuana + \hat{\beta_0}
 $$
-Since smoking is a binary variable, we treat it as a *dummy variable* like we discussed in the previous chapter, setting it to a value of 1 for smokers and zero for nonsmokers.  In that case, $\hat{\beta_1}$ is simply the difference in means between the two groups, and $\hat{\beta_0}$ is the mean for the group that was coded as zero.  We can fit this model using the general linear model function in our statistical software, and see that it gives the same t statistic as the t-test above, except that it's negative in this case because of the way that our software arranges the groups:
+Since smoking is a binary variable, we treat it as a *dummy variable* like we discussed in the previous chapter, setting it to a value of 1 for smokers and zero for nonsmokers.  In that case, $\hat{\beta_1}$ is simply the difference in means between the two groups, and $\hat{\beta_0}$ is the mean for the group that was coded as zero.  We can fit this model using the general linear model function in our statistical software, and see that it gives the same t statistic as the t-test above, except that it's positive in this case because of the way that our software arranges the groups:
 
 ```{r echo=FALSE, warning=FALSE}
 # print summary of linear regression to perform t-test
@@ -195,7 +194,7 @@ d = \frac{\hat{\beta_1}}{\sigma_{residual}}
 $$
 We can obtain these values from the analysis output above, giving us a d = `r I(sprintf('%0.2f', lm_summary$coefficients[2,1]/lm_summary$sigma))`, which we would generally interpret as a medium sized effect.
 
-We can also compute $R^2$ for this analysis, which tells us how much variance in TV watching is accounted for.  This value (which is reported at the bottom of the summary of the linear model analysis above) is `r I(sprintf('%0.2f',lm_summary$r.squared))`, which tells us that while the effect may be statistically significant, it accounts for relatively little of the variance in TV watching.
+We can also compute $R^2$ for this analysis, which tells us how what proportion of the variance in TV watching is accounted for by marijuana smoking.  This value (which is reported at the bottom of the summary of the linear model analysis above) is `r I(sprintf('%0.2f',lm_summary$r.squared))`, which tells us that while the effect may be statistically significant, it accounts for relatively little of the variance in TV watching.
 
 ## Bayes factor for mean differences
 
@@ -262,7 +261,7 @@ t.test(
 )
 ```
 
-This analysis shows no significant difference. However, this analysis is inappropriate since it assumes that the two samples are independent, when in fact they are not, since the data come from the same individuals.  We can plot the data with a line for each individual to show this (see Figure \@ref(fig:BPfig)).
+This analysis shows no significant difference. However, this analysis is inappropriate since it assumes that the two samples are independent, when in fact they are not, since the data come from the same individuals.  We can plot the data with a line for each individual to show this (see the right panel in Figure \@ref(fig:BPfig)).
 
 In this analysis, what we really care about is whether the blood pressure for each person changed in a systematic way between the two measurements, so another way to represent the data is to compute the difference between the two timepoints for each individual, and then analyze these difference scores rather than analyzing the individual measurements. In Figure \@ref(fig:BPDiffHist), we show a histogram of these difference scores, with a blue line denoting the mean difference.
 
