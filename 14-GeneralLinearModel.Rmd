@@ -43,7 +43,7 @@ NHANES_adult <-
 Remember that early in the book we described the basic model of statistics:
 
 $$
-outcome = model + error
+data = model + error
 $$
 where our general goal is to find the model that minimizes the error, subject to some other constraints (such as keeping the model relatively simple so that we can generalize beyond our specific dataset). In this chapter we will focus on a particular implementation of this approach, which is known as the *general linear model* (or GLM).   You have already seen the general linear model in the earlier chapter on Fitting Models to Data, where we modeled height in the NHANES dataset as a function of age; here we will provide a more general introduction to the concept of the GLM and its many uses.  Nearly every model used in statistics can be framed in terms of the general linear model or an extension of it.
 
@@ -94,19 +94,19 @@ As an example, let's generate some simulated data for the relationship between s
 - *Decide*: Is there a statistically significant relationship between grade and study time?
 - *Predict*: Given a particular amount of study time, what grade do we expect?
 
-In the previous chapter we learned how to describe the relationship between two variables using the correlation coefficient.  Let's use our statistical software to compute that relationship for these data and test whether the correlation is statistically significant:
+In the previous chapter we learned how to describe the relationship between two variables using the correlation coefficient.  Let's use our statistical software to compute that relationship for these data and test whether the correlation is significantly different from zero:
 
 ```{r echo=FALSE}
 # compute correlation between grades and study time
-corTestResult <- cor.test(df$grade, df$studyTime, alternative = "greater")
+corTestResult <- cor.test(df$grade, df$studyTime)
 corTestResult
 ```
 
-The correlation is quite high, but just barely reaches statistical significance because the sample size is so small and thus our statistical power is very low.  
+The correlation is quite high, but notice that the confidence interval around the estimate is very wide, spanning nearly the entire range from zero to one, which is due in part to the small sample size.  
 
 ## Linear regression {#linear-regression}
 
-We can use the general linear model to describe the relation between two variables and to decide whether that relationship is statistically significant; in addition, the model allows us to predict the value of the dependent variable given some new value(s) of the independent variable(s).  Most importantly, the general linear model will allow us to build models that incorporate multiple independent variables, whereas correlation can only tell us about the relationship between two individual variables.
+We can use the general linear model to describe the relation between two variables and to decide whether that relationship is statistically significant; in addition, the model allows us to predict the value of the dependent variable given some new value(s) of the independent variable(s).  Most importantly, the general linear model will allow us to build models that incorporate multiple independent variables, whereas the correlation coefficient can only describe the relationship between two individual variables.
 
 The specific version of the GLM that we use for this is referred to as as *linear regression*.  The term *regression* was coined by Francis Galton, who had noted that when he compared parents and their children on some feature (such as height), the children of extreme parents (i.e. the very tall or very short parents) generally fell closer to the mean than did their parents.  This is an extremely important point that we return to below.
 
@@ -115,12 +115,12 @@ The simplest version of the linear regression model (with a single independent v
 $$
 y = x * \beta_x + \beta_0 + \epsilon
 $$
-The $\beta_x$ value tells us how much we would expect y to change given a one-unit change in x.  The intercept $\beta_0$ is an overall offset, which tells us what value we would expect y to have when $x=0$; you may remember from our early modeling discussion that this is important to model the overall magnitude of the data, even if $x$ never actually attains a value of zero. The error term $\epsilon$ refers to whatever is left over once the model has been fit; we often refer to these as the *residuals* from the model. If we want to know how to predict y (which we call $\hat{y}$), then we can drop the error term:
+The $\beta_x$ value tells us how much we would expect y to change given a one-unit change in $x$.  The intercept $\beta_0$ is an overall offset, which tells us what value we would expect y to have when $x=0$; you may remember from our early modeling discussion that this is important to model the overall magnitude of the data, even if $x$ never actually attains a value of zero. The error term $\epsilon$ refers to whatever is left over once the model has been fit; we often refer to these as the *residuals* from the model. If we want to know how to predict y (which we call $\hat{y}$) after we estimate the $\beta$ values, then we can drop the error term:
 
 $$
-\hat{y} = x * \beta_x + \beta_0 
+\hat{y} = x * \hat{\beta_x} + \hat{\beta_0} 
 $$
-Note that this is simply the equation for a line, where $\beta_x$ is the slope and $\beta_0$ is the intercept. Figure  \@ref(fig:LinearRegression) shows an example of this model applied to the study time data.
+Note that this is simply the equation for a line, where $\hat{\beta_x}$ is our estimate of the slope and $\hat{\beta_0}$ is the intercept. Figure  \@ref(fig:LinearRegression) shows an example of this model applied to the study time data.
 
 ```{r LinearRegression,echo=FALSE,fig.cap="The linear regression solution for the study time data is shown in the solid line The value of the intercept is equivalent to the predicted value of the y variable when the x variable is equal to zero; this is shown with a dotted line.  The value of beta is equal to the slope of the line -- that is, how much y changes for a unit change in x.  This is shown schematically in the dashed lines, which show the degree of increase in grade for a single unit increase in study time.",fig.width=4,fig.height=4,out.height='50%'}
 
@@ -148,9 +148,9 @@ We will not go into the details of how the best fitting slope and intercept are 
 
 ### Regression to the mean {#regression-to-the-mean}
 
-The concept of *regression to the mean* was one of Galton's essential contributions to science, and it remains a critical point to understand when we interpret the results of experimental data analyses.  Let's say that we want to study the effects of a reading intervention on the performance of poor readers.  To test our hypothesis, we might go into a school and recruit those individuals in the bottom 25% of the distribution on some reading test, administer the intervention, and then examine their performance on the test after the intervention.  Let's say that the intervention actually has no effect, such that reading scores for each individual are simply independent samples from a normal distribution.  We can simulate this:
+The concept of *regression to the mean* was one of Galton's essential contributions to science, and it remains a critical point to understand when we interpret the results of experimental data analyses.  Let's say that we want to study the effects of a reading intervention on the performance of poor readers.  To test our hypothesis, we might go into a school and recruit those individuals in the bottom 25% of the distribution on some reading test, administer the intervention, and then examine their performance on the test after the intervention.  Let's say that the intervention actually has no effect, such that reading scores for each individual are simply independent samples from a normal distribution.  Results from a computer simulation of this hypothetic experiment are presented in \@ref(tab:readingTable).
 
-```{r echo=FALSE}
+```{r readingTable, echo=FALSE}
 # create simulated data for regression to the mean example
 
 nstudents <- 100 
@@ -177,7 +177,7 @@ readingScores = as.data.frame(t(readingScores)) %>% rename(Score = V1)
 kable(readingScores, caption='Reading scores for Test 1 (which is lower, because it was the basis for selecting the students) and Test 2 (which is higher because it was not related to Test 1).')
 ```
 
-If we look at the difference between the mean test performance at the first and second test, it appears that the intervention has helped these students substantially, as their scores have gone up by more than ten points on the test!  However, we know that in fact the students didn't improve at all, since in both cases the scores were simply selected from a random normal distribution. What has happened is that some students scored badly on the first test simply due to random chance. If we select just those subjects on the basis of their first test scores, they are guaranteed to move back towards the mean of the entire group on the second test, even if there is no effect of training. This is the reason that we always need an untreated *control group* in order to interpret any changes in performance due to an intervention; otherwise we are likely to be tricked by regression to the mean.
+If we look at the difference between the mean test performance at the first and second test, it appears that the intervention has helped these students substantially, as their scores have gone up by more than ten points on the test!  However, we know that in fact the students didn't improve at all, since in both cases the scores were simply selected from a random normal distribution. What has happened is that some students scored badly on the first test simply due to random chance. If we select just those subjects on the basis of their first test scores, they are guaranteed to move back towards the mean of the entire group on the second test, even if there is no effect of training. This is the reason that we always need an untreated *control group* in order to interpret any changes in performance due to an intervention; otherwise we are likely to be tricked by regression to the mean.  In addition, the participants need to be randomly assigned to the control or treatment group, so that there won't be any systematic differences between the groups (on average).
 
 ### The relation between correlation and regression
 
@@ -250,7 +250,7 @@ In general we would use statistical software to compute these rather than comput
 summary(lmResult)
 ```
 
-In this case we see that the intercept is significantly different from zero (which is not very interesting) and that the effect of studyTime on grades is marginally significant (p = .09).
+In this case we see that the intercept is significantly different from zero (which is not very interesting) and that the effect of studyTime on grades is marginally significant (p = .09) -- the same p-value as the correlation test that we performed earlier.
 
 ### Quantifying goodness of fit of the model
 
@@ -383,7 +383,7 @@ lmResultCafAnx <- lm(speaking ~ caffeine + anxiety, data = df)
 summary(lmResultCafAnx)
 ```
 
-Here we see there are no significant effects of either caffeine or anxiety, which might seem a bit confusing.  The problem is that this model is trying to fit the same line relating speaking to caffeine for both groups. If we want to fit them using separate lines, we need to include an *interaction* in the model, which is equivalent to fitting different lines for each of the two groups; this is often denoted by using the $*$ symbol in the model.
+Here we see there are no significant effects of either caffeine or anxiety, which might seem a bit confusing.  The problem is that this model is trying to use the same slope relating speaking to caffeine for both groups. If we want to fit them using lines with separate slopes, we need to include an *interaction* in the model, which is equivalent to fitting different lines for each of the two groups; this is often denoted by using the $*$ symbol in the model.
 
 ```{r echo=FALSE}
 # compute linear regression including caffeine X anxiety interaction
@@ -427,6 +427,7 @@ p3 <- ggplot(df,aes(caffeine,speaking,shape=anxiety)) +
 plot_grid(p1, p2, p3, labels='AUTO')
 ```
 
+One important point to note is that we have to be very careful about interpreting a significant main effect if a significant interaction is also present, since the interaction suggests that the main effect differs according to the values of another variable, and thus is not easily interpretable.
 
 Sometimes we want to compare the relative fit of two different models, in order to determine which is a better model; we refer to this as *model comparison*.  For the models above, we can compare the goodness of fit of the model with and without the interaction, using what is called an *analysis of variance*:
 
@@ -434,7 +435,7 @@ Sometimes we want to compare the relative fit of two different models, in order 
 anova(lmResultCafAnx, lmResultInteraction)
 ```
 
-This tells us that there is good evidence to prefer the model with the interaction over the one without an interaction.  Model comparison is relatively simple in this case because the two models are *nested* -- one of the models is a simplified version of the other model.  Model comparison with non-nested models can get much more complicated.
+This tells us that there is good evidence to prefer the model with the interaction over the one without an interaction.  Model comparison is relatively simple in this case because the two models are *nested* -- one of the models is a simplified version of the other model, such that all of the variable in the simpler model are contained in the more complex model.  Model comparison with non-nested models can get much more complicated.
 
 ## Beyond linear predictors and outcomes
 
