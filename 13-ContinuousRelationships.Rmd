@@ -15,7 +15,8 @@ Most people are familiar with the concept of *correlation*, and in this chapter 
 library(tidyverse)
 library(ggplot2)
 library(fivethirtyeight)
-library(BayesMed)
+library(BayesFactor)
+library(bayestestR)
 library(cowplot)
 library(knitr)
 library(DiagrammeR)
@@ -399,16 +400,18 @@ Figure \@ref(fig:gini0) shows the Lorenz curves for several different income dis
 
 ### Bayesian correlation analysis
 
-We can also analyze the FiveThirtyEight data using Bayesian analysis, which has two advantages.  First, it provides us with a posterior probability -- in this case, the probability that the correlation value exceeds zero.  Second, the Bayesian estimate combines the observed evidence with a *prior*, which has the effect of *regularizing* the correlation estimate, effectively pulling it towards zero.  Here we can compute it using the `jzs_cor` function from the BayesMed package.
+We can also analyze the FiveThirtyEight data using Bayesian analysis, which has two advantages.  First, it provides us with a posterior probability -- in this case, the probability that the correlation value exceeds zero.  Second, the Bayesian estimate combines the observed evidence with a *prior*, which has the effect of *regularizing* the correlation estimate, effectively pulling it towards zero.  Here we can compute it using *BayesFactor* package in R.
 
 
 ```{r echo=FALSE}
-bayesCor <- jzs_cor(
+
+bayesCor <- correlationBF(
   hateCrimes$avg_hatecrimes_per_100k_fbi,
   hateCrimes$gini_index
 )
-bayesCor
-
+print(bayesCor)
+bayesCorPosterior <- describe_posterior(bayesCor)
+print(bayesCorPosterior)
 ```
 
-Notice that the correlation estimated using the Bayesian method is slightly smaller than the one estimated using the standard correlation coefficient, which is due to the fact that the estimate is based on a combination of the evidence and the prior, which effectively shrinks the estimate toward zero. However, notice that the Bayesian analysis is not robust to the outlier, and it still says that there is fairly strong evidence that the correlation is greater than zero.
+Notice that the correlation estimated using the Bayesian method (`r I(bayesCorPosterior$Median)`) is slightly smaller than the one estimated using the standard correlation coefficient (`r I(corGiniHC)`), which is due to the fact that the estimate is based on a combination of the evidence and the prior, which effectively shrinks the estimate toward zero. However, notice that the Bayesian analysis is not robust to the outlier, and it still says that there is fairly strong evidence that the correlation is greater than zero (with a Bayes factor of more than 20).
