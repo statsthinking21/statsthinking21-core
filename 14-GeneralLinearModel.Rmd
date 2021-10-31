@@ -13,7 +13,6 @@ output:
 library(tidyverse)
 library(ggplot2)
 library(fivethirtyeight)
-#library(BayesMed)
 library(caret)
 library(MASS)
 library(cowplot)
