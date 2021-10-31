@@ -23,3 +23,4 @@ with open('package_installs.R','w') as f:
     for p in packages:
         f.write('if (!require("%s")) install.packages("%s",repos="https://cran.rstudio.com",dependencies=TRUE)\n'%(p,p))
     f.write('install.packages("https://cran.r-project.org/src/contrib/Archive/fiftystater/fiftystater_1.0.1.tar.gz",repos=NULL,dependencies=TRUE)\n')
+    f.write('install.packages("fivethirtyeightdata", repos ="https://fivethirtyeightdata.github.io/drat/", type = "source")')
