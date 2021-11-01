@@ -9,7 +9,9 @@ docker-upload:
 	docker push poldrack/statsthinking21
 
 docker-build:
-	docker build -t $(DOCKER_USERNAME)/statsthinking21 .
+	@echo This will take a while - output is stored in docker-build.log
+	-rm docker-build.log
+	docker build -t $(DOCKER_USERNAME)/statsthinking21 . 2>&1 > docker-build.log
 
 shell:
 	docker run -it -v $(shell pwd):/book -w /book --entrypoint=bash $(DOCKER_USERNAME)/statsthinking21
