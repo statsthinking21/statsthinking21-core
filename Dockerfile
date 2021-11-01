@@ -13,6 +13,7 @@ RUN apt-get install -y gsl-bin libgsl-dev libv8-dev
 RUN apt-get install  -y libudunits2-0
 RUN apt-get install -y texlive-full
 RUN apt-get install -y libudunits2-dev
+RUN apt-get install -y libgdal-dev
 
 # installing R packages
 # NOTE: don't use apt-get to install R packages, see https://hub.docker.com/r/rocker/tidyverse
