@@ -9,42 +9,17 @@ RUN sudo apt-get dist-upgrade -y
 RUN sudo apt-get autoremove
 RUN apt-get install -y make git ssh
 RUN apt-get install  -y jags
-RUN apt-get install -y gsl-bin libgsl-dev libv8-3.14.5
+RUN apt-get install -y gsl-bin libgsl-dev libv8-dev
 RUN apt-get install  -y libudunits2-0
 RUN apt-get install -y texlive-full
+RUN apt-get install -y libudunits2-dev
 
 # installing R packages
+# NOTE: don't use apt-get to install R packages, see https://hub.docker.com/r/rocker/tidyverse
+# this assumes that "make pkgsetup" has been run already
+ADD setup/package_installs.R /tmp/package_installs.R
 
-RUN echo 'install.packages(c( \
-"emmeans", \
-"kableExtra", \
-"MASS", \
-"ggplot2", \
-"tidyr", \
-"readr", \
-"mapproj", \
-"pander", \
-"DiagrammeR", \
-"caret", \
-"BayesMed", \
-"modelr", \
-"lmerTest", \
-"lme4", \
-"pwr", \
-"BayesFactor", \
-"boot", \
-"dplyr", \
-"cowplot", \
-"brms", \
-"tidyverse", \
-"reshape2", \
-"NHANES", \
-"fivethirtyeight", \
-"sfsmisc", \
-"bookdown",\
-"ggfortify"), \
-  repos="http://cran.us.r-project.org", dependencies=TRUE)' > /tmp/packages.R && \
-  Rscript /tmp/packages.R
+RUN Rscript /tmp/package_installs.R
 
 # fiftystater was removed from CRAN so must be installed from the archive
 
