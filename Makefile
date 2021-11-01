@@ -52,3 +52,7 @@ pkgsetup:
 	git add setup/package_installs.R
 	git commit -m"update packages"
 	git push
+
+pkginstall:
+	Rscript setup/package_installs.R
+
