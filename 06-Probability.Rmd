@@ -605,7 +605,7 @@ Having read this chapter, you should be able to:
 
 ## Appendix
 
-```{proof, BayesRule, name="Derivation of Bayes' rule"}
+### Derivation of Bayes' rule
 
 First, remember the rule for computing a conditional probability:
 
@@ -625,4 +625,3 @@ $$
 P(B|A) = \frac{P(A \cap B)}{P(A)} =   \frac{P(A|B)*P(B)}{P(A)}
 $$
 
-```
