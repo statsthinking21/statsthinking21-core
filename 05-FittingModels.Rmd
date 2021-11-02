@@ -1103,8 +1103,7 @@ It is worth noting that the smallest states appear to have the largest differenc
 
 ## Appendix
 
-
-```{proof, zeroMeanErrors, name="Proof that the sum of errors from the Mean is zero"}
+### Proof that the sum of errors from the Mean is zero
 
 $$
 error = \sum_{i=1}^{n}(x_i - \bar{X}) = 0
@@ -1126,5 +1125,5 @@ $$
 $$
 \sum_{i=1}^{n}x_i = \sum_{i=1}^{n}x_i
 $$
-```
+
 
