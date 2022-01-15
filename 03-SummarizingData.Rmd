@@ -183,7 +183,7 @@ SleepHrsNight_cumulative <-
 ```
 \newpage
 ```{r echo=FALSE}
-kable(SleepHrsNight_cumulative, caption='Absolute and cumulative frquency distributions for SleepHrsNight variable')
+kable(SleepHrsNight_cumulative, caption='Absolute and cumulative frequency distributions for SleepHrsNight variable')
 
 ```
 
