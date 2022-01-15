@@ -70,7 +70,7 @@ PhysActive_table <- NHANES %>%
 
 ```{r PhysActiveTable, echo=FALSE}
 
-kable(PhysActive_table, digits=3) #, label='PhysActiveTable',caption='Frequency distribution for PhysActive variable')
+kable(PhysActive_table, digits=3, caption='Frequency distribution for PhysActive variable')
 ```
 
 Table \@ref(tab:PhysActiveTable) shows the frequencies of each of the different values; there were `r I(PhysActive_table %>% subset(PhysActive=='No') %>% dplyr::select(AbsoluteFrequency))` individuals who responded "No" to the question, `r I(PhysActive_table %>% subset(PhysActive=='Yes') %>% dplyr::select(AbsoluteFrequency))` who responded "Yes", and `r I(PhysActive_table %>% subset(is.na(PhysActive)) %>% dplyr::select(AbsoluteFrequency))` for whom no response was given.  We call this a *frequency distribution* because it tells us how frequent each of the possible values is within our sample.
