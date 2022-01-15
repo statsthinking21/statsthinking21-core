@@ -70,7 +70,7 @@ PhysActive_table <- NHANES %>%
 
 ```{r PhysActiveTable, echo=FALSE}
 
-kable(PhysActive_table, digits=3) #, label='PhysActiveTable',caption='Frequency distribution for PhysActive variable')
+kable(PhysActive_table, digits=3, caption='Frequency distribution for PhysActive variable')
 ```
 
 Table \@ref(tab:PhysActiveTable) shows the frequencies of each of the different values; there were `r I(PhysActive_table %>% subset(PhysActive=='No') %>% dplyr::select(AbsoluteFrequency))` individuals who responded "No" to the question, `r I(PhysActive_table %>% subset(PhysActive=='Yes') %>% dplyr::select(AbsoluteFrequency))` who responded "Yes", and `r I(PhysActive_table %>% subset(is.na(PhysActive)) %>% dplyr::select(AbsoluteFrequency))` for whom no response was given.  We call this a *frequency distribution* because it tells us how frequent each of the possible values is within our sample.
@@ -97,12 +97,12 @@ PhysActive_table_filtered <- NHANES %>%
 
 ```
 
-```{r echo=FALSE}
+```{r PhysActiveTableFiltered, echo=FALSE}
 kable(PhysActive_table_filtered, caption='Absolute and relative frequencies and percentages for PhysActive variable')
 
 ```
 
-Ta lets us see that `r formatC(I(PhysActive_table_filtered %>% subset(PhysActive=='No') %>% dplyr::select(Percentage) %>% pull()), digits=1, format='f')` percent of the individuals in the NHANES sample said "No" and `r formatC(I(PhysActive_table_filtered %>% subset(PhysActive=='Yes') %>% dplyr::select(Percentage) %>% pull()), digits=1, format='f')` percent said "Yes".
+Table \@ref(tab:PhysActiveTableFiltered) lets us see that `r formatC(I(PhysActive_table_filtered %>% subset(PhysActive=='No') %>% dplyr::select(Percentage) %>% pull()), digits=1, format='f')` percent of the individuals in the NHANES sample said "No" and `r formatC(I(PhysActive_table_filtered %>% subset(PhysActive=='Yes') %>% dplyr::select(Percentage) %>% pull()), digits=1, format='f')` percent said "Yes".
 
 ### Cumulative distributions {#cumulative-distributions}
 
@@ -183,7 +183,7 @@ SleepHrsNight_cumulative <-
 ```
 \newpage
 ```{r echo=FALSE}
-kable(SleepHrsNight_cumulative, caption='Absolute and cumulative frquency distributions for SleepHrsNight variable')
+kable(SleepHrsNight_cumulative, caption='Absolute and cumulative frequency distributions for SleepHrsNight variable')
 
 ```
 
