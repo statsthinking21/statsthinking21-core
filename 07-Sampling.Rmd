@@ -70,7 +70,7 @@ for (i in 1:5){
 }
 sample_df <- sample_df %>%
   dplyr::select(-sampnum)
-kable(sample_df, caption='Example means and standard deviations for several samples of Height variable from NARPS')
+kable(sample_df, caption='Example means and standard deviations for several samples of Height variable from NHANES.')
 ```
 
 
