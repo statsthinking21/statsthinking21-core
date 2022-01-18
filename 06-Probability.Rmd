@@ -238,7 +238,7 @@ plot +
 
 ```
 
-Let's use a graphical depiction to get a different view of this rule. Figure \@ref(fig:ThrowMatrix) shows a matrix representing all possible combinations of results across two throws, and highlights the cells that involve a six on either the first or second throw. If you count up the cells in red you will see that there are 11 such cells. This shows why the addition rule gives a different answer from de Méré's; if we were to simply add together the probabilities for the two throws as he did, then we would count (1,1) towards both, when it should really only be counted once.
+Let's use a graphical depiction to get a different view of this rule. Figure \@ref(fig:ThrowMatrix) shows a matrix representing all possible combinations of results across two throws, and highlights the cells that involve a six on either the first or second throw. If you count up the cells in red you will see that there are 11 such cells. This shows why the addition rule gives a different answer from de Méré's; if we were to simply add together the probabilities for the two throws as he did, then we would count (6,6) towards both, when it should really only be counted once.
 
 ### Solving de Méré's problem
 
