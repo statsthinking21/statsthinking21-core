@@ -453,7 +453,7 @@ NHANES_adult <-
 
 NHANES_mentalhealth_by_physactive_counts <- NHANES_adult %>% tabyl(PhysActive, badMentalHealth) %>% adorn_totals(c("row", "col"))
 
-kable(NHANES_mentalhealth_by_physactive_counts)
+kable(NHANES_mentalhealth_by_physactive_counts, caption='Summary of absolute frequency data for mental health and physical activity.')
 ```
 
 
@@ -465,7 +465,7 @@ NHANES_mentalhealth_by_physactive_p <- NHANES_mentalhealth_by_physactive_counts[
 NHANES_mentalhealth_by_physactive_p <- NHANES_mentalhealth_by_physactive_p %>%
   mutate(PhysActive=NHANES_mentalhealth_by_physactive_counts[,1])
 NHANES_mentalhealth_by_physactive_p <- NHANES_mentalhealth_by_physactive_p[, c('PhysActive', "Bad Mental Health", "Good Mental Health", "Total" )]
-kable(NHANES_mentalhealth_by_physactive_p)
+kable(NHANES_mentalhealth_by_physactive_p, caption='Summary of relative frequency data for mental health and physical activity.')
 ```
 
 This shows us the proportion of all observations that fall into each cell. However, what we want to know here is the conditional probability of bad mental health, depending on whether one is physically active or not. To compute this, we divide each physical activity group by its total number of observations, so that each row now sums to one (shown in Table  \@ref(tab:condProb)). Here we see the conditional probabilities of bad or good mental health for each physical activity group (in the top two rows) along with the overall probability of good or bad mental health in the third row.  To determine whether mental health and physical activity are independent, we would compare the simple probability of bad mental health (in the third row) to the conditional probability of bad mental health given that one is physically active (in the second row).
@@ -481,7 +481,7 @@ for (i in 1:3){
 
 }
 
-kable(NHANES_mentalhealth_by_physactive_condp)
+kable(NHANES_mentalhealth_by_physactive_condp, caption='Summary of conditional probabilities for mental health given physical activity.')
 ```
 
 
