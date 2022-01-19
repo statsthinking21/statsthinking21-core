@@ -85,7 +85,7 @@ $$
 y_i = \beta + \epsilon
 $$
 
-The subscript $i$ doesn't appear on the right side of the equation, which means that the prediction of the model doesn't depend on which observation we are looking at --- it's the same for all of them.  The question then becomes: how do we estimate the best values of the parameter(s) in the model? In this particular case, what single value value is the best estimate for $\beta$?  And, more importantly, how do we even define *best*?
+The subscript $i$ doesn't appear on the right side of the equation, which means that the prediction of the model doesn't depend on which observation we are looking at --- it's the same for all of them.  The question then becomes: how do we estimate the best values of the parameter(s) in the model? In this particular case, what single value is the best estimate for $\beta$?  And, more importantly, how do we even define *best*?
 
 ```{r echo=FALSE}
 # create function to compute mode and apply to child height data from NHANES
@@ -137,7 +137,7 @@ ggplot(NULL, aes(error_mean)) +
 
 ```
 
-The fact that the negative and positive errors cancel each other out means that two different models could have errors of very different magnitude in absolute terms, but would still have the same average error.  This is exactly why the average error is not a good criterion for our estimator; we want a criterion that tries to minimize the overall error regardless of its direction.  For this reason, we generally summarize errors in terms of some kind of measure that counts both positive and negative errors as bad.  We could use the absolute value of each error value, but it's more common to use the squared errors, for reasons that we will see later in the book 
+The fact that the negative and positive errors cancel each other out means that two different models could have errors of very different magnitude in absolute terms, but would still have the same average error.  This is exactly why the average error is not a good criterion for our estimator; we want a criterion that tries to minimize the overall error regardless of its direction.  For this reason, we generally summarize errors in terms of some kind of measure that counts both positive and negative errors as bad.  We could use the absolute value of each error value, but it's more common to use the squared errors, for reasons that we will see later in the book. 
 
 There are several common ways to summarize the squared error that you will encounter at various points in this book, so it's important to understand how they relate to one another.  First, we could simply add them up; this is referred to as the *sum of squared errors*.  The reason we don't usually use this is that its magnitude depends on the number of data points, so it can be difficult to interpret unless we are looking at the same number of observations.  Second, we could  take the mean of the squared error values, which is referred to as the *mean squared error (MSE)*.  However, because we squared the values before averaging, they are not on the same scale as the original data; they are in $centimeters^2$.  For this reason, it's also common to take the square root of the MSE, which we refer to as the *root mean squared error (RMSE)*, so that the error is measured in the same units as the original values (in this example, centimeters).
 
@@ -771,7 +771,7 @@ $$
 Z(x) = \frac{x - \mu}{\sigma}
 $$
 
-Intuitively, you can think of a Z-score as telling you how far away any data point is from the mean, in units of standard deviation.  We can compute this for the crime rate data, as shown in Figure \@ref(fig:crimeZplot). which plots the Z-scores against the original scores.
+Intuitively, you can think of a Z-score as telling you how far away any data point is from the mean, in units of standard deviation.  We can compute this for the crime rate data, as shown in Figure \@ref(fig:crimeZplot), which plots the Z-scores against the original scores.
 
 ```{r crimeZplot,echo=FALSE,fig.cap="Scatterplot of original crime rate data against Z-scored data.",fig.width=4,fig.height=4,out.height='50%'}
 crimeData <- 
