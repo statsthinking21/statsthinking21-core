@@ -7,7 +7,7 @@ output:
       in_header: google_analytics.html
   html_document: default
 ---
-# The General Linear Model
+# The General Linear Model {#the-general-linear-model}
 
 ```{r echo=FALSE,warning=FALSE,message=FALSE}
 library(tidyverse)
@@ -147,7 +147,7 @@ We will not go into the details of how the best fitting slope and intercept are 
 
 ### Regression to the mean {#regression-to-the-mean}
 
-The concept of *regression to the mean* was one of Galton's essential contributions to science, and it remains a critical point to understand when we interpret the results of experimental data analyses.  Let's say that we want to study the effects of a reading intervention on the performance of poor readers.  To test our hypothesis, we might go into a school and recruit those individuals in the bottom 25% of the distribution on some reading test, administer the intervention, and then examine their performance on the test after the intervention.  Let's say that the intervention actually has no effect, such that reading scores for each individual are simply independent samples from a normal distribution.  Results from a computer simulation of this hypothetic experiment are presented in \@ref(tab:readingTable).
+The concept of *regression to the mean* was one of Galton's essential contributions to science, and it remains a critical point to understand when we interpret the results of experimental data analyses.  Let's say that we want to study the effects of a reading intervention on the performance of poor readers.  To test our hypothesis, we might go into a school and recruit those individuals in the bottom 25% of the distribution on some reading test, administer the intervention, and then examine their performance on the test after the intervention.  Let's say that the intervention actually has no effect, such that reading scores for each individual are simply independent samples from a normal distribution.  Results from a computer simulation of this hypothetic experiment are presented in Table \@ref(tab:readingTable).
 
 ```{r readingTable, echo=FALSE}
 # create simulated data for regression to the mean example
@@ -434,7 +434,7 @@ Sometimes we want to compare the relative fit of two different models, in order 
 anova(lmResultCafAnx, lmResultInteraction)
 ```
 
-This tells us that there is good evidence to prefer the model with the interaction over the one without an interaction.  Model comparison is relatively simple in this case because the two models are *nested* -- one of the models is a simplified version of the other model, such that all of the variable in the simpler model are contained in the more complex model.  Model comparison with non-nested models can get much more complicated.
+This tells us that there is good evidence to prefer the model with the interaction over the one without an interaction.  Model comparison is relatively simple in this case because the two models are *nested* -- one of the models is a simplified version of the other model, such that all of the variables in the simpler model are contained in the more complex model.  Model comparison with non-nested models can get much more complicated.
 
 ## Beyond linear predictors and outcomes
 
