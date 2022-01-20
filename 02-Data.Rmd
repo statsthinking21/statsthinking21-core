@@ -7,7 +7,7 @@ output:
   html_document: default
   pdf_document: default
 ---
-# Working with data
+# Working with data {#working-with-data}
 
 ```{r echo=FALSE}
 library(tidyverse)

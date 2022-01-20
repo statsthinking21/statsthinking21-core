@@ -7,7 +7,7 @@ output:
     includes:
       in_header: google_analytics.html
 ---
-# Comparing means
+# Comparing means {#comparing-means}
 
 ```{r echo=FALSE,warning=FALSE,message=FALSE}
 library(tidyverse)

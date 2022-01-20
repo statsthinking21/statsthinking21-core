@@ -7,7 +7,7 @@ output:
   pdf_document: default
   html_document: default
 ---
-# Doing reproducible research
+# Doing reproducible research {#doing-reproducible-research}
 
 ```{r echo=FALSE,warning=FALSE,message=FALSE}
 library(tidyverse)

@@ -7,7 +7,7 @@ output:
   pdf_document: default
   html_document: default
 ---
-# Modeling continuous relationships
+# Modeling continuous relationships {#modeling-continuous-relationships}
 
 Most people are familiar with the concept of *correlation*, and in this chapter we will provide a more formal understanding for this commonly used and misunderstood concept.
 
