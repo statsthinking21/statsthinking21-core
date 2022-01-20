@@ -193,7 +193,7 @@ d = \frac{\hat{\beta_1}}{\sigma_{residual}}
 $$
 We can obtain these values from the analysis output above, giving us a d = `r I(sprintf('%0.2f', lm_summary$coefficients[2,1]/lm_summary$sigma))`, which we would generally interpret as a medium sized effect.
 
-We can also compute $R^2$ for this analysis, which tells us how what proportion of the variance in TV watching is accounted for by marijuana smoking.  This value (which is reported at the bottom of the summary of the linear model analysis above) is `r I(sprintf('%0.2f',lm_summary$r.squared))`, which tells us that while the effect may be statistically significant, it accounts for relatively little of the variance in TV watching.
+We can also compute $R^2$ for this analysis, which tells us what proportion of the variance in TV watching is accounted for by marijuana smoking.  This value (which is reported at the bottom of the summary of the linear model analysis above) is `r I(sprintf('%0.2f',lm_summary$r.squared))`, which tells us that while the effect may be statistically significant, it accounts for relatively little of the variance in TV watching.
 
 ## Bayes factor for mean differences
 

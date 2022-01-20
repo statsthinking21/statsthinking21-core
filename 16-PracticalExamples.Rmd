@@ -215,7 +215,7 @@ The letters in the rightmost column show us which of the groups differ from one 
 
 ### What about possible confounds?
 
-If we look more closely at the Garder paper, we will see that they also report statistics on how many individuals in each group had been diagnosed with *metabolic syndrome*, which is a syndrome characterized by high blood pressure, high blood glucose, excess body fat around the waist, and abnormal cholesterol levels and is associated with increased risk for cardiovascular problems. The data from the Gardner paper are presented in Table \@ref(tab:metsymData).
+If we look more closely at the Gardner paper, we will see that they also report statistics on how many individuals in each group had been diagnosed with *metabolic syndrome*, which is a syndrome characterized by high blood pressure, high blood glucose, excess body fat around the waist, and abnormal cholesterol levels and is associated with increased risk for cardiovascular problems. The data from the Gardner paper are presented in Table \@ref(tab:metsymData).
 
 ```{r metsymData, echo=FALSE}
 summaryDf <- 

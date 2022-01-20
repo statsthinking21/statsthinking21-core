@@ -11,7 +11,7 @@ output:
 
 In the previous chapter we discussed how we can use data to test hypotheses.  Those methods provided a binary answer: we either reject or fail to reject the null hypothesis. However, this kind of decision overlooks a couple of important questions.  First, we would like to know how much uncertainty we have about the answer (regardless of which way it goes).  In addition, sometimes we don't have a clear null hypothesis, so we would like to see what range of estimates are consistent with the data.  Second, we would like to know how large the effect actually is, since as we saw in the weight loss example in the previous chapter, a statistically significant effect is not necessarily a practically important effect.
 
-In this chapter we will discuss methods to address these two questions: confidence intervals to provide a measure of our uncertainty about our estimates, and effect sizes to provide a standardized way to understand how large the effects are. We will also discuss the concept of *statistical power* which tells us likely we are to find any true effects that actually exist.
+In this chapter we will discuss methods to address these two questions: confidence intervals to provide a measure of our uncertainty about our estimates, and effect sizes to provide a standardized way to understand how large the effects are. We will also discuss the concept of *statistical power* which tells us how likely we are to find any true effects that actually exist.
 
 ```{r echo=FALSE,warning=FALSE,message=FALSE}
 library(tidyverse)
@@ -327,7 +327,7 @@ $$
 
 We also discussed the *odds ratio*, which is simply the ratio of two odds. The odds ratio is a useful way to describe effect sizes for binary variables.
 
-For example, let's take the case of smoking and lung cancer.  A study published in the International Journal of Cancer in 2012 [@pesc:kend:gust:2012] combined data regarding the occurrence of lung cancer in smokers and individuals who have never smoked across a number of different studies.  Note that these data come from case-control studies, which means that participants in the studies were recruited because they either did or did not have cancer; their smoking status was then examined. These numbers (shown in Table \@ref(tab:smokingData) thus do not represent the prevalence of cancer amongst smokers in the general population -- but they can tell us about the relationship between cancer and smoking.
+For example, let's take the case of smoking and lung cancer.  A study published in the International Journal of Cancer in 2012 [@pesc:kend:gust:2012] combined data regarding the occurrence of lung cancer in smokers and individuals who have never smoked across a number of different studies.  Note that these data come from case-control studies, which means that participants in the studies were recruited because they either did or did not have cancer; their smoking status was then examined. These numbers (shown in Table \@ref(tab:smokingData)) thus do not represent the prevalence of cancer amongst smokers in the general population -- but they can tell us about the relationship between cancer and smoking.
 
 ```{r smokingData, echo=FALSE}
 # create table for cancer occurrence depending on smoking status
