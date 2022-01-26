@@ -1,0 +1,41 @@
+---
+output:
+  pdf_document: default
+  bookdown::gitbook:
+    lib_dir: "book_assets"
+    includes:
+      in_header: google_analytics.html
+  html_document: default
+---
+
+# Multivariate statistics {#multivariate}
+
+## What are multivariate data?
+
+
+## Visualizing multivariate data
+
+
+
+## Clustering
+
+
+
+
+
+## Dimensionality reduction
+
+### Principal component analysis
+
+
+
+
+
+
+
+
+## Structural equation modeling
+
+
+
+### Factor analysis
