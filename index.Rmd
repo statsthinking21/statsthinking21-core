@@ -57,7 +57,7 @@ There are two online companions to this textbook that can help the reader get st
 
 ## An open source book
 
-This book is meant to be a living document, which is why its source is available online at [https://github.com/poldrack/psych10-book](https://github.com/poldrack/psych10-book).  If you find any errors in the book or want to make a suggestion for how to improve it, please open an issue on the Github site. Even better, submit a pull request with your suggested change.  
+This book is meant to be a living document, which is why its source is available online at [https://github.com/statsthinking21/statsthinking21-core](https://github.com/statsthinking21/statsthinking21-core).  If you find any errors in the book or want to make a suggestion for how to improve it, please open an issue on the Github site. Even better, submit a pull request with your suggested change.  
 
 The book is licensed according to the [Creative Commons Attribution-NonCommercial 2.0 Generic (CC BY-NC 2.0) License](https://creativecommons.org/licenses/by-nc/2.0/).  Please see the terms of that license for more details.
 

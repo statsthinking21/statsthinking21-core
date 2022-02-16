@@ -7,7 +7,7 @@ output:
       in_header: google_analytics.html
   html_document: default
 ---
-# Bayesian statistics
+# Bayesian statistics {#bayesian-statistics}
 
 
 ```{r echo=FALSE,warning=FALSE,message=FALSE}
@@ -435,7 +435,7 @@ In panel C of Figure \@ref(fig:posteriorDistPrior) we see that there is zero den
 
 The impact of priors on the resulting inferences are the most controversial aspect of Bayesian statistics. What is the right prior to use? If the choice of prior determines the results (i.e., the posterior), how can you be sure you results are trustworthy? These are difficult questions, but we should not back away just because we are faced with hard questions. As we discussed previously, Bayesian analyses give us interpretable results (credible intervals, etc.). This alone should inspire us to think hard about these questions so that we can arrive with results that are reasonable and interpretable.
 
-There are various ways to choose one's priors, which (as we saw above) can impact the resulting inferences. Sometimes we have a very specific prior, as in the case where we expected our coin to lands heads 50% of the time, but in many cases we don't have such strong a starting point. *Uninformative priors* attempt to influence the resulting posterior as little as possible, as we saw in the example of the uniform prior above.  It's also common to use *weakly informative priors* (or *default priors*), which influence the result only very slightly. For example, if we had used a binomial distribution based on one heads out of two coin flips, the prior would have been centered around 0.5 but fairly flat, influence the posterior only slightly.  It is also possible to use priors based on the scientific literature or pre-existing data, which we would call *empirical priors*.  In general, however, we will stick to the use of uninformative/weakly informative priors, since they raise the least concern about influencing our results.  
+There are various ways to choose one's priors, which (as we saw above) can impact the resulting inferences. Sometimes we have a very specific prior, as in the case where we expected our coin to lands heads 50% of the time, but in many cases we don't have such strong a starting point. *Uninformative priors* attempt to influence the resulting posterior as little as possible, as we saw in the example of the uniform prior above.  It's also common to use *weakly informative priors* (or *default priors*), which influence the result only very slightly. For example, if we had used a binomial distribution based on one heads out of two coin flips, the prior would have been centered around 0.5 but fairly flat, influencing the posterior only slightly.  It is also possible to use priors based on the scientific literature or pre-existing data, which we would call *empirical priors*.  In general, however, we will stick to the use of uninformative/weakly informative priors, since they raise the least concern about influencing our results.  
 
 ## Bayesian hypothesis testing
 
@@ -583,7 +583,7 @@ After reading this chapter, should be able to:
 
 ### Rejection sampling
 
-We will generate samples from our posterior distribution using a simple algorithm known as [*rejection sampling*](https://am207.github.io/2017/wiki/rejectionsampling.html).  The idea is that we choose a random value of x (in this case $p_{respond}$) and a random value of y (in this case, the posterior probability of $p_{respond}$) each from a uniform distribution. We then only accept the sample if $y < f(x)$ - in this case, if the randomly selected value of y is less than the actual posterior probability of y.  Figure \@ref(fig:rejectionSampling) shows an example of a histogram of samples using rejection sampling, along with the 95% credible intervals obtained using this method (with the values presented in Table \@ref(tab:credInt))
+We will generate samples from our posterior distribution using a simple algorithm known as [*rejection sampling*](https://am207.github.io/2017/wiki/rejectionsampling.html).  The idea is that we choose a random value of x (in this case $p_{respond}$) and a random value of y (in this case, the posterior probability of $p_{respond}$) each from a uniform distribution. We then only accept the sample if $y < f(x)$ - in this case, if the randomly selected value of y is less than the actual posterior probability of y.  Figure \@ref(fig:rejectionSampling) shows an example of a histogram of samples using rejection sampling, along with the 95% credible intervals obtained using this method (with the values presented in Table \@ref(tab:credInt)).
 
 ```{r credInt, echo=FALSE}
 # Compute credible intervals for example
