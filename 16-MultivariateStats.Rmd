@@ -10,18 +10,187 @@ output:
 
 # Multivariate statistics {#multivariate}
 
+```{r setup, echo=FALSE}
+
+library(tidyverse)
+theme_set(theme_minimal())
+```
+
+The term *multivariate* refers to analyses that involve more than one variable. This might be a bit confusing as a chapter title, since we have already encountered a number of analyses in the book that involve more than one variable.  However, in general we were always trying to relate a single outcome variable (or *dependent variable*) to some set of explanatory (or *independent*) variables.  When we speak of "multivariate statistics" we are generally referring to analyses that attempt to understand the relationship between a large set of variables that could include both independent and dependent variables.
+
+There are many different kinds of multivariate analysis, but we will focus on three of the major approaches in this chapter.  First, we may simply want to understand and visualize the structure that exists in the data, by which we usually mean which variables or observations are related to which other.  We would usually define "related" in terms of some measure that indexes the distance between the values across variables.  One important method that fits under this category is known as *clustering*, which aims to find clusters of observations that are similar across variables.
+
+Second, we may want to take a large number of variables and reduce them to a smaller number of variables in a way that retains as much information as possible.  This is referred to as *dimensionality reduction*, where "dimensionality" refers to the number of variables in the dataset.  
+
+Third, we might want to model the data in a way that estimates many different relationships at once.  A commonly used approach in the social sciences and psychology is known as *structural equation modeling*, which allows one to specify and test a wide range of models regarding the relationships between sets of variables.  An important aspect of these models is that they can include *latent variables*, which are variables that we can't observe directly but that we think exist (such as personality characteristics such as "openness to experience" or "grit") and can be manifested in our measurements (such as responses to items on a personality test).  A specific version of this method known as *factor analysis* is commonly used in psychology to understand how the behavior observed on a set of psychological tests relates to a set of latent variables.
+
+Before we start this chapter, it's important to point out that a deep understanding of multivariate statistics requires one to understand some basics of linear algebra.  We will try to explain the concepts in a way that avoids too much math, but will include some boxes that go a bit deeper into the necessary aspects of linear algebra.
+
 ## What are multivariate data?
+
+MAYBE START BY JUST LOOKING AT UPPS?
+
+As an example of multivariate analysis, we will look at a dataset collected by Eisenberg et al. [@Eisenberg:2019um] that examined the psychological construct of *impulsivity*, which refers to the inability of a person to control their impulses thoughts and the tendency to act without thinking. They administered several surveys that were meant to measure different aspects of this construct.  Participants were asked to make ratings on survey items on which they had to rate themselves using the possible responses in parentheses:
+
+- I do things without thinking (Rarely/Never, Occasionally, Often)
+- When I am very happy, I can’t seem to stop myself from doing things that can have bad consequences. (Agree Strongly, Agree Some, Disagree Some, Disagree Strongly)
+- I frequently buy things without thinking about whether or not I can really afford them. (True, False)
+- Please indicate which of the following scenarios you would prefer: I often wish I could be a mountain climber; I can't understand people who risk their necks climbing mountains
+
+These items come from four different surveys, each of which includes a number of different items that are meant to measure different facets of implusivity or the related concept of *sensation seeking*.  Based on responses of each participant on each of these, we can compute a set of scores that are thought to reflect different aspects of impulsivity, with each survey having a number of these different "subscale" scores:
+
+- The Barratt Impulsivity Scale, Version 11 ("BIS11"), which includes subscales for Motor impulsivity, Nonplanning, and Attentional impulsivity.
+- The UPPS-P Impulsive Behavior Scale ("UPPS"), where "UPPS-P" refers to different subscales of impulsivity: (Negative) Urgency, Premeditation (lack of), Perseverance (lack of), Sensation Seeking, and Positive Urgency.	
+- The Dickman Impulsivity Inventory ("Dickman"), which includes subscales for Functional and Dysfunctional Impulsivity.
+- The Sensation Seeking Scale ("SSS"), which includes subscales for Thrill and Adventure Seeking,  Disinhibition, Experience Seeking, and Boredom Susceptibility.
+
+After these subscale scores have been computed for each of the 522 participants in Eisenberg's study, we end up with 14 numbers for each individual.  While multivariate data can some times have thousands or even millions of variables, the methods that we can apply to understand the structure of the data are quite similar.
+
+```{r DataPrep, echo=FALSE, message=FALSE}
+
+behavdata <- read_csv('data/Eisenberg/meaningful_variables.csv',
+                      show_col_types = FALSE) 
+demoghealthdata <- read_csv('data/Eisenberg/demographic_health.csv',
+                            show_col_types = FALSE) 
+
+# recode Sex variable from 0/1 to Male/Female
+demoghealthdata <- demoghealthdata %>%
+  mutate(Sex = recode_factor(Sex, `0`="Male", `1`="Female"))
+
+# combine the data into a single data frame by subcode
+alldata <- merge(behavdata, demoghealthdata, by='subcode')
+
+rename_list = list('upps_impulsivity_survey' = 'UPPS', 'sensation_seeking_survey' = 'SSS',
+                   'dickman_survey' = 'Dickman',  'bis11_survey' = 'BIS11')
+impulsivity_variables = c('Sex')
+
+for (potential_match in names(alldata)){
+  for (n in names(rename_list)){
+    if (str_detect(potential_match, n)){
+      # print(sprintf('found match: %s %s', n, potential_match))
+      replacement_name <- str_replace(potential_match, n, toString(rename_list[n]))
+      names(alldata)[names(alldata) == potential_match] <- replacement_name
+      impulsivity_variables <- c(impulsivity_variables, replacement_name)
+    }
+  }
+}
+
+impulsivity_data <- alldata[,impulsivity_variables] %>%
+  drop_na()
+
+upps_data <- alldata %>%
+  select(starts_with('UPPS')) %>%
+  setNames(gsub("UPPS.", "", names(.)))
+```
 
 
 ## Visualizing multivariate data
 
+The fundamental problem with multivariate data is that the human eye and brain simply are not equipped to visualize data with more than two or three dimensions.  There are various tools that we can use to try to visualize multivariate data, but all of them break down as the number of variables grows. Once the number of variables becomes too large to directly visualize, one approach is to first reduce the number of dimensions (as discussed below), and then visualize that reduced dataset.
+
+### Matrix of pairwise plots
+
+
+
+```{r}
+#library(psych)
+#pairs.panels(impulsivity_data)
+
+library(gpairs)
+
+gpairs(upps_data)
+library(GGally)
+
+#ggpairs(upps_data)
+```
+
+
+### Heatmap
+
+In some cases we wish to visualize the relationships between a large number of variables at once.
+
+
+```{r, fig.width=16, fig.height=8}
+
+gc <- ggcorr(impulsivity_data %>% select(-Sex), , hjust = 1) + 
+  theme(plot.margin = margin(2, 2, 2, 4, "cm"),)
+gc$layout$clip[gc$layout$name == "panel"] <- "off"
+grid::grid.draw(gc)
+
+```
+
+```{r}
+library(gplots)
+heatmap.2(cor(impulsivity_data %>% select(-Sex)), trace='none')
+```
+
+### Representing additional dimensions using different plotting features
+
+```{r}
+
+ggplot(impulsivity_data, aes(y=UPPS.sensation_seeking, x=SSS.thrill_adventure_seeking, color=Sex, size=Dickman.dysfunctional)) + 
+  geom_point() + 
+  geom_smooth(method='lm')
+```
 
 
 ## Clustering
 
 
+### Simple example: clustering countries by latitude/longitude
 
 
+```{r}
+countries <- read_delim('data/countries/country_data.csv') %>%
+  # filter out countries with less than 1M population
+  filter(Population2020 > 50000000)
+
+dim(countries)
+```
+
+get region data from https://github.com/country-regions/country-region-data
+population data from https://data.worldbank.org/indicator/SP.POP.TOTL
+
+
+```{r}
+ggplot(countries, aes(longitude, latitude, size=Population2020)) + geom_point()
+```
+
+```{r}
+latlongdata <- countries %>%
+  select(longitude, latitude)
+
+d <- dist(latlongdata)
+hc <- hclust(d, method='average')
+```
+
+```{r }
+library(ggdendro)
+
+#convert cluster object to use with ggplot
+dendr <- dendro_data(hc, type="rectangle") 
+
+# TODO: https://stackoverflow.com/questions/21474388/colorize-clusters-in-dendogram-with-ggplot2
+
+#your own labels (now rownames) are supplied in geom_text() and label=label
+ggplot() + 
+  geom_segment(data=segment(dendr), aes(x=x, y=y, xend=xend, yend=yend)) + 
+  geom_text(data=label(dendr), aes(x=x, y=y, label=countries$CountryCode[hc$order], hjust=0), size=3) +
+  coord_flip() + scale_y_reverse(expand=c(0.2, 0)) + 
+  theme(axis.line.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.y=element_blank(),
+        panel.background=element_rect(fill="white"),
+        panel.grid=element_blank()) + 
+   geom_hline(yintercept=100, color='blue')
+
+```
+
+```{r}
+cutree(hc, h=100)
+
+```
 
 ## Dimensionality reduction
 
