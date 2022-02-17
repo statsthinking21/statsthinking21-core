@@ -16,7 +16,7 @@ library(tidyverse)
 theme_set(theme_minimal())
 ```
 
-The term *multivariate* refers to analyses that involve more than one variable. This might be a bit confusing as a chapter title, since we have already encountered a number of analyses in the book that involve more than one variable.  However, in general we were always trying to relate a single outcome variable (or *dependent variable*) to some set of explanatory (or *independent*) variables.  When we speak of "multivariate statistics" we are generally referring to analyses that attempt to understand the relationship between a large set of variables that could include both independent and dependent variables.
+The term *multivariate* refers to analyses that involve more than one variable. This might be a bit confusing as a chapter title, since we have already encountered a number of analyses in the book that involve more than one variable.  However, in general we were always trying to relate a single outcome variable (or *dependent variable*) to one or more explanatory (or *independent*) variables.  When we speak of "multivariate statistics" we are generally referring to analyses that attempt to understand the relationship between a large set of variables that could include both independent and dependent variables.
 
 There are many different kinds of multivariate analysis, but we will focus on three of the major approaches in this chapter.  First, we may simply want to understand and visualize the structure that exists in the data, by which we usually mean which variables or observations are related to which other.  We would usually define "related" in terms of some measure that indexes the distance between the values across variables.  One important method that fits under this category is known as *clustering*, which aims to find clusters of observations that are similar across variables.
 
@@ -64,6 +64,8 @@ rename_list = list('upps_impulsivity_survey' = 'UPPS', 'sensation_seeking_survey
                    'dickman_survey' = 'Dickman',  'bis11_survey' = 'BIS11')
 impulsivity_variables = c('Sex')
 
+wm_variables <- c("spatial_span.forward_span", "spatial_span.reverse_span", "digit_span.forward_span","digit_span.reverse_span", "adaptive_n_back.mean_load")
+
 for (potential_match in names(alldata)){
   for (n in names(rename_list)){
     if (str_detect(potential_match, n)){
@@ -77,6 +79,11 @@ for (potential_match in names(alldata)){
 
 impulsivity_data <- alldata[,impulsivity_variables] %>%
   drop_na()
+
+
+wm_data <- alldata[, wm_variables] %>%
+    drop_na()
+
 
 upps_data <- alldata %>%
   select(starts_with('UPPS')) %>%
