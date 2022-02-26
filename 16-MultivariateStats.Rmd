@@ -28,23 +28,16 @@ Before we start this chapter, it's important to point out that a deep understand
 
 ## What are multivariate data?
 
-MAYBE START BY JUST LOOKING AT UPPS?
+As an example of multivariate analysis, we will look at a dataset collected by Eisenberg et al. [@Eisenberg:2019um].  This study was interested in understanding  how many different aspects of cognitive function are related to one another, and one of the areas of interest was *working memory*, which refers to the ability to hold information in mind and transform it.  The study included several different measures that are thought to relate to the amount of information that an individual can hold in their working memory, which is known as their *capacity*:
 
-As an example of multivariate analysis, we will look at a dataset collected by Eisenberg et al. [@Eisenberg:2019um] that examined the psychological construct of *impulsivity*, which refers to the inability of a person to control their impulses thoughts and the tendency to act without thinking. They administered several surveys that were meant to measure different aspects of this construct.  Participants were asked to make ratings on survey items on which they had to rate themselves using the possible responses in parentheses:
+- There were four different tasks that require an individual to retain information and then repeat it. These tasks either used spatial locations or numeric digits as their stimuli. For each of those stimulus types, one task required the subject to repeat the stimuli in the order that they were experienced (a *forward span* task), and one required them to repeat the stimuli in the reverse order (a *reverse span* task).  For each of these, the dependent variable was the number of items that the subject could accurately repeat.
+- One additional task, known as an *N-back* task, required subjects to watch a stream of stimuli and report for each stimulus whether it matched the stimulus that occurred some number (N) of stimuli back in the stream.  The task adaptively changed the number back based on the subject's performance, and the dependent variable was the mean N for each subject.
 
-- I do things without thinking (Rarely/Never, Occasionally, Often)
-- When I am very happy, I can’t seem to stop myself from doing things that can have bad consequences. (Agree Strongly, Agree Some, Disagree Some, Disagree Strongly)
-- I frequently buy things without thinking about whether or not I can really afford them. (True, False)
-- Please indicate which of the following scenarios you would prefer: I often wish I could be a mountain climber; I can't understand people who risk their necks climbing mountains
+Another area examined in this study was risk taking, using a survey called the Domain-Specific Risk Taking Scale (or DOSPERT).  One section of this survey asks subjects to rate their degree of risk taking in several different domains, including: ethical, financial, health/safety, recreational, and social.
 
-These items come from four different surveys, each of which includes a number of different items that are meant to measure different facets of implusivity or the related concept of *sensation seeking*.  Based on responses of each participant on each of these, we can compute a set of scores that are thought to reflect different aspects of impulsivity, with each survey having a number of these different "subscale" scores:
 
-- The Barratt Impulsivity Scale, Version 11 ("BIS11"), which includes subscales for Motor impulsivity, Nonplanning, and Attentional impulsivity.
-- The UPPS-P Impulsive Behavior Scale ("UPPS"), where "UPPS-P" refers to different subscales of impulsivity: (Negative) Urgency, Premeditation (lack of), Perseverance (lack of), Sensation Seeking, and Positive Urgency.	
-- The Dickman Impulsivity Inventory ("Dickman"), which includes subscales for Functional and Dysfunctional Impulsivity.
-- The Sensation Seeking Scale ("SSS"), which includes subscales for Thrill and Adventure Seeking,  Disinhibition, Experience Seeking, and Boredom Susceptibility.
 
-After these subscale scores have been computed for each of the 522 participants in Eisenberg's study, we end up with 14 numbers for each individual.  While multivariate data can some times have thousands or even millions of variables, the methods that we can apply to understand the structure of the data are quite similar.
+After these scores have been computed for each of the 522 participants in Eisenberg's study, we end up with 5 numbers for each individual.  While multivariate data can some times have thousands or even millions of variables, the methods that we can apply to understand the structure of the data are quite similar.
 
 ```{r DataPrep, echo=FALSE, message=FALSE}
 
@@ -61,10 +54,17 @@ demoghealthdata <- demoghealthdata %>%
 alldata <- merge(behavdata, demoghealthdata, by='subcode')
 
 rename_list = list('upps_impulsivity_survey' = 'UPPS', 'sensation_seeking_survey' = 'SSS',
-                   'dickman_survey' = 'Dickman',  'bis11_survey' = 'BIS11')
+                   'dickman_survey' = 'Dickman',  'bis11_survey' = 'BIS11', 
+                   'spatial_span' = 'spatial', 'digit_span' = 'digit',
+                   'adaptive_n_back' = 'nback', 'dospert_rt_survey' = 'dospert',
+                   'motor_selective_stop_signal.SSRT' = 'SSRT_motorsel',
+                   'stim_selective_stop_signal.SSRT' = 'SSRT_stimsel',
+                   'stop_signal.SSRT_low' = 'SSRT_low',
+                   'stop_signal.SSRT_high' = 'SSRT_high')
+                   
 impulsivity_variables = c('Sex')
 
-wm_variables <- c("spatial_span.forward_span", "spatial_span.reverse_span", "digit_span.forward_span","digit_span.reverse_span", "adaptive_n_back.mean_load")
+keep_variables <- c("spatial.forward_span", "spatial.reverse_span", "digit.forward_span","digit.reverse_span", "nback.mean_load")
 
 for (potential_match in names(alldata)){
   for (n in names(rename_list)){
@@ -81,13 +81,18 @@ impulsivity_data <- alldata[,impulsivity_variables] %>%
   drop_na()
 
 
-wm_data <- alldata[, wm_variables] %>%
+wm_dospert_data <- alldata[, keep_variables] %>%
     drop_na()
 
+tipsdata = alldata[,grep('ten_item', names(behavdata))]
 
+
+ssrtdata = alldata[,c('subcode', names(alldata)[grep('SSRT_', names(alldata))])] %>% drop_na() %>% select(-stop_signal.proactive_SSRT_speeding)
 upps_data <- alldata %>%
-  select(starts_with('UPPS')) %>%
+  select(starts_with('UPPS'), 'subcode') %>%
   setNames(gsub("UPPS.", "", names(.)))
+
+impdata <- inner_join(ssrtdata, upps_data) %>% drop_na() %>% select(-subcode) %>% scale()
 ```
 
 
@@ -105,12 +110,16 @@ The fundamental problem with multivariate data is that the human eye and brain s
 
 library(gpairs)
 
-gpairs(upps_data)
-library(GGally)
+gpairs(impdata)
+#library(GGally)
 
 #ggpairs(upps_data)
 ```
 
+```{r}
+library(psych)
+pairs.panels(impdata)
+```
 
 ### Heatmap
 
@@ -119,31 +128,66 @@ In some cases we wish to visualize the relationships between a large number of v
 
 ```{r, fig.width=16, fig.height=8}
 
-gc <- ggcorr(impulsivity_data %>% select(-Sex), , hjust = 1) + 
+gc <- ggcorr(impdata %>% select(-Sex), , hjust = 1) + 
   theme(plot.margin = margin(2, 2, 2, 4, "cm"),)
 gc$layout$clip[gc$layout$name == "panel"] <- "off"
 grid::grid.draw(gc)
 
 ```
 
-```{r}
+```{r fig.width=12, fig.height=7}
 library(gplots)
-heatmap.2(cor(impulsivity_data %>% select(-Sex)), trace='none')
+cc = cor(impdata)
+par(mai=c(3, 1, 1, 3)+0.1) 
+heatmap.2(cc, trace='none', dendrogram='none', 
+          cellnote=round(cc, 2), notecol='black', key=FALSE,
+          margins=c(12,8), srtCol=45, symm=TRUE, revC=TRUE, notecex=3, 
+          cexRow=3, cexCol=3, offsetRow=-120)
+
 ```
 
 ### Representing additional dimensions using different plotting features
 
 ```{r}
 
-ggplot(impulsivity_data, aes(y=UPPS.sensation_seeking, x=SSS.thrill_adventure_seeking, color=Sex, size=Dickman.dysfunctional)) + 
-  geom_point() + 
+ggplot(as.data.frame(impdata), aes(y=positive_urgency, x=negative_urgency,  size=sensation_seeking)) + 
+  geom_point(alpha=0.5) + 
   geom_smooth(method='lm')
 ```
 
 
 ## Clustering
 
+```{r}
+d <- dist(t(impdata))
+hc <- hclust(d, method='ward')
 
+library(ggdendro)
+
+#convert cluster object to use with ggplot
+dendr <- dendro_data(hc, type="rectangle") 
+
+# TODO: https://stackoverflow.com/questions/21474388/colorize-clusters-in-dendogram-with-ggplot2
+
+#your own labels (now rownames) are supplied in geom_text() and label=label
+ggplot() + 
+  geom_segment(data=segment(dendr), aes(x=x, y=y, xend=xend, yend=yend)) + 
+  geom_text(data=label(dendr), aes(x=x, y=y,label=dendr$labels$label, hjust=0), size=3) +
+  coord_flip() + scale_y_reverse(expand=c(0.2, 0)) + 
+  theme(axis.line.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.y=element_blank(),
+        panel.background=element_rect(fill="white"),
+        panel.grid=element_blank()) + 
+   geom_hline(yintercept=40, color='blue') + 
+   geom_hline(yintercept=40, color='red') + 
+
+   ylim(50, -10)
+
+```
+
+This shows us that the data from the three different tasks each cluster together.  
 ### Simple example: clustering countries by latitude/longitude
 
 
