@@ -10,9 +10,17 @@ output:
 
 # Multivariate statistics {#multivariate}
 
+
 ```{r setup, echo=FALSE}
+# import MASS first because it otherwise will mask dplyr::select
+library(MASS)
 
 library(tidyverse)
+library(ggdendro)
+library(psych)
+library(gplots)
+library(pdist)
+
 theme_set(theme_minimal())
 ```
 
@@ -20,21 +28,18 @@ The term *multivariate* refers to analyses that involve more than one variable. 
 
 There are many different kinds of multivariate analysis, but we will focus on three of the major approaches in this chapter.  First, we may simply want to understand and visualize the structure that exists in the data, by which we usually mean which variables or observations are related to which other.  We would usually define "related" in terms of some measure that indexes the distance between the values across variables.  One important method that fits under this category is known as *clustering*, which aims to find clusters of observations that are similar across variables.
 
-Second, we may want to take a large number of variables and reduce them to a smaller number of variables in a way that retains as much information as possible.  This is referred to as *dimensionality reduction*, where "dimensionality" refers to the number of variables in the dataset.  
+Second, we may want to take a large number of variables and reduce them to a smaller number of variables in a way that retains as much information as possible.  This is referred to as *dimensionality reduction*, where "dimensionality" refers to the number of variables in the dataset.  We will discuss two techniques commonly used for dimensionality reduction, known as *principal component analysis* and  *factor analysis*.
 
-Third, we might want to model the data in a way that estimates many different relationships at once.  A commonly used approach in the social sciences and psychology is known as *structural equation modeling*, which allows one to specify and test a wide range of models regarding the relationships between sets of variables.  An important aspect of these models is that they can include *latent variables*, which are variables that we can't observe directly but that we think exist (such as personality characteristics such as "openness to experience" or "grit") and can be manifested in our measurements (such as responses to items on a personality test).  A specific version of this method known as *factor analysis* is commonly used in psychology to understand how the behavior observed on a set of psychological tests relates to a set of latent variables.
+Clustering and dimensionality reduction are often classified as forms of "unsupervised learning"; this is in contrast to *supervised learning* which characterizes models such as linear regression that you've learned about so far.  The reason that we consider linear regression to be "supervised" is that we know the value of thing that we are trying to predict (i.e. the dependent variable) and we are trying to find the model that best predicts those values.  In unspervised learning, we don't have a specific value that we are trying to predict; instead, we are trying to discover structure in the data that might be useful for understanding what's going on.
 
-Before we start this chapter, it's important to point out that a deep understanding of multivariate statistics requires one to understand some basics of linear algebra.  We will try to explain the concepts in a way that avoids too much math, but will include some boxes that go a bit deeper into the necessary aspects of linear algebra.
+One thing that you will discover in this chapter is that whereas there is generally a "right" answer in supervised learning (once we have agreed upon how to determine the "best" model, such as the sum of squared errors), there is almost never a "right" answer in unsupervised learning.  Different unsupervised learning methods can give very different answers about the same data, and there is no way in principle to determine which of these is "correct", as it depends on the goals of the analysis and the assumptions that one is willing to make about the mechanisms that give rise to the data.  Some people find this frustrating, while others find it exhilarating; it will be up to you to figure out which of these camps you fall into.
 
-## What are multivariate data?
 
-As an example of multivariate analysis, we will look at a dataset collected by Eisenberg et al. [@Eisenberg:2019um].  This study was interested in understanding  how many different aspects of cognitive function are related to one another, and one of the areas of interest was *working memory*, which refers to the ability to hold information in mind and transform it.  The study included several different measures that are thought to relate to the amount of information that an individual can hold in their working memory, which is known as their *capacity*:
+## Multivariate data: An example
 
-- There were four different tasks that require an individual to retain information and then repeat it. These tasks either used spatial locations or numeric digits as their stimuli. For each of those stimulus types, one task required the subject to repeat the stimuli in the order that they were experienced (a *forward span* task), and one required them to repeat the stimuli in the reverse order (a *reverse span* task).  For each of these, the dependent variable was the number of items that the subject could accurately repeat.
-- One additional task, known as an *N-back* task, required subjects to watch a stream of stimuli and report for each stimulus whether it matched the stimulus that occurred some number (N) of stimuli back in the stream.  The task adaptively changed the number back based on the subject's performance, and the dependent variable was the mean N for each subject.
+As an example of multivariate analysis, we will look at a dataset collected by Eisenberg et al. [@Eisenberg:2019um].  This dataset is useful both because it has a large number of interesting variables, and because it is freely available online.
 
-Another area examined in this study was risk taking, using a survey called the Domain-Specific Risk Taking Scale (or DOSPERT).  One section of this survey asks subjects to rate their degree of risk taking in several different domains, including: ethical, financial, health/safety, recreational, and social.
-
+This study was interested in understanding how many different aspects of cognitive function are related to one another, focusing particularly on psychological measures of self-control and related concepts.  Participants performed a ten-hour long battery of cognitive tests and surveys over the course of a week; in this example we will focus on variables related to two specific aspects of self-control.  *Response inhibition* is defined as the ability to quickly stop an action, and in this study was measured using a set of tasks known as *stop-signal tasks*. The variable of interest for these tasks is an estimate of how long it takes a person to stop themself, known as the *stop-signal reaction time* (*SSRT*).  *Impulsivity* defined as the tendency to make decisions on impulse, without regard to potential consequences and longer-term goals.  The study included a number of different surveys measuring impulsivity, but we will focus on the *UPPS-P* survey, which assesses five different aspects of impulsivity.  
 
 
 After these scores have been computed for each of the 522 participants in Eisenberg's study, we end up with 5 numbers for each individual.  While multivariate data can some times have thousands or even millions of variables, the methods that we can apply to understand the structure of the data are quite similar.
@@ -81,76 +86,93 @@ impulsivity_data <- alldata[,impulsivity_variables] %>%
   drop_na()
 
 
-wm_dospert_data <- alldata[, keep_variables] %>%
-    drop_na()
+ssrtdata = alldata[,c('subcode', names(alldata)[grep('SSRT_', names(alldata))])] %>% 
+  drop_na() %>% 
+  dplyr::select(-stop_signal.proactive_SSRT_speeding)
 
-tipsdata = alldata[,grep('ten_item', names(behavdata))]
-
-
-ssrtdata = alldata[,c('subcode', names(alldata)[grep('SSRT_', names(alldata))])] %>% drop_na() %>% select(-stop_signal.proactive_SSRT_speeding)
 upps_data <- alldata %>%
-  select(starts_with('UPPS'), 'subcode') %>%
+  dplyr::select(starts_with('UPPS'), 'subcode') %>%
   setNames(gsub("UPPS.", "", names(.)))
 
-impdata <- inner_join(ssrtdata, upps_data) %>% drop_na() %>% select(-subcode) %>% scale()
+impdata <- inner_join(ssrtdata, upps_data) %>% 
+  drop_na() %>% 
+  dplyr::select(-subcode) %>% 
+  scale() %>%
+  as.data.frame() %>%
+  dplyr::rename(SSRT_motor = SSRT_motorsel,
+                SSRT_stim = SSRT_stimsel,
+                UPPS_pers = lack_of_perseverance,
+                UPPS_premed = lack_of_premeditation,
+                UPPS_negurg = negative_urgency,
+                UPPS_posurg = positive_urgency,
+                UPPS_senseek = sensation_seeking
+                )
 ```
 
 
 ## Visualizing multivariate data
 
-The fundamental problem with multivariate data is that the human eye and brain simply are not equipped to visualize data with more than two or three dimensions.  There are various tools that we can use to try to visualize multivariate data, but all of them break down as the number of variables grows. Once the number of variables becomes too large to directly visualize, one approach is to first reduce the number of dimensions (as discussed below), and then visualize that reduced dataset.
+A fundamental challenge of multivariate data is that the human eye and brain are simply not equipped to visualize data with more than three dimensions.  There are various tools that we can use to try to visualize multivariate data, but all of them break down as the number of variables grows. Once the number of variables becomes too large to directly visualize, one approach is to first reduce the number of dimensions (as discussed further below), and then visualize that reduced dataset.
 
-### Matrix of pairwise plots
+### Scatterplot of matrices
 
+One useful way to visualize a small number of variables is to plot each pair of variables against one another, sometimes known as a "scatterplot of matrices". An example is shown in Figure XXX, created in R using the `psych` library. Each row/column in the panel refers to a single variable -- in this case one of our psychological variables from the earlier example.  The diagonal elements on the plot show the distribution of each variable as a histogram.  The elements below the diagonal show a scatterplot for each pair of matrices, overlaid with a regression line describing the relationship between the variables.  The elements above the diagonal show the correlation coefficient for each pair of variables.  When the number of variables is relatively small (about 10 or less) this can be a useful way to get good insight into a multivariate dataset.
 
-
-```{r}
-#library(psych)
-#pairs.panels(impulsivity_data)
-
-library(gpairs)
-
-gpairs(impdata)
-#library(GGally)
-
-#ggpairs(upps_data)
-```
-
-```{r}
-library(psych)
-pairs.panels(impdata)
+```{r pairpanel, fig.width=3.5, fig.height=3.5}
+pairs.panels(impdata, lm=TRUE)
 ```
 
 ### Heatmap
 
-In some cases we wish to visualize the relationships between a large number of variables at once.
+In some cases we wish to visualize the relationships between a large number of variables at once, usually focusing on the correlation coefficient. A useful way to do this can be to plot the correlation values as a *heatmap*, in which the color of the map relates to the value of the correlation.  Figure XXX shows an example with a relatively small number of variables, using our psychological example from above.  In this case, the heatmap helps the structure of the data "pop out" at us; we see that there are strong intercorrelations within the SSRT variables and within the UPPS variables, with relatively little correlation between the two sets of variables.
 
 
-```{r, fig.width=16, fig.height=8}
-
-gc <- ggcorr(impdata %>% select(-Sex), , hjust = 1) + 
-  theme(plot.margin = margin(2, 2, 2, 4, "cm"),)
-gc$layout$clip[gc$layout$name == "panel"] <- "off"
-grid::grid.draw(gc)
-
-```
-
-```{r fig.width=12, fig.height=7}
-library(gplots)
+```{r fig.width=12, fig.height=8}
 cc = cor(impdata)
-par(mai=c(3, 1, 1, 3)+0.1) 
+par(mai=c(4, 1, 1, 1)+0.1) 
 heatmap.2(cc, trace='none', dendrogram='none', 
           cellnote=round(cc, 2), notecol='black', key=FALSE,
-          margins=c(12,8), srtCol=45, symm=TRUE, revC=TRUE, notecex=3, 
-          cexRow=3, cexCol=3, offsetRow=-120)
+          margins=c(12,8), srtCol=45, symm=TRUE, revC=TRUE, notecex=4, 
+          cexRow=3, cexCol=3, offsetRow=-150)
 
 ```
+
+Heatmaps become particularly useful for visualizing correlations between large numbers of variables.  We can use brain imaging data as an example. It is common for neuroscience researchers to collect data about brain function from a large number of locations in the brain, and then to assess the correlation between those locations, to measure "function connectivity" between the regions. 
+
+```{r}
+ccmtx = read_delim('data/myconnectome/ccmtx_sorted.txt', col_names=FALSE)
+dim(ccmtx)
+
+parcel_data = read_delim('data/myconnectome/parcel_data.txt', col_names = FALSE) %>% dplyr::select(-X1) 
+names(parcel_data) = c('hemis', 'X', 'Y', 'Z', 'lobe', 
+                         'region', 'network', 'yeo7network', 'yeo17network')
+parcel_data <- parcel_data %>%
+  arrange(hemis, yeo7network)
+parcel_data$netdiff = FALSE
+parcel_data$netdiff[2:nrow(parcel_data)] =       parcel_data$yeo7network[2:nrow(parcel_data)] != parcel_data$yeo7network[1:(nrow(parcel_data) - 1)]
+```
+
+```{r, fig.height=8, fig.width=8}
+library(viridis)
+hemis_to_use = 'L'
+
+tmp <- ccmtx[parcel_data$hemis == hemis_to_use,]
+ccmtx_lh <- tmp[, parcel_data$hemis == hemis_to_use]
+hemis_parcel_data = parcel_data %>%
+  filter(hemis == hemis_to_use)
+
+heatmap.2(as.matrix(ccmtx_lh), trace='none', symm=T, 
+          dendrogram='none', col=viridis(50), Rowv=FALSE, Colv=FALSE,
+          labCol = "", labRow="")
+```
+
 
 ### Representing additional dimensions using different plotting features
 
 ```{r}
 
-ggplot(as.data.frame(impdata), aes(y=positive_urgency, x=negative_urgency,  size=sensation_seeking)) + 
+ggplot(as.data.frame(impdata),
+       aes(y=UPPS_posurg, x=UPPS_negurg,  size=UPPS_senseek)) + 
   geom_point(alpha=0.5) + 
   geom_smooth(method='lm')
 ```
@@ -158,16 +180,172 @@ ggplot(as.data.frame(impdata), aes(y=positive_urgency, x=negative_urgency,  size
 
 ## Clustering
 
-```{r}
-d <- dist(t(impdata))
-hc <- hclust(d, method='ward')
+Clustering refers to a group of methods for identifying groups of observations within a dataset, based on the similarity of the values of the observations.  Usually this similarity will be quantified in terms of some measure of the *distance* between observations.  The clustering method then finds the set of groups that have the lowest distance between their members, while also potentially taking into account other 
 
-library(ggdendro)
+One commonly used measure of distance for clustering is the *Euclidean distance*, which is basically the length of the line that connects two data points.  Figure XXX shows an example of a dataset with two data points and two dimensions (X and Y).  The Euclidean distance between these two points is the length of the dotted line that connects the points in space.
+
+```{r}
+euc_df <- data.frame(x=c(1, 4), y=c(2, 3))
+ggplot(euc_df, aes(x,y)) + geom_point() + 
+  xlim(0, 5) + ylim(0, 4) + 
+  annotate('segment', x=1, y=2, xend=4, yend=3, linetype='dotted')
+```
+The Euclidean distance is computed by squaring the differences in the locations of the points in each dimension, and then taking the square root.  When there are two dimnensions $x$ and $y$, this would be computed as:
+
+$$
+d(x, y) = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}
+$$
+
+Plugging in the values from our example data:
+
+$$
+d(x, y) = \sqrt{(1 - 4)^2 + (2 - 3)^2} = 3.16
+
+$$
+
+If the formula for Euclidean distance seems slightly familiar, this is because it is identical to the *Pythagorean theorem* that most of us learned in geometry class, which computes the length of the hypotenuse of a right triangle based on the lengths of the two sides. In this case, the length of the sides of the triangle correspond to the distance between the points in each of the two dimensions. 
+
+One important feature of the Euclidean distance is that it is sensitive to the overall mean and variability of the data.  In this sense it is unlike the correlation coefficient, which measures the linear relationship between variables in a way that is insensitive to the overall mean or variability.  For this reason, it is common to *scale* the data prior to computing the Euclidean distance, which is equivalent to converting each variable into its Z-scored version. 
+
+### K-means clustering
+
+One common method for clustering data is *K-means clustering*.  This technique identifies a set of cluster centers, and then assigns each data point to the cluster whose center has the lowest Euclidean distance from the data point.  As an example, let's take the latitude and longitude of a number of countries around the world as our data points, and see whether K-means clustering can effectively identify the continents of the world.
+
+```{r}
+
+countries <- read_delim('data/countries/country_data.csv', na=c('')) %>%
+  # filter out countries with less than 1M population
+  filter(Population2020 > 500000)
+
+latlong <- countries %>% 
+  dplyr::select(latitude, longitude) 
+
+ggplot(countries, aes(longitude, latitude, color=Continent)) + 
+  geom_point()
+
+```
+
+Most statistical software packages have a built-in function for performing K-means clustering using a single command, but it's instructive to see how it works step by step.  We start with a dataset, and with a specific value for *K*, the number of clusters to be found in the data.  It's important to point out that there is no single  "correct" value for the number of clusters; there are various techniques that one can use to try to determine which solution is "best" but they can often give different answers, as they incorporate different assumptions or tradeoffs. Nonetheless, clustering techniques such as K-means are an important tool for understanding the structure of data, especially as they become high-dimensional.
+
+Having selected the number of clusters (*K*) that we wish to find, we must come up with K locations that will be our starting guesses for the centers of our clusters (since we don't initially know where the centers are).  One simple way to start is to choose K of the actual data points at random and use those as our starting points, which are referred to as *centroids*.  We then compute the Euclidean distance of each data point to each of the centroids, and assign each point to a cluster based on its closest centroid.  Using these new cluster assignments, we recompute the centroid of each cluster by averaging the location of all of the points assigned to that cluster.  This process is then repeated until a stable solution is found; we refer to this as an *iterative* processes, because it iterates until the answer doesn't change, or until some other kind of limit is reached, such as a maximum number of possible iterations.
+
+```{r kmeans, echo=FALSE, warning=FALSE, message=FALSE}
+# based on https://stanford.edu/~cpiech/cs221/handouts/kmeans.html
+# need to clarify license!
+# and https://jakevdp.github.io/PythonDataScienceHandbook/05.11-k-means.html
+# (Code under MIT license)
+
+k = 6
+set.seed(123456)
+# select random starting points as the means - i.e. Forgy method
+
+centroids = latlong[sample.int(nrow(latlong), k),]
+
+
+iterations = 0
+oldCentroids = data.frame()
+
+MAX_ITERATIONS <- 100
+
+
+shouldStop <- function(oldCentroids, centroids, iterations){
+    if (iterations > MAX_ITERATIONS){
+      return(TRUE)
+    } 
+    if (dim(oldCentroids)[1] == 0){
+      return(FALSE)
+    }
+    return(all.equal(centroids, oldCentroids) == TRUE)
+}
+
+
+getLabels <- function(dataSet, centroids){
+    d <- as.matrix(pdist::pdist(dataSet, centroids))
+    
+    # For each element in the dataset, chose the closest centroid. 
+    # Make that centroid the element's label.
+    return(apply(d, 1, which.min))
+}
+
+
+getCentroids <- function(dataSet, labels, k){
+    # Each centroid is the geometric mean of the points that
+    # have that centroid's label. Important: If a centroid is empty (no points have
+    # that centroid's label) you should randomly re-initialize it.
+    newCentroids <- NULL
+    for (i in 1:k){
+      labeldata <- dataSet[labels==i,]
+      newCentroids <- rbind(newCentroids, apply(labeldata, 2, mean))
+    }
+    return(newCentroids)
+}
+
+
+while (!shouldStop(oldCentroids, centroids, iterations)) {
+          # Save old centroids for convergence test. Book keeping.
+        oldCentroids = centroids
+        iterations = iterations + 1
+        # Assign labels to each datapoint based on centroids
+        labels = getLabels(latlong, centroids)
+        
+        # Assign centroids based on datapoint labels
+        centroids = getCentroids(latlong, labels, k)
+}
+sprintf('Completed after %d iterations', iterations)
+```
+
+
+```{r}
+countries <- countries %>%
+  mutate(label_kmeans = as.factor(labels))
+
+centroid_df = data.frame(centroids) %>%
+  mutate(label_kmeans=as.factor(seq(1,nrow(.))))
+
+ggplot(countries, aes(longitude, latitude, color=label_kmeans)) + 
+  geom_point() + 
+  geom_point(data=centroid_df,alpha=0.5, size=4)
+
+```
+Applying K-means clustering to the latitude/longitude data, we see that there is a reasonable match between the resulting clusters and the continents (Figure XXX), though none of the continents is perfectly matched to any of the clusters. We can see this by plotting a table that compares the membership of each cluster to the actual continents for each country.
+
+```{r}
+table(labels, countries$Continent)
+```
+
+**UPDATE THIS TABLE** 
+
+- Cluster 1 contains countries from Asia and Oceania. 
+- Cluster 2 contains all of the European countries, as well as countries from Asia and Africa.  
+- Cluster 3 contains countries from Asia and Africa.  
+- Cluster 4 contains all of the North American countries as well as several South American countries.
+- Cluster 5 contains all of the remaining South American countries.
+- Cluster 6 contains all of the remaining African countries.
+
+Although in this example we know the actual clusters (that is, the continents of the world), in general we don't actually know the ground truth, so we simply have to trust that the clustering method has found useful structure in the data. However, one important point about K-means clustering, and iterative procedures in general, is that they are not guaranteed to give the same answer each time they are run.  The use of random numbers to determine the starting points means that the starting points can differ each time, and depending on the data this can sometimes lead to different solutions being found.  For this example, K-means clustering will sometimes find a single cluster encompassing both North and South America, and sometimes find two clusters (as it did for the specific choice of random seed used here).  Whenever using a method that involves an iterative solution, it is important to rerun the method a number of times using different random seeds, to make sure that the answers don't diverge too greatly between runs.  If they do, then one should avoid making strong conclusions based on the results.
+
+### Hierarchical clustering
+
+Another useful method for examining the structure of a multivariate dataset is known as *hierarchical clustering*.  This technique also uses the distances between data points to determine clusters, but it also provides a way to visualize the relationships between data points in terms of a tree-like structure known as a *dendrogram*.
+
+The most commonly used hierarchical clustering procedure is known as *agglomerative clustering*.  This procedure starts by treating each data point as its own cluster, and then progressively creates new clusters by combining the two clusters with the least distance between them. It continues to do this until there is only a single cluster. There are numerous ways to compute the distance between two clusters; in this example we will use the *average linkage* method, which simply takes the average of all of the distances between each each data point in each of two clusters. 
+
+As an example, we will examine the relationship between the impulsivity variables that were described above.
+
+
+```{r dendro, echo=FALSE, message=FALSE, warning=FALSE}
+
+d <- dist(t(impdata))
+
+hc <- hclust(d, method='average')
+
 
 #convert cluster object to use with ggplot
 dendr <- dendro_data(hc, type="rectangle") 
 
 # TODO: https://stackoverflow.com/questions/21474388/colorize-clusters-in-dendogram-with-ggplot2
+
+cutoffs = c(25, 20, 19)
 
 #your own labels (now rownames) are supplied in geom_text() and label=label
 ggplot() + 
@@ -180,82 +358,277 @@ ggplot() +
         axis.title.y=element_blank(),
         panel.background=element_rect(fill="white"),
         panel.grid=element_blank()) + 
-   geom_hline(yintercept=40, color='blue') + 
-   geom_hline(yintercept=40, color='red') + 
-
-   ylim(50, -10)
+   geom_hline(yintercept=cutoffs[1], color='blue') + 
+   geom_hline(yintercept=cutoffs[2], color='green') + 
+   geom_hline(yintercept=cutoffs[3], color='red') + 
+   ylim(30, -10)
 
 ```
 
-This shows us that the data from the three different tasks each cluster together.  
-### Simple example: clustering countries by latitude/longitude
-
+Here we see that there is structure in the relationships between variables that can be understood at various levels by "cutting" the tree to create different numbers of clusters.  For example, if we cut the tree at 25, we get two clusters:
 
 ```{r}
-countries <- read_delim('data/countries/country_data.csv') %>%
-  # filter out countries with less than 1M population
-  filter(Population2020 > 50000000)
+ct<- cutree(hc, h=cutoffs)
 
-dim(countries)
+ct_df <- data.frame(ct)
+cutoff_names = c()
+for (c in cutoffs){
+  cutoff_names = c(cutoff_names, sprintf('cutoff=%d', c))
+}
+names(ct_df) <- cutoff_names
+ct_df
 ```
+Our interpretation of this analysis would be that there is a high degree of similarity within each of the variable sets (SSRT and UPPS) compared to between the sets. Within the UPPS variables, it seems that the sensation seeking variable stands separately from the others, which are much more similar to one another.  Within the SSRT variables, it seems that the stimulus selective SSRT variable is distinct from the other three, which are more similar.  These are the kinds of conclusions that can be drawn from a clustering analysis.
 
-get region data from https://github.com/country-regions/country-region-data
-population data from https://data.worldbank.org/indicator/SP.POP.TOTL
-
+### Assessing the quality of a clustering solution
 
 ```{r}
-ggplot(countries, aes(longitude, latitude, size=Population2020)) + geom_point()
-```
+library(fpc)
+clustermethod=c("kmeansCBI","hclustCBI")
+# A clustering method can be used more than once, with different
+# parameters
+clustermethodpars <- list()
+clustermethodpars[[2]] <- list()
+clustermethodpars[[2]]$method <- "average"
+# Last element of clustermethodpars needs to have an entry!
+methodname <- c("kmeans","average")
+cbs <- clusterbenchstats(t(impdata),G=2:6,clustermethod=clustermethod,
+methodname=methodname,distmethod=rep(FALSE,2),
+clustermethodpars=clustermethodpars,nnruns=1,kmruns=1,fnruns=1,avenruns=1)
+print(cbs)
 
-```{r}
-latlongdata <- countries %>%
-  select(longitude, latitude)
 
-d <- dist(latlongdata)
-hc <- hclust(d, method='average')
-```
-
-```{r }
-library(ggdendro)
-
-#convert cluster object to use with ggplot
-dendr <- dendro_data(hc, type="rectangle") 
-
-# TODO: https://stackoverflow.com/questions/21474388/colorize-clusters-in-dendogram-with-ggplot2
-
-#your own labels (now rownames) are supplied in geom_text() and label=label
-ggplot() + 
-  geom_segment(data=segment(dendr), aes(x=x, y=y, xend=xend, yend=yend)) + 
-  geom_text(data=label(dendr), aes(x=x, y=y, label=countries$CountryCode[hc$order], hjust=0), size=3) +
-  coord_flip() + scale_y_reverse(expand=c(0.2, 0)) + 
-  theme(axis.line.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.title.y=element_blank(),
-        panel.background=element_rect(fill="white"),
-        panel.grid=element_blank()) + 
-   geom_hline(yintercept=100, color='blue')
 
 ```
 
 ```{r}
-cutree(hc, h=100)
 
 ```
 
 ## Dimensionality reduction
 
+It is often the case with multivariate data that many of the variables will be highly similar to one another, such that they are largely measuring the same thing.  One way to think of this is that while the data have a particular number of variables, which we call its *dimensionality*, in reality there are not as many underlying sources of information as there are variables.  The idea behind *dimensionality reduction* is to reduce the number of variables in order to find those fewer sources of information in the data.
+
 ### Principal component analysis
 
+The idea behind principal component analysis is to find a lower-dimensional description of a set of variables that accounts for the maximum possible amount of variance in the full dataset.  A deep understanding of principal component analysis requires an understanding of linear algebra, which is beyond the scope of this book; see the resources at the end of this chapter for helpful guides to this topic. In this section I will outline the concept and hopefully whet your appetite to learn more.
+
+We will start with a simple example with just two variables in order to give an intuition for how it works.  First we generate some synthetic data for variables X and Y, with a correlation of 0.7 between the two variables.
+
+
+```{r}
+
+N <-30                           #setting my sample size             
+mu <- c(0, 0)                      #setting the means
+c1 <- .7
+
+sigma <- matrix(c(1, c1, c1, 1),2, 2)  #setting the covariance matrix values. The "2,2" part at the tail end defines the number of rows and columns in the matrix
+
+set.seed(04182019)  #setting the seed value so I can reproduce this exact sim later if need be
+simdata <- mvrnorm(n=N,mu=mu,Sigma=sigma, empirical=TRUE)  #simulate the data, as specified above
+
+sim_df <- data.frame(simdata)
+names(sim_df) <- c("Y", "X")
+
+ggplot(sim_df, aes(X, Y)) + 
+   geom_point() + 
+  xlim(-3, 3) + 
+  ylim(-3, 3) + 
+  geom_smooth(method='lm', se=FALSE)
+cor(sim_df$X, sim_df$Y)
+```
+
+
+The goal of principal component analysis is to find a linear combination of the variables in the dataset that will explain the maximum amount of variance. The first principal component is the combination that explains the maximum variance. The second component is the the one that explains the maximum remaining variance, while also being uncorrelated with the first component. With more variables we can continue this process to obtain as many components as there are variables, though in practice we usually hope to find a small number of components that can explain a large portion of the variance. 
 
 
 
+scale variables
+
+```{r}
+sim_df <- sim_df %>%
+  mutate(X = scale(X), 
+         Y = scale(Y))
+```
+
+
+compute covariance matrix
+
+```{r}
+sim_df_cov<- cov(sim_df)
+
+sim_df_cov
+
+```
+
+Compute eigenvalues/eigenvectors
+
+```{r}
+cov_eig <- eigen(sim_df_cov)
+cov_eig
+```
+
+Plot eigenvectors over data
+
+
+```{r, fig.width=3, fig.height=3}
+
+g <- ggplot(sim_df, aes(X, Y)) + 
+   geom_point(size=1.5) + 
+  xlim(-3, 3) + 
+  ylim(-3, 3) 
+
+# based on https://stats.stackexchange.com/questions/153564/visualizing-pca-in-r-data-points-eigenvectors-projections-confidence-ellipse
+
+# calculate slopes as ratios
+cov_eig$slopes[1] <- cov_eig$vectors[1,1]/cov_eig$vectors[2,1]  
+cov_eig$slopes[2] <- cov_eig$vectors[1, 2]/cov_eig$vectors[2,2] 
+
+g <- g + geom_segment(x = 0, y = 0, 
+                      xend = cov_eig$values[1], 
+                      yend = cov_eig$slopes[1] * cov_eig$values[1], 
+                      colour = "green", size=1.5,
+                      arrow = arrow(length = unit(0.2, "cm")))  # add arrow for pc1
+g <- g + geom_segment(x = 0, y = 0, 
+                      xend = cov_eig$values[2], 
+                      yend = cov_eig$slopes[2] * cov_eig$values[2], 
+                      colour = "red", size=1.5,
+                      arrow = arrow(length = unit(0.2, "cm")))  # add arrow for pc2
+
+g + geom_smooth(method='lm', se=FALSE, linetype='dotted')
+```
+
+PCA minimizes distance in both directions (vs linear regression that only minimizes in y direction) - DEMO?
+
+```{r}
+
+pred_Y = predict(lm(Y ~ X, sim_df))
+ggplot(sim_df, aes(X, Y)) + 
+   geom_point() + 
+  xlim(-3, 3) + 
+  ylim(-3, 3) + 
+  geom_smooth(method='lm', se=FALSE) + 
+  annotate('segment', x=sim_df$X, y=sim_df$Y, 
+           xend=sim_df$X, yend=pred_Y)
+```
 
 
 
+```{r}
+prcomp_result <- prcomp(sim_df)
+prcomp_result
 
-## Structural equation modeling
+sim_df_rotated <- as.data.frame(as.matrix(sim_df) %*% prcomp_result$rotation)
 
+```
+
+```{r fig.width=5, fig.height=5}
+
+rot_df = data.frame(X=sim_df$X, Y=sim_df_rotated$PC1)
+rot_df = as.matrix(rot_df) %*% prcomp_result$rotation
+
+# draw normals to first pc
+g <- ggplot(sim_df, aes(X, Y)) + 
+   geom_point(size=1.5) + 
+  xlim(-3, 3) + 
+  ylim(-3, 3) 
+
+
+g <- g + geom_segment(x = min(sim_df$X), 
+                      y = cov_eig$slopes[1] * min(sim_df$X), 
+                      xend = max(sim_df$X), 
+                      yend = cov_eig$slopes[1] * max(sim_df$X), 
+                      colour = "green", size=1.5,
+                      arrow = arrow(length = unit(0.2, "cm")))  # add arrow for pc1
+
+sim_df$PC = cov_eig$slopes[1] * sim_df$X
+g + geom_segment(x=sim_df$X, y=sim_df$Y, 
+           xend=rot_df[,2], yend=sim_df$PC)
+
+
+```
+
+
+
+project data into PC space
+
+```{r}
+
+ggplot(sim_df_rotated, aes(PC1, PC2)) + 
+     geom_point()
+```
+
+We can use PCA to reduce the dimensionality of a dataset. For example, let's say that we would like to know whether performance on all four of the stop signal task variables in the earlier dataset are related to the five impulsivity survey variables.  We can perform PCA on each of those datasets separately, and examine how much of the variance in the data is accounted for by the first principal component, which will serve as our summary of the data.
+
+```{r}
+ssrtdata <- as.data.frame(impdata) %>% dplyr::select(starts_with('SSRT'))
+                                     
+pca_result_ssrt <- prcomp(ssrtdata)
+summary(pca_result_ssrt)
+```
+
+```{r}
+uppsdata <- as.data.frame(impdata) %>% dplyr::select(!starts_with('SSRT'))
+                                     
+pca_result_upps <- prcomp(uppsdata)
+summary(pca_result_upps)
+```
+
+We see that for the stop signal variables, the first principal component accounts for about 60% of the variance in the data, whereas for the UPPS it accounts for about 50% of the variance. We can then look at the comparison of the scores obtained using the first principal component:
+
+```{r}
+pca_df <- data.frame(SSRT=predict(pca_result_ssrt)[, 'PC1'],
+                     UPPS=predict(pca_result_upps)[, 'PC1'])
+
+ggplot(pca_df, aes(SSRT, UPPS)) + 
+   geom_point() + 
+   geom_smooth(method='lm', se=FALSE)
+```
+
+```{r}
+summary(lm(UPPS ~ SSRT, data=pca_df))
+```
 
 
 ### Factor analysis
+
+
+Exploratory factor analysis - relate to PCA
+
+```{r}
+nfactors=4
+fa_result <- fa(impdata, nfactors=nfactors)
+fa_result
+```
+
+Do PCA on same data
+
+```{r}
+pca_result <- pca(impdata, nfactors=nfactors)
+pca_result
+```
+
+
+Why use EFA instead of PCA?
+
+- noise model
+- correlated factors
+
+
+Choosing number of factors
+- Introduce BIC
+
+```{r}
+
+BIC_df <- data.frame(nfactors = seq(1, 5), BIC=NA)
+
+for (i in 1:nrow(BIC_df)){
+  fa_result <- fa(impdata, nfactors=BIC_df$nfactors[i])
+  BIC_df$BIC[i] = fa_result$BIC
+}
+
+ggplot(BIC_df, aes(nfactors, BIC)) + 
+  geom_line()
+```
+
+Plot path model for two vs four 
