@@ -262,6 +262,8 @@ In the case of our study time example, $R^2$ = `r I(cor(df$studyTime,df$grade)**
 
 More generally we can think of $R^2$ as a measure of the fraction of variance in the data that is accounted for by the model, which can be computed by breaking the variance into multiple components:
 
+**THIS IS CONFUSING, CHANGE TO RESIDUAL RATHER THAN ERROR**
+
 $$
 SS_{total} = SS_{model} + SS_{error}
 $$
