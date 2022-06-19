@@ -1,2 +1,15 @@
 obtained from https://www.randomservices.org/random/data/Galton.html
 
+Description
+
+The table below gives data based on the famous 1885 study of Francis Galton exploring the relationship between the heights of adult children and the heights of their parents. Each case is an adult child, and the variables are
+
+    Family: The family that the child belongs to, labeled from 1 to 205.
+    Father: The father's height, in inches
+    Mother: The mother's height, in inches
+    Gender: The gender of the child, male (M) or female (F)
+    Height: The height of the child, in inches
+    Kids: The number of kids in the family of the child
+
+The data set has 898 cases. The family that we have labeled 205 was originally labeled 136A by Galton.
+
