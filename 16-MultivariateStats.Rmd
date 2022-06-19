@@ -20,27 +20,29 @@ library(ggdendro)
 library(psych)
 library(gplots)
 library(pdist)
+library(factoextra)
+library(viridis)
 
 theme_set(theme_minimal())
 ```
 
-The term *multivariate* refers to analyses that involve more than one variable. This might be a bit confusing as a chapter title, since we have already encountered a number of analyses in the book that involve more than one variable.  However, in general we were always trying to relate a single outcome variable (or *dependent variable*) to one or more explanatory (or *independent*) variables.  When we speak of "multivariate statistics" we are generally referring to analyses that attempt to understand the relationship between a large set of variables that could include both independent and dependent variables.
+The term *multivariate* refers to analyses that involve more than one variable. This might be a bit confusing at this point in the book, since we have already encountered a number of analyses in the book that involve more than one variable.  However, in general we were always trying to relate a single outcome variable (or *dependent variable*) to one or more explanatory (or *independent*) variables.  When we speak of "multivariate statistics" we are generally referring to analyses that attempt to understand the relationship between a large set of variables that could include both independent and dependent variables.
 
 There are many different kinds of multivariate analysis, but we will focus on two major approaches in this chapter.  First, we may simply want to understand and visualize the structure that exists in the data, by which we usually mean which variables or observations are related to which other.  We would usually define "related" in terms of some measure that indexes the distance between the values across variables.  One important method that fits under this category is known as *clustering*, which aims to find clusters of observations that are similar across variables.
 
 Second, we may want to take a large number of variables and reduce them to a smaller number of variables in a way that retains as much information as possible.  This is referred to as *dimensionality reduction*, where "dimensionality" refers to the number of variables in the dataset.  We will discuss two techniques commonly used for dimensionality reduction, known as *principal component analysis* and  *factor analysis*.
 
-Clustering and dimensionality reduction are often classified as forms of "unsupervised learning"; this is in contrast to *supervised learning* which characterizes models such as linear regression that you've learned about so far.  The reason that we consider linear regression to be "supervised" is that we know the value of thing that we are trying to predict (i.e. the dependent variable) and we are trying to find the model that best predicts those values.  In unspervised learning, we don't have a specific value that we are trying to predict; instead, we are trying to discover structure in the data that might be useful for understanding what's going on.
+Clustering and dimensionality reduction are often classified as forms of "unsupervised learning"; this is in contrast to *supervised learning* which characterizes models such as linear regression that you've learned about so far.  The reason that we consider linear regression to be "supervised" is that we know the value of thing that we are trying to predict (i.e. the dependent variable) and we are trying to find the model that best predicts those values.  In unspervised learning, we don't have a specific value that we are trying to predict; instead, we are trying to discover structure in the data that might be useful for understanding what's going on, which generally requires some assumptions about what kind of structure we want to find.
 
-One thing that you will discover in this chapter is that whereas there is generally a "right" answer in supervised learning (once we have agreed upon how to determine the "best" model, such as the sum of squared errors), there is often not an agreed-upon "right" answer in unsupervised learning.  Different unsupervised learning methods can give very different answers about the same data, and there is sometimes no way in principle to determine which of these is "correct", as it depends on the goals of the analysis and the assumptions that one is willing to make about the mechanisms that give rise to the data.  Some people find this frustrating, while others find it exhilarating; it will be up to you to figure out which of these camps you fall into.
+One thing that you will discover in this chapter is that whereas there is generally a "right" answer in supervised learning (once we have agreed upon how to determine the "best" model, such as the sum of squared errors), there is often not an agreed-upon "right" answer in unsupervised learning.  Different unsupervised learning methods can give very different answers about the same data, and there is usually no way in principle to determine which of these is "correct", as it depends on the goals of the analysis and the assumptions that one is willing to make about the mechanisms that give rise to the data.  Some people find this frustrating, while others find it exhilarating; it will be up to you to figure out which of these camps you fall into.
 
 ## Multivariate data: An example
 
 As an example of multivariate analysis, we will look at a dataset collected by my group and published by Eisenberg et al. [@Eisenberg:2019um].  This dataset is useful both because it has a large number of interesting variables collected on a relatively large number of individuals, and because it is freely available online, so that you can explore it on your own.
 
-This study was performed because we were interested in understanding how many different aspects of cognitive function are related to one another, focusing particularly on psychological measures of self-control and related concepts.  Participants performed a ten-hour long battery of cognitive tests and surveys over the course of a week; in this first example we will focus on variables related to two specific aspects of self-control.  *Response inhibition* is defined as the ability to quickly stop an action, and in this study was measured using a set of tasks known as *stop-signal tasks*. The variable of interest for these tasks is an estimate of how long it takes a person to stop themself, known as the *stop-signal reaction time* (*SSRT*), of which there are four different measures.  *Impulsivity* defined as the tendency to make decisions on impulse, without regard to potential consequences and longer-term goals.  The study included a number of different surveys measuring impulsivity, but we will focus on the *UPPS-P* survey, which assesses five different aspects of impulsivity.  
+This study was performed because we were interested in understanding how several different aspects of psychological function are related to one another, focusing particularly on psychological measures of self-control and related concepts.  Participants performed a ten-hour long battery of cognitive tests and surveys over the course of a week; in this first example we will focus on variables related to two specific aspects of self-control.  *Response inhibition* is defined as the ability to quickly stop an action, and in this study was measured using a set of tasks known as *stop-signal tasks*. The variable of interest for these tasks is an estimate of how long it takes a person to stop themself, known as the *stop-signal reaction time* (*SSRT*), of which there are four different measures in the dataset.  *Impulsivity* is defined as the tendency to make decisions on impulse, without regard to potential consequences and longer-term goals.  The study included a number of different surveys measuring impulsivity, but we will focus on the *UPPS-P* survey, which assesses five different facets of impulsivity.  
 
-After these scores have been computed for each of the 522 participants in Eisenberg's study, we end up with 9 numbers for each individual.  While multivariate data can sometimes have thousands or even millions of variables, it's useful to see how the methods with with a small number of variables first.
+After these scores have been computed for each of the 522 participants in Eisenberg's study, we end up with 9 numbers for each individual.  While multivariate data can sometimes have thousands or even millions of variables, it's useful to see how the methods work with a small number of variables first.
 
 ```{r DataPrep, echo=FALSE, message=FALSE}
 
@@ -116,7 +118,7 @@ A fundamental challenge of multivariate data is that the human eye and brain are
 
 One useful way to visualize a small number of variables is to plot each pair of variables against one another, sometimes known as a "scatterplot of matrices"; An example is shown in Figure \@ref(fig:pairpanel). Each row/column in the panel refers to a single variable -- in this case one of our psychological variables from the earlier example.  The diagonal elements on the plot show the distribution of each variable as a histogram.  The elements below the diagonal show a scatterplot for each pair of matrices, overlaid with a regression line describing the relationship between the variables.  The elements above the diagonal show the correlation coefficient for each pair of variables.  When the number of variables is relatively small (about 10 or less) this can be a useful way to get good insight into a multivariate dataset.
 
-```{r pairpanel, fig.width=8, fig.height=8}
+```{r pairpanel, echo=FALSE, fig.width=8, fig.height=8, fig.cap='Scatterplot of matrices for the nine variables in the self-control dataset.  The diagonal elements in the matrix show the histogram for each of the individual variables.  The lower left panels show scatterplots of the relationship between each pair of variables, and the upper right panel shows the correlation coefficient for each pair of variables.'}
 pairs.panels(impdata, lm=TRUE)
 ```
 
@@ -125,18 +127,18 @@ pairs.panels(impdata, lm=TRUE)
 In some cases we wish to visualize the relationships between a large number of variables at once, usually focusing on the correlation coefficient. A useful way to do this can be to plot the correlation values as a *heatmap*, in which the color of the map relates to the value of the correlation.  Figure \@ref(fig:hmap) shows an example with a relatively small number of variables, using our psychological example from above.  In this case, the heatmap helps the structure of the data "pop out" at us; we see that there are strong intercorrelations within the SSRT variables and within the UPPS variables, with relatively little correlation between the two sets of variables.
 
 
-```{r hmap, echo=FALSE, fig.width=8, fig.height=5}
+```{r hmap, echo=FALSE, fig.width=8, fig.height=8, fig.cap='Heatmap of the correlation matrix for the nine self-control variables.  The brighter yellow areas in the top left and bottom right highlight the higher correlations within the two subsets of variables.'}
 cc = cor(impdata)
 par(mai=c(2, 1, 1, 1)+0.1) 
 
 heatmap.2(cc, trace='none', dendrogram='none', 
           cellnote=round(cc, 2), notecol='black', key=FALSE,
           margins=c(12,8), srtCol=45, symm=TRUE, revC=TRUE, #notecex=4, 
-          cexRow=1, cexCol=1, offsetRow=-150)
+          cexRow=1, cexCol=1, offsetRow=-150, col=viridis(50))
 
 ```
 
-Heatmaps become particularly useful for visualizing correlations between large numbers of variables.  We can use brain imaging data as an example. It is common for neuroscience researchers to collect data about brain function from a large number of locations in the brain, and then to assess the correlation between those locations, to measure "function connectivity" between the regions. For example, Figure \@ref(fig:parceldata) shows a large correlation matrix, based on activity in over 300 regions in the brain of a single individual (yours truly).  The presence of clear structure in the data pops out simply by looking at the heatmap.  In particular we see that there are large sets of brain regions whose activity is highly correlated with each other (visible in the large yellow blocks along the diagonal of the correlation matrix), whereas these blocks are also strongly negatively correlated with other blocks (visible in the large blue blocks seen off the diagonal).  Heatmaps are a powerful tool for easily visualizing large data matrices.
+Heatmaps become particularly useful for visualizing correlations between large numbers of variables.  We can use brain imaging data as an example. It is common for neuroscience researchers to collect data about brain function from a large number of locations in the brain using functional magnetic resonance imaging (fMRI), and then to assess the correlation between those locations, to measure "function connectivity" between the regions. For example, Figure \@ref(fig:parcelheatmap) shows a heatmap for a large correlation matrix, based on activity in over 300 regions in the brain of a single individual (yours truly).  The presence of clear structure in the data pops out simply by looking at the heatmap.  In particular we see that there are large sets of brain regions whose activity is highly correlated with each other (visible in the large yellow blocks along the diagonal of the correlation matrix), whereas these blocks are also strongly negatively correlated with other blocks (visible in the large blue blocks seen off the diagonal).  Heatmaps are a powerful tool for easily visualizing large data matrices.
 
 ```{r parceldata, echo=FALSE, message=FALSE, warning=FALSE}
 ccmtx = read_delim('data/myconnectome/ccmtx_sorted.txt', col_names=FALSE,show_col_types = FALSE)
@@ -150,8 +152,7 @@ parcel_data$netdiff = FALSE
 parcel_data$netdiff[2:nrow(parcel_data)] =       parcel_data$yeo7network[2:nrow(parcel_data)] != parcel_data$yeo7network[1:(nrow(parcel_data) - 1)]
 ```
 
-```{r parcelheatmap, fig.height=8, fig.width=8, echo=FALSE, message=FALSE, warning=FALSE}
-library(viridis)
+```{r parcelheatmap, fig.height=8, fig.width=8, echo=FALSE, message=FALSE, warning=FALSE, fig.cap='A heatmap showing the correlation coefficient of brain activity between 316 regions in the left hemisphere of a single individiual.  Cells in yellow reflect strong positive correlation, whereas cells in blue reflect strong negative correlation. The large blocks of positive correlation along the diagonal of the matrix correspond to the major connected networks in the brain'}
 hemis_to_use = 'L'
 
 tmp <- ccmtx[parcel_data$hemis == hemis_to_use,]
@@ -161,7 +162,7 @@ hemis_parcel_data = parcel_data %>%
 
 heatmap.2(as.matrix(ccmtx_lh), trace='none', symm=T, 
           dendrogram='none', col=viridis(50), Rowv=FALSE, Colv=FALSE,
-          labCol = "", labRow="")
+          labCol = "", labRow="", key=FALSE)
 ```
 
 ## Clustering
@@ -170,12 +171,13 @@ Clustering refers to a set of methods for identifying groups of related observat
 
 One commonly used measure of distance for clustering is the *Euclidean distance*, which is basically the length of the line that connects two data points.  Figure \@ref(fig:eucdist) shows an example of a dataset with two data points and two dimensions (X and Y).  The Euclidean distance between these two points is the length of the dotted line that connects the points in space.
 
-```{r eucdist, echo=FALSE}
+```{r eucdist, echo=FALSE, fig.height=4, fig.width=4, fig.cap='A depiction of the Euclidean distance between two points, (1,2) and (4,3).  The two points differ by 3 along the X axis and by 1 along the Y axis.'}
 euc_df <- data.frame(x=c(1, 4), y=c(2, 3))
 ggplot(euc_df, aes(x,y)) + geom_point() + 
   xlim(0, 5) + ylim(0, 4) + 
   annotate('segment', x=1, y=2, xend=4, yend=3, linetype='dotted')
 ```
+
 The Euclidean distance is computed by squaring the differences in the locations of the points in each dimension, adding these squared differences, and then taking the square root.  When there are two dimnensions $x$ and $y$, this would be computed as:
 
 $$
@@ -205,16 +207,17 @@ countries <- read_delim('data/countries/country_data.csv', na=c('')) %>%
 latlong <- countries %>% 
   dplyr::select(latitude, longitude) 
 
-ggplot(countries, aes(longitude, latitude, color=Continent)) + 
-  geom_point()
+#ggplot(countries, aes(longitude, latitude, color=Continent)) + 
+#  geom_point()
 
 ```
 
-Most statistical software packages have a built-in function for performing K-means clustering using a single command, but it's instructive to compute it from scratch see how it works step by step.  We start with a dataset, and with a specific value for *K*, the number of clusters to be found in the data.  It's important to point out that there is no unique  "correct" value for the number of clusters; there are various techniques that one can use to try to determine which solution is "best" but they can often give different answers, as they incorporate different assumptions or tradeoffs. Nonetheless, clustering techniques such as K-means are an important tool for understanding the structure of data, especially as they become high-dimensional.
+Most statistical software packages have a built-in function for performing K-means clustering using a single command, but it's useful to understand how it works step by step.  We must first decide on a specific value for *K*, the number of clusters to be found in the data.  It's important to point out that there is no unique  "correct" value for the number of clusters; there are various techniques that one can use to try to determine which solution is "best" but they can often give different answers, as they incorporate different assumptions or tradeoffs. Nonetheless, clustering techniques such as K-means are an important tool for understanding the structure of data, especially as they become high-dimensional.
 
 Having selected the number of clusters (*K*) that we wish to find, we must come up with K locations that will be our starting guesses for the centers of our clusters (since we don't initially know where the centers are).  One simple way to start is to choose K of the actual data points at random and use those as our starting points, which are referred to as *centroids*.  We then compute the Euclidean distance of each data point to each of the centroids, and assign each point to a cluster based on its closest centroid.  Using these new cluster assignments, we recompute the centroid of each cluster by averaging the location of all of the points assigned to that cluster.  This process is then repeated until a stable solution is found; we refer to this as an *iterative* processes, because it iterates until the answer doesn't change, or until some other kind of limit is reached, such as a maximum number of possible iterations.
 
-```{r kmeans, echo=FALSE, warning=FALSE, message=FALSE}
+```{r kmeans, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=4, fig.cap='A two-dimensional depiction of clustering on the latitude and longitude of countries across the world.'}
+
 # based on https://stanford.edu/~cpiech/cs221/handouts/kmeans.html
 # need to clarify license!
 # and https://jakevdp.github.io/PythonDataScienceHandbook/05.11-k-means.html
@@ -240,7 +243,7 @@ shouldStop <- function(oldCentroids, centroids, iterations){
     if (dim(oldCentroids)[1] == 0){
       return(FALSE)
     }
-    return(all.equal(centroids, oldCentroids) == TRUE)
+    return(all.equal(as.matrix(centroids), as.matrix(oldCentroids)) == TRUE)
 }
 
 
@@ -276,11 +279,8 @@ while (!shouldStop(oldCentroids, centroids, iterations)) {
         # Assign centroids based on datapoint labels
         centroids = getCentroids(latlong, labels, k)
 }
-sprintf('Completed after %d iterations', iterations)
-```
+#sprintf('Completed after %d iterations', iterations)
 
-
-```{r plotkmeans, echo=FALSE, message=FALSE, warning=FALSE}
 countries <- countries %>%
   mutate(label_kmeans = as.factor(labels))
 
@@ -292,33 +292,43 @@ ggplot(countries, aes(longitude, latitude, color=label_kmeans)) +
   geom_point(data=centroid_df,alpha=0.5, size=4)
 
 ```
-Applying K-means clustering to the latitude/longitude data, we see that there is a reasonable match between the resulting clusters and the continents (Figure XXX), though none of the continents is perfectly matched to any of the clusters. We can see this by plotting a table that compares the membership of each cluster to the actual continents for each country.
 
-```{r}
+Applying K-means clustering to the latitude/longitude data (Figure \@ref(fig:kmeans)), we see that there is a reasonable match between the resulting clusters and the continents, though none of the continents is perfectly matched to any of the clusters. We can further examine this by plotting a table that compares the membership of each cluster to the actual continents for each country; this kind of table is often called a *confusion matrix*.
+
+```{r echo=FALSE}
 table(labels, countries$Continent)
+
 ```
 
-**UPDATE THIS TABLE** 
-
-- Cluster 1 contains countries from Asia and Oceania. 
-- Cluster 2 contains all of the European countries, as well as countries from Asia and Africa.  
-- Cluster 3 contains countries from Asia and Africa.  
-- Cluster 4 contains all of the North American countries as well as several South American countries.
-- Cluster 5 contains all of the remaining South American countries.
+- Cluster 1 contains all European countries, as well as countries from northern Africa and Asia. 
+- Cluster 2 contains contains Asian countries as well as several African countries.
+- Cluster 3 contains countries from the southern part of South America.
+- Cluster 4 contains all of the North American countries as well as northern South American countries.
+- Cluster 5 contains Oceania as well as several Asian countries
 - Cluster 6 contains all of the remaining African countries.
 
 Although in this example we know the actual clusters (that is, the continents of the world), in general we don't actually know the ground truth, so we simply have to trust that the clustering method has found useful structure in the data. However, one important point about K-means clustering, and iterative procedures in general, is that they are not guaranteed to give the same answer each time they are run.  The use of random numbers to determine the starting points means that the starting points can differ each time, and depending on the data this can sometimes lead to different solutions being found.  For this example, K-means clustering will sometimes find a single cluster encompassing both North and South America, and sometimes find two clusters (as it did for the specific choice of random seed used here).  Whenever using a method that involves an iterative solution, it is important to rerun the method a number of times using different random seeds, to make sure that the answers don't diverge too greatly between runs.  If they do, then one should avoid making strong conclusions based on the unstable results.  In fact, it's probably a good idea to avoid strong conclusions on the basis of clustering results more generally; they are primarily useful for getting intuition about the structure that might be present in a dataset.
+
+We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another.  For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables.  With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters.  The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.
+
+```{r kmeans_sro, echo=FALSE}
+for (i in 1:10){
+  km.result = kmeans(t(impdata), 3)
+  # print(km.result$cluster)
+}
+
+```
+
+
 
 ### Hierarchical clustering
 
 Another useful method for examining the structure of a multivariate dataset is known as *hierarchical clustering*.  This technique also uses the distances between data points to determine clusters, but it also provides a way to visualize the relationships between data points in terms of a tree-like structure known as a *dendrogram*.
 
-The most commonly used hierarchical clustering procedure is known as *agglomerative clustering*.  This procedure starts by treating each data point as its own cluster, and then progressively creates new clusters by combining the two clusters with the least distance between them. It continues to do this until there is only a single cluster. This requires computing the distance between clusters, and tere are numerous ways to cdo this; in this example we will use the *average linkage* method, which simply takes the average of all of the distances between each each data point in each of two clusters. 
-
-As an example, we will examine the relationship between the impulsivity variables that were described above.
+The most commonly used hierarchical clustering procedure is known as *agglomerative clustering*.  This procedure starts by treating each data point as its own cluster, and then progressively creates new clusters by combining the two clusters with the least distance between them. It continues to do this until there is only a single cluster. This requires computing the distance between clusters, and there are numerous ways to do this; in this example we will use the *average linkage* method, which simply takes the average of all of the distances between each each data point in each of two clusters. As an example, we will examine the relationship between the self-control variables that were described above.
 
 
-```{r dendro, echo=FALSE, message=FALSE, warning=FALSE}
+```{r dendro, echo=FALSE, message=FALSE, warning=FALSE, fig.cap='A dendrogram depicting the relative similarity of the nine self-control variables.  The three colored vertical lines represent three different cutoffs, resulting in either two (blue line), three (green line), or four (red line) clusters.'  }
 
 d <- dist(t(impdata))
 
@@ -350,7 +360,7 @@ ggplot() +
 
 ```
 
-Here we see that there is structure in the relationships between variables that can be understood at various levels by "cutting" the tree to create different numbers of clusters.  For example, if we cut the tree at 25, we get two clusters; if we cut it at 20 we get three clusters, and at 19 we get four clusters:
+Figure \@ref(fig:dendro) shows the dendrogram generated from the self-regulation dataset. Here we see that there is structure in the relationships between variables that can be understood at various levels by "cutting" the tree to create different numbers of clusters: if we cut the tree at 25, we get two clusters; if we cut it at 20 we get three clusters, and at 19 we get four clusters.
 
 ```{r cutoffs, echo=FALSE}
 ct<- cutree(hc, h=cutoffs)
@@ -361,9 +371,9 @@ for (c in cutoffs){
   cutoff_names = c(cutoff_names, sprintf('cutoff=%d', c))
 }
 names(ct_df) <- cutoff_names
-ct_df
+# ct_df
 ```
-Our interpretation of this analysis would be that there is a high degree of similarity within each of the variable sets (SSRT and UPPS) compared to between the sets. Within the UPPS variables, it seems that the sensation seeking variable stands separately from the others, which are much more similar to one another.  Within the SSRT variables, it seems that the stimulus selective SSRT variable is distinct from the other three, which are more similar.  These are the kinds of conclusions that can be drawn from a clustering analysis.
+Our interpretation of this analysis would be that there is a high degree of similarity within each of the variable sets (SSRT and UPPS) compared to between the sets. Within the UPPS variables, it seems that the sensation seeking variable stands separately from the others, which are much more similar to one another.  Within the SSRT variables, it seems that the stimulus selective SSRT variable is distinct from the other three, which are more similar.  These are the kinds of conclusions that can be drawn from a clustering analysis.  It is again important to point out that there is no single "right" number of clusters; different methods rely upon different assumptions or heuristics, and can give different results and interpretations.  In general, it's good to present the data clustered at several different levels, and make sure that this doesn't drastically change the interpretation of the data.
 
 ## Dimensionality reduction
 
@@ -372,9 +382,6 @@ It is often the case with multivariate data that many of the variables will be h
 ### Principal component analysis
 
 The idea behind principal component analysis is to find a lower-dimensional description of a set of variables that accounts for the maximum possible amount of variance in the full dataset.  A deep understanding of principal component analysis requires an understanding of linear algebra, which is beyond the scope of this book; see the resources at the end of this chapter for helpful guides to this topic. In this section I will outline the concept and hopefully whet your appetite to learn more.
-
-We will start with a simple example with just two variables in order to give an intuition for how it works.  First we generate some synthetic data for variables X and Y, with a correlation of 0.7 between the two variables.
-
 
 ```{r pca_mkdata, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -390,17 +397,15 @@ simdata <- mvrnorm(n=N,mu=mu,Sigma=sigma, empirical=TRUE)  #simulate the data, a
 sim_df <- data.frame(simdata)
 names(sim_df) <- c("Y", "X")
 
-ggplot(sim_df, aes(X, Y)) + 
-   geom_point() + 
-  xlim(-3, 3) + 
-  ylim(-3, 3) + 
-  geom_smooth(method='lm', se=FALSE)
+# ggplot(sim_df, aes(X, Y)) + 
+#    geom_point() + 
+#   xlim(-3, 3) + 
+#   ylim(-3, 3) + 
+#   geom_smooth(method='lm', se=FALSE)
 
 ```
 
-
-The goal of principal component analysis is to find a linear combination of the observed variables in the dataset that will explain the maximum amount of variance. The first principal component is the combination that explains the maximum variance. The second component is the the one that explains the maximum remaining variance, while also being uncorrelated with the first component. With more variables we can continue this process to obtain as many components as there are variables (assuming that there are more observations than there are variables), though in practice we usually hope to find a small number of components that can explain a large portion of the variance. 
-
+We will start with a simple example with just two variables in order to give an intuition for how it works.  First we generate some synthetic data for variables X and Y, with a correlation of 0.7 between the two variables. The goal of principal component analysis is to find a linear combination of the observed variables in the dataset that will explain the maximum amount of variance. The first principal component is the combination that explains the maximum variance. The second component is the the one that explains the maximum remaining variance, while also being uncorrelated with the first component. With more variables we can continue this process to obtain as many components as there are variables (assuming that there are more observations than there are variables), though in practice we usually hope to find a small number of components that can explain a large portion of the variance. 
 
 
 ```{r pca_compute, echo=F, message=F, warning=F}
@@ -422,9 +427,9 @@ sim_df_cov<- cov(sim_df)
 cov_eig <- eigen(sim_df_cov)
 ```
 
-In the case of our two-dimensional example, we can compute the principal components and plot them over the data.  What we see is that the first principal component (shown in green) follows the direction of the greatest variance.  This line is similar, though not identical, to the linear regression line; while the linear regression solution minimizes the distance between each data point and the regression line at the same X value (i.e. the vertical distance), the principal component minimizes the Euclidean distance between the data points and the line representing the component (i.e. the distance perpendicular to the component).  The second component points in a direction that is perpendicular to the first component (which is the same as being uncorrelated).
+In the case of our two-dimensional example, we can compute the principal components and plot them over the data (Figure \@ref(fig:pca_plot)).  What we see is that the first principal component (shown in green) follows the direction of the greatest variance.  This line is similar, though not identical, to the linear regression line; while the linear regression solution minimizes the distance between each data point and the regression line at the same X value (i.e. the vertical distance), the principal component minimizes the Euclidean distance between the data points and the line representing the component (i.e. the distance perpendicular to the component).  The second component points in a direction that is perpendicular to the first component (which is equivalent to being uncorrelated).
 
-```{r pca_plot, echo=FALSE, fig.width=4, message=F, warning=F}
+```{r pca_plot, echo=FALSE, fig.width=4, fig.height=4, message=F, warning=F, fig.cap='A plot of synthetic data, with the first principal component plotted in green and the second in red.'}
 
 g <- ggplot(sim_df, aes(X, Y)) + 
    geom_point(size=1.5) + 
@@ -454,7 +459,7 @@ g
 
 It's common to use PCA to reduce the dimensionality of a more complex dataset. For example, let's say that we would like to know whether performance on all four of the stop signal task variables in the earlier dataset are related to the five impulsivity survey variables.  We can perform PCA on each of those datasets separately, and examine how much of the variance in the data is accounted for by the first principal component, which will serve as our summary of the data.
 
-```{r VAF, echo=F, fig.width=4}
+```{r VAF, echo=F, fig.width=4, fig.height=4, fig.cap='A plot of the variance accounted for (or *scree plot*) for PCA applied separately to the response inhibition and impulsivity variables from the Eisenberg dataset.'}
 ssrtdata <- as.data.frame(impdata) %>% dplyr::select(starts_with('SSRT'))
                                      
 pca_result_ssrt <- prcomp(ssrtdata)
@@ -471,54 +476,51 @@ upps_df = data.frame(dataset='UPPS', PC=seq(1, 5), VarianceAccountedFor=pca_upps
 var_df <- rbind(ssrt_df, upps_df)
 
 ggplot(var_df, aes(PC, VarianceAccountedFor, color=dataset)) + 
-  geom_line()
+  geom_line(size=1.5)
 ```
 
-We see that for the stop signal variables, the first principal component accounts for about 60% of the variance in the data, whereas for the UPPS it accounts for about 55% of the variance. We can then look at the comparison of the scores obtained using the first principal component:
+We see in Figure \@ref(fig:VAF) that for the stop signal variables, the first principal component accounts for about 60% of the variance in the data, whereas for the UPPS it accounts for about 55% of the variance. We can then compute the correlation between the scores obtained using the first principal component from each set of variables, in order to ask whether the there is a relation between the two sets of variables.  The correlation of -0.014 between the two summary variables suggests that there is no overall relationship between response inhibition and impulsivity in this dataset.
 
-```{r}
+```{r echo=FALSE}
 pca_df <- data.frame(SSRT=predict(pca_result_ssrt)[, 'PC1'],
                      UPPS=predict(pca_result_upps)[, 'PC1'])
 
-ggplot(pca_df, aes(SSRT, UPPS)) + 
-   geom_point() + 
-   geom_smooth(method='lm', se=FALSE)
+#ggplot(pca_df, aes(SSRT, UPPS)) + 
+#   geom_point() + 
+#   geom_smooth(method='lm', se=FALSE)
 ```
 
-```{r}
-summary(lm(UPPS ~ SSRT, data=pca_df))
+```{r, echo=FALSE}
+ct = cor.test(pca_df$SSRT, pca_df$UPPS)
+ct
 ```
 
-We could also perform PCA on all of these variables at once.
+We could also perform PCA on all of these variables at once.  Looking at the plot of variance accounted for (also known as a *scree plot) in Figure \@ref(fig:dendro), we can see that the first two components account for a substantial amount of the variance in the data. We can then look at the loadings of each of the individual variables on these two components to understand how each specific variable is associated with the different components. 
 
-```{r}
+
+```{r imp_pc_scree, echo=FALSE, message=FALSE, fig.cap='Plot of variance accounted for by PCA components computed on the full set of self-control variables.'}
+
 imp_pc = prcomp(impdata,  scale. = T)
-imp_pc
-```
 
-
-```{r}
-
-library(factoextra)
 fviz_screeplot(imp_pc, addlabels = TRUE, ylim = c(0, 50))
 ```
 
-Another useful way to examine the results from PCA is to plot each of the variables according to its loading on each of the first two principal components.  
 
-```{r, fig.width=3, fig.height=3}
-fviz_pca_var(imp_pc, col.var = "black")
+```{r pca_var_plot, echo=FALSE, fig.width=5, fig.height=5, fig.cap='Plot of variable loadings in PCA solution including all self-control variables. The X axis reflects loadings on the first component, while the Y axis reflects loadings onthe second component.  Each variable is shown in terms of its loadings on each of the two components.'}
+fviz_pca_var(imp_pc, col.var = "black", geom='text', repel=TRUE)
 ```
-Doing this for the impulsivity dataset, we see that the first component (labeled "Dim1" in the plot) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables.  This would help us interpret any results that we obtained using the principal components in any subsequent analysis.
+
+Doing this for the impulsivity dataset (Figure \@ref(fig:pca_var_plot)), we see that the first component (labeled "Dim1" in the plot) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables.  This tells us that the first principal component captured mostly variance related to the impulsivity measures, while the second component captured mostly variance related to the response inhibition measures.
 
 ### Factor analysis
 
-While principal component analysis can be useful for reducing a dataset to a smaller number of composite variables, the standard methods for PCA have some limitations.  Most importantly, it assumes that the components are uncorrelated; while this may sometimes be true, there are often cases where we want to extract dimensions that may be correlated with one another.  A second limitation is that PCA doesn't account for measurement error in the variables that are being analyzed, which can lead to difficult in interpreting the resulting loadings on the components.  Although there are modifications of PCA that can address these issues, it is more common in some fields (such as psychology) to use *exploratory factor analysis* (or EFA) to reduce the dimensionality of a dataset.^[There is another application of factor analysis known as *confirmatory factor analysis* (or CFA) that we will not discuss here;  In practice its application can be problematic, and recent work has started to move towards modifications of EFA that can answer the questions often addressed using CFA.[@Marsh:2014th]]
+While principal component analysis can be useful for reducing a dataset to a smaller number of composite variables, the standard methods for PCA have some limitations.  Most importantly, it assumes that the components are uncorrelated; while this may sometimes be true, there are often cases where we want to extract dimensions that may be correlated with one another.  A second limitation is that PCA doesn't account for measurement error in the variables that are being analyzed, which can lead to difficult in interpreting the resulting loadings on the components.  Although there are modifications of PCA that can address these issues, it is more common in some fields (such as psychology) to use a technique called  *exploratory factor analysis* (or EFA) to reduce the dimensionality of a dataset.^[There is another application of factor analysis known as *confirmatory factor analysis* (or CFA) that we will not discuss here;  In practice its application can be problematic, and recent work has started to move towards modifications of EFA that can answer the questions often addressed using CFA.[@Marsh:2014th]]
 
 The idea behind EFA is that each observed variable is created through a combination of contributions from a set of *latent variables* -- that is, variables that cannot be observed directly -- along with some amount of measurement error. For this reason, EFA models are often referred to as belonging to a class of statistical models known as *latent variable models*.  
 
-For example, let's say that we want to understand how measures of several different variables relate to the underlying factors that give rise to those measurements.  We will first generate a synthetic dataset to show how this might work.  We will generate a set of individuals for whom we will pretend that we know the values of several latent psychological variables: impulsivity, working memory capacity, and fluid reasoning  We will assume that working memory capacity and fluid reasoning are correlated with one another, but that neither is correlated with impulsivity.  
+For example, let's say that we want to understand how measures of several different variables relate to the underlying factors that give rise to those measurements.  We will first generate a synthetic dataset to show how this might work.  We will generate a set of individuals for whom we will pretend that we know the values of several latent psychological variables: impulsivity, working memory capacity, and fluid reasoning  We will assume that working memory capacity and fluid reasoning are correlated with one another, but that neither is correlated with impulsivity. From these latent variables we will then generate a set of eight observed variables for each indivdiual, which are simply linear combinations of the latent variables along with random noise added to simulate measurement error.
 
-```{r}
+```{r echo=FALSE}
 N <- 200                           #setting my sample size             
 mu <- rep(0, 3)                     #setting the means
 c1 <- .5 # correlation b/w WM and FR
@@ -530,13 +532,11 @@ simdata <- mvrnorm(n=N,mu=mu,Sigma=sigma, empirical=TRUE)  #simulate the data, a
 
 latent_df <- data.frame(simdata)
 names(latent_df) = c('WM', 'FR', 'IMP')
-```
 
-From these latent variables we will then generate a set of eight observed variables for each indivdiual, which are simply linear combinations of the latent variables along with random noise added to simulate measurement error.
 
-```{r}
 # create observed variables by matrix-multiplying the latent variables
 # by a weight matrix 
+set.seed(123456)
 tasknames = c('nback', 'dspan', 'sspan', 'ravens', 'crt', 'UPPS', 'BIS11', 'dickman')
 ntasks = length(tasknames)
 weights = matrix(data = 0, 3, ntasks)
@@ -544,19 +544,21 @@ weights[1, 1:3] = 1
 weights[2, 4:5] = 1
 weights[3, 6:8] = 1
 
-noise_sd = .4
+noise_sd = .6
 observed_vals = as.matrix(latent_df) %*% weights + 
   mvrnorm(n=N, mu=rep(0, ntasks), Sigma=diag(ntasks) * noise_sd)
 observed_df <- data.frame(observed_vals)
 names(observed_df) <- tasknames
 ```
 
-We can further examine the data by displaying a heatmap of the correlation matrix relating all of these variables. We see from this that there are three clusters of variables corresponding to our three latent variables, which is as it should be.
+We can further examine the data by displaying a heatmap of the correlation matrix relating all of these variables (Figure \@ref(fig:dendro). We see from this that there are three clusters of variables corresponding to our three latent variables, which is as it should be.
 
-```{r}
-heatmap.2(cor(observed_df), trace='none')
+```{r efa_cor_hmap, echo=FALSE, fig.cap='A heatmap showing the correlations between the variables generated from the three underlying latent variables.'}
+
+heatmap.2(t(cor(observed_df)), trace='none', symm=TRUE, revC=TRUE,col=viridis(50))
 ```
-We can think of EFA as estimating the parameters of a set of linear models all at once, where each  model relates each of the observed variables to the latent variables.  For our example, these equations would look as follows.  In these equations, the $\beta$ characters have two subscripts, one that refers to the task and the other than refers to the latent variable, and a variable $\epsilon$ that refers to the error.  Here we will assume that everything has a mean of zero, so that we don't need to include an extra intercept term.
+
+We can think of EFA as estimating the parameters of a set of linear models all at once, where each  model relates each of the observed variables to the latent variables.  For our example, these equations would look as follows.  In these equations, the $\beta$ characters have two subscripts, one that refers to the task and the other than refers to the latent variable, and a variable $\epsilon$ that refers to the error.  Here we will assume that everything has a mean of zero, so that we don't need to include an extra intercept term for each equation.
 
 $$
 \begin{array}{lcl}
@@ -570,47 +572,36 @@ BIS11 & = &beta_{[7, 1]} * WM + \beta_{[7, 2]} * FR + \beta_{[7, 3]} * IMP  + \e
 dickman & = &beta_{[8, 1]} * WM + \beta_{[8, 2]} * FR + \beta_{[8, 3]} * IMP   + \epsilon \\
 \end{array}
 $$
-In effect what we want to do using EFA is to  estimate the *matrix* of coefficients (betas) that map the latent variables into the observed variables.  For the data that we are generating, we know that most of the betas in this matrix are zero because we created them that way; for each task, only one of the weights is set to 1, which means that each task is a noisy measurement of a single latent variable. 
 
-$$
-\begin{bmatrix} 
-1 & 0 & 0 \\ 
-1 & 0 & 0 \\ 
-1 & 0 & 0 \\ 
-0 & 1 & 0 \\ 
-0 & 1 & 0 \\ 
-0 & 0 & 1 \\ 
-0 & 0 & 1 \\ 
-0 & 0 & 1 
-\end{bmatrix}
-$$
-We can apply EFA to our synthetic dataset to estimate these parameters. We won't go into the details of how EFA is actually performed, other than to mention one important point.  All of the previous analyses we have done in this book have relied upon methods that try to minimize the difference between the observed data values and the values predicted by the model.  The methods that are used to estimate the parameters for EFA instead attempt to minimize the difference between the observed *covariances* between the observed variables, and the covariances implied by the model parameters. For this reason, these methods are often referred to as *covariance structure models*.  
+In effect what we want to do using EFA is to estimate the *matrix* of coefficients (betas) that map the latent variables into the observed variables.  For the data that we are generating, we know that most of the betas in this matrix are zero because we created them that way; for each task, only one of the weights is set to 1, which means that each task is a noisy measurement of a single latent variable. 
 
-Let's apply an exploratory factor analysis to our synthetic data. As with clustering methods, we need to first determine how many latent factors we want to include in our model. In this case we know there are three factors, so let's start with that; later on we will examine ways to estimate the number of factors from the data.
+We can apply EFA to our synthetic dataset to estimate these parameters. We won't go into the details of how EFA is actually performed, other than to mention one important point.  Most of the previous analyses in this book have relied upon methods that try to minimize the difference between the observed data values and the values predicted by the model.  The methods that are used to estimate the parameters for EFA instead attempt to minimize the difference between the observed *covariances* between the observed variables, and the covariances implied by the model parameters. For this reason, these methods are often referred to as *covariance structure models*.  
 
-```{r}
+Let's apply an exploratory factor analysis to our synthetic data. As with clustering methods, we need to first determine how many latent factors we want to include in our model. In this case we know there are three factors, so let's start with that; later on we will examine ways to estimate the number of factors directly from the data.  Here is the output from our statistical software for this model:
+
+```{r fa_synthetic, echo=FALSE}
 fa_result <- fa(observed_df, nfactors = 3)
 summary(fa_result)
 ```
 
-One question that we would like to ask is how well our model actually fits the data.  There is no single way to answer this question; rather, researchers have developed a number of different methods that provide some insight into how well the model fits the data.  For example, one commonly used criterion is based on the *root mean square error of approximation* (RMSEA) statistic, which quantifies how far the predicted covariances are from the actual covariances; a value of RMSEA less than 0.08 is often considered to reflect an adequately fitting model.  In the example here, we have a
+One question that we would like to ask is how well our model actually fits the data.  There is no single way to answer this question; rather, researchers have developed a number of different methods that provide some insight into how well the model fits the data.  For example, one commonly used criterion is based on the *root mean square error of approximation* (RMSEA) statistic, which quantifies how far the predicted covariances are from the actual covariances; a value of RMSEA less than 0.08 is often considered to reflect an adequately fitting model.  In the example here, the RMSEA value is 0.026, which suggests a model that fits quite well.
 
-We can also examine the parameter estimates in order to see whether it appropriately identified the structure in the data.  It's common to plot this as a graph, with arrows from the latent variables (represented as ellipses) pointing to the observed variables (represented as rectangles), where an arrow represents a substantial loading of the observed variable on the latent variable.
+We can also examine the parameter estimates in order to see whether the model has appropriately identified the structure in the data.  It's common to plot this as a graph, with arrows from the latent variables (represented as ellipses) pointing to the observed variables (represented as rectangles), where an arrow represents a substantial loading of the observed variable on the latent variable; this kind of graph is often referred to as a *path diagram* since it reflects the paths relating the variables. This is shown in Figure \@ref(fig:v]fa_diagram). In this case the EFA procedure correctly identified the structure present in the data, both in terms of which observed variables are related to each of the latent variables, and in terms of the correlations between latent variables.
 
-```{r}
+
+```{r fa_diagram, echo=FALSE, fig.cap='Path diagram for the exploratory factor analysis model.'}
 fa.diagram(fa_result)
 ```
 
-In this case the EFA procedure correctly identified the structure present in the data, both in terms of which observed variables are related to each of the latent variables, and in terms of the correlations between latent variables.
-
-
 ### Determining the number of factors
 
-One of the main challenges in applying EFA is to determine the number of factors.  A common way to do this is to examine the fit of the model while varying the number of factors, and then selecting the model that gives the best fit.  This is not foolproof, and there are multiple ways to quantify the fit of the model that can sometimes give different answers.  
+One of the main challenges in applying EFA is to determine the number of factors.  A common way to do this is to examine the fit of the model while varying the number of factors, and then selecting the model that gives the best fit.  This is not foolproof, and there are multiple ways to quantify the fit of the model that can sometimes give different answers. 
 
-For the purposes of this example we will select one of the common methods for quantifying model fit, which is known as the *sample-size adjusted Bayesian information criterion* (or *SABIC*).  This measure quantifies how well the model fits the data, while also taking into account the number of parameters in the model (which in this case is related to the number of factors).  While the absolute value of the SABIC is not interpretable, when using the same data and same kind of model we can compare models using SABIC to determine which is most appropriate for the data.  One important thing to know about SABIC and other measures like it is that lower values represent better fit of the model, so in this case we want to find the number of factors with the lowest SABIC.
+One might think that we could simply look at how well the model fits and pick the number of factors with the best fit, but this won't work, because a more complex model will always fit the data better (as we saw in our earlier discussion of overfitting).  For this reason, we need to use a metric of model fit that penalizes for the number of parameters in the model.  For the purposes of this example we will select one of the common methods for quantifying model fit, which is known as the *sample-size adjusted Bayesian information criterion* (or *SABIC*).  This measure quantifies how well the model fits the data, while also taking into account the number of parameters in the model (which in this case is related to the number of factors) as well as the sample size.  While the absolute value of the SABIC is not interpretable, when using the same data and same kind of model we can compare models using SABIC to determine which is most appropriate for the data.  One important thing to know about SABIC and other measures like it (known as *information criteria*) is that lower values represent better fit of the model, so in this case we want to find the number of factors with the lowest SABIC. In Figure \@ref(fig:sabic_plot) we see that the model with the lowest SABIC has three factors, which shows that this approach was able to accurately determine the number of factors used to generate the data.
 
-```{r}
+
+```{r sabic_plot, echo=FALSE, fig.cap='Plot of SABIC for varying numbers of factors.'}
+
 BIC_results = data.frame(nfactors=seq(1, 4), SABIC=NA)
 
 for (i in 1:nrow(BIC_results)){
@@ -619,11 +610,10 @@ for (i in 1:nrow(BIC_results)){
 
 ggplot(BIC_results, aes(nfactors, SABIC)) + geom_line()
 ```
-Here we see that the model with the lowest SABIC has three factors, which shows that this approach was able to accurately determine the number of factors used to generate the data.
 
-Now let's see what happens when we apply this model to data from the Eisenberg et al. dataset that contains all of the eight variables that were simulated in the above example.
+Now let's see what happens when we apply this model to real data from the Eisenberg et al. dataset, which contains measurements of all of the eight variables that were simulated in the above example. Figure \@ref(fig:sabic_sro) shows that the model with three factors also has the lowest SABIC for these real data.
 
-```{r}
+```{r sabic_sro, echo=FALSE, fig.cap='A plot of SABIC for the data from the Eisenberg et al. study.'}
 imp_efa_df <- behavdata %>%
   dplyr::select(adaptive_n_back.mean_load, 
                 bis11_survey.Nonplanning,
@@ -644,13 +634,6 @@ imp_efa_df <- behavdata %>%
          ravens = ravens.score
          )
 
-```
-
-Choosing number of factors
-- Introduce BIC
-
-```{r}
-
 BIC_df <- data.frame(nfactors = seq(1, 4), SABIC=NA)
 
 for (i in 1:nrow(BIC_df)){
@@ -662,17 +645,33 @@ ggplot(BIC_df, aes(nfactors, SABIC)) +
   geom_line()
 ```
 
-```{r}
+```{r fa_diagram_sro, echo=FALSE, fig.cap='Path diagram for the three-factor model on the Eisenberg et al. data.'}
 
 fa_result <- fa(imp_efa_df, nfactors=3)
 
-summary(fa_result)
-```
+#summary(fa_result)
 
-```{r}
 fa.diagram(fa_result)
 
 ```
 
-Here we see that the real data demonstrate a factor structure that is very similar to what we saw with the simulated data. This should not be surprising, since the simulated data were generated based on knowledge of these different tasks, but it's comforting to know that human behavior is systematic enough that we can reliably identify these kinds of relationships.  The main difference is that the correlation between the working memory factor (MR3) and the fluid reasoning factor (MR1) is even higher than it was in the simulated data. This result is scientifically useful because it shows us that while working memory and fluid reasoning are closely related, there is utility in separately modeling them.
+Plotting the path diagram (Figure \@ref(fig:fa_diagram_sro)) we see that the real data demonstrate a factor structure that is very similar to what we saw with the simulated data. This should not be surprising, since the simulated data were generated based on knowledge of these different tasks, but it's comforting to know that human behavior is systematic enough that we can reliably identify these kinds of relationships.  The main difference is that the correlation between the working memory factor (MR3) and the fluid reasoning factor (MR1) is even higher than it was in the simulated data. This result is scientifically useful because it shows us that while working memory and fluid reasoning are closely related, there is utility in separately modeling them.
+
+
+## Learning objectives
+
+Having read this chapter, you should be able to:
+
+* Describe the distinction between supervised and unsupervised learning.
+* Employ visualization techniques including heatmaps to visualize the structure of multivariate data.
+* Understand the concept of clustering and how it can be used to identify structure in data.
+* Understand the concept of dimensionality reduction.
+* Describe how principal component analysis and factor analysis can be used to perform dimensionality reduction.
+
+## Suggested readings
+
+- *The Geometry of Multivariate Statistics*, by Thomas Wickens
+- *No Bullshit Guide to Linear Algebra*, by Ivan Savov
+
+
 
