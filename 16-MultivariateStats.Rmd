@@ -22,11 +22,11 @@ library(gplots)
 library(pdist)
 library(factoextra)
 library(viridis)
-
+library(mclust)
 theme_set(theme_minimal())
 ```
 
-The term *multivariate* refers to analyses that involve more than one variable. This might be a bit confusing at this point in the book, since we have already encountered a number of analyses in the book that involve more than one variable.  However, in general we were always trying to relate a single outcome variable (or *dependent variable*) to one or more explanatory (or *independent*) variables.  When we speak of "multivariate statistics" we are generally referring to analyses that attempt to understand the relationship between a large set of variables that could include both independent and dependent variables.
+The term *multivariate* refers to analyses that involve more than one random variable. Whereas we have seen previous examples where the model included multiple variables (as in linear regression), in those cases we were specifically interested in how the variation in a *dependent variable* could be explained in terms of one or more *independent variables* that are usually specified by the experimenter rather than measured.   In a multivariate analysis we generally treat all of the variables as equals, and seek to understand how they relate to one another as a group.
 
 There are many different kinds of multivariate analysis, but we will focus on two major approaches in this chapter.  First, we may simply want to understand and visualize the structure that exists in the data, by which we usually mean which variables or observations are related to which other.  We would usually define "related" in terms of some measure that indexes the distance between the values across variables.  One important method that fits under this category is known as *clustering*, which aims to find clusters of observations that are similar across variables.
 
@@ -216,7 +216,8 @@ Most statistical software packages have a built-in function for performing K-mea
 
 Having selected the number of clusters (*K*) that we wish to find, we must come up with K locations that will be our starting guesses for the centers of our clusters (since we don't initially know where the centers are).  One simple way to start is to choose K of the actual data points at random and use those as our starting points, which are referred to as *centroids*.  We then compute the Euclidean distance of each data point to each of the centroids, and assign each point to a cluster based on its closest centroid.  Using these new cluster assignments, we recompute the centroid of each cluster by averaging the location of all of the points assigned to that cluster.  This process is then repeated until a stable solution is found; we refer to this as an *iterative* processes, because it iterates until the answer doesn't change, or until some other kind of limit is reached, such as a maximum number of possible iterations.
 
-```{r kmeans, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=4, fig.cap='A two-dimensional depiction of clustering on the latitude and longitude of countries across the world.'}
+```{r kmeans, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=4, fig.cap='A two-dimensional depiction of clustering on the latitude and longitude of countries across the world.  The square black symbols show the starting centroids for each cluster, and the lines show the movement of the centroid for that cluster across the iterations of the algorithm.'}
+
 
 # based on https://stanford.edu/~cpiech/cs221/handouts/kmeans.html
 # need to clarify license!
@@ -268,6 +269,10 @@ getCentroids <- function(dataSet, labels, k){
     return(newCentroids)
 }
 
+all_centroids_df = data.frame(centroids) %>%
+  mutate(label_kmeans=as.factor(seq(1,nrow(.))),
+         iter=0)
+
 
 while (!shouldStop(oldCentroids, centroids, iterations)) {
           # Save old centroids for convergence test. Book keeping.
@@ -278,18 +283,36 @@ while (!shouldStop(oldCentroids, centroids, iterations)) {
         
         # Assign centroids based on datapoint labels
         centroids = getCentroids(latlong, labels, k)
+        centroids_df = data.frame(centroids) %>%
+          mutate(label_kmeans=as.factor(seq(1,nrow(.))),
+                 iter=iterations)
+        all_centroids_df = rbind(all_centroids_df, centroids_df)
 }
 #sprintf('Completed after %d iterations', iterations)
 
 countries <- countries %>%
   mutate(label_kmeans = as.factor(labels))
 
-centroid_df = data.frame(centroids) %>%
-  mutate(label_kmeans=as.factor(seq(1,nrow(.))))
+centroid_df = all_centroids_df %>%
+  filter(iter==iterations)
 
-ggplot(countries, aes(longitude, latitude, color=label_kmeans)) + 
+p = ggplot(countries, aes(longitude, latitude, color=label_kmeans)) + 
   geom_point() + 
-  geom_point(data=centroid_df,alpha=0.5, size=4)
+  geom_point(data=centroid_df,alpha=0.5, size=4) 
+
+for (i in 1:iterations){
+  for (j in 1:k){
+    iter_df = all_centroids_df %>% filter(iter==i, label_kmeans==j)
+    prev_df = all_centroids_df %>% filter(iter==i-1, label_kmeans==j)
+    p = p +  annotate('segment', x = iter_df$longitude, 
+                              y = iter_df$latitude,
+                              xend = prev_df$longitude,
+                              yend = prev_df$latitude, alpha=0.7)
+  }
+}
+
+p + geom_point(data=all_centroids_df %>% filter(iter==0), 
+               size=2, shape=15, color='black')
 
 ```
 
@@ -307,19 +330,30 @@ table(labels, countries$Continent)
 - Cluster 5 contains Oceania as well as several Asian countries
 - Cluster 6 contains all of the remaining African countries.
 
-Although in this example we know the actual clusters (that is, the continents of the world), in general we don't actually know the ground truth, so we simply have to trust that the clustering method has found useful structure in the data. However, one important point about K-means clustering, and iterative procedures in general, is that they are not guaranteed to give the same answer each time they are run.  The use of random numbers to determine the starting points means that the starting points can differ each time, and depending on the data this can sometimes lead to different solutions being found.  For this example, K-means clustering will sometimes find a single cluster encompassing both North and South America, and sometimes find two clusters (as it did for the specific choice of random seed used here).  Whenever using a method that involves an iterative solution, it is important to rerun the method a number of times using different random seeds, to make sure that the answers don't diverge too greatly between runs.  If they do, then one should avoid making strong conclusions based on the unstable results.  In fact, it's probably a good idea to avoid strong conclusions on the basis of clustering results more generally; they are primarily useful for getting intuition about the structure that might be present in a dataset.
+Although in this example we know the actual clusters (that is, the continents of the world), in general we don't actually know the ground truth for unsupervised learning problems, so we simply have to trust that the clustering method has found useful structure in the data. However, one important point about K-means clustering, and iterative procedures in general, is that they are not guaranteed to give the same answer each time they are run.  The use of random numbers to determine the starting points means that the starting points can differ each time, and depending on the data this can sometimes lead to different solutions being found.  For this example, K-means clustering will sometimes find a single cluster encompassing both North and South America, and sometimes find two clusters (as it did for the specific choice of random seed used here).  Whenever using a method that involves an iterative solution, it is important to rerun the method a number of times using different random seeds, to make sure that the answers don't diverge too greatly between runs.  If they do, then one should avoid making strong conclusions based on the unstable results.  In fact, it's probably a good idea to avoid strong conclusions on the basis of clustering results more generally; they are primarily useful for getting intuition about the structure that might be present in a dataset.
 
 We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another.  For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables.  With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters.  The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.
 
-```{r kmeans_sro, echo=FALSE}
+```{r kmeans_sro, fig.width=4, fig.height=4, echo=FALSE, fig.cap='A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster. "}
+
+set.seed(123)
+cluster_results = c()
 for (i in 1:10){
   km.result = kmeans(t(impdata), 3)
-  # print(km.result$cluster)
+  cluster_results = rbind(cluster_results, km.result$cluster)
+  # relabel so that cluster nums match when solution is identical
+  for (j in 1:(i-1)){
+    if (j>0 && adjustedRandIndex(cluster_results[i, ], cluster_results[j, ]) == 1){
+      cluster_results[i, ] = cluster_results[j, ]
+      break
+    }
+  }
 }
 
+heatmap.2(cluster_results, dendrogram='none', trace='none',
+          col=rainbow(3, start=0.1, alpha=0.5), notecol='black',
+          cellnote=cluster_results, notecex=1, key=FALSE)
 ```
-
-
 
 ### Hierarchical clustering
 
@@ -360,7 +394,7 @@ ggplot() +
 
 ```
 
-Figure \@ref(fig:dendro) shows the dendrogram generated from the self-regulation dataset. Here we see that there is structure in the relationships between variables that can be understood at various levels by "cutting" the tree to create different numbers of clusters: if we cut the tree at 25, we get two clusters; if we cut it at 20 we get three clusters, and at 19 we get four clusters.
+Figure \@ref(fig:dendro) shows the dendrogram generated from the self-regulation dataset. Here we see that there is structure in the relationships between variables that can be understood at various levels by "cutting" the tree to create different numbers of clusters: if we cut the tree at 25, we get two clusters; if we cut it at 20 we get three clusters, and at 19 we get four clusters.  
 
 ```{r cutoffs, echo=FALSE}
 ct<- cutree(hc, h=cutoffs)
@@ -370,10 +404,15 @@ cutoff_names = c()
 for (c in cutoffs){
   cutoff_names = c(cutoff_names, sprintf('cutoff=%d', c))
 }
-names(ct_df) <- cutoff_names
+names(ct_df) <- cutoff_names 
+
 # ct_df
 ```
+
+Interestingly, the solution found by the hierarchical clustering analysis is identical to the solution found in the majority of the K-means clustering runs, which is comforting.  
+
 Our interpretation of this analysis would be that there is a high degree of similarity within each of the variable sets (SSRT and UPPS) compared to between the sets. Within the UPPS variables, it seems that the sensation seeking variable stands separately from the others, which are much more similar to one another.  Within the SSRT variables, it seems that the stimulus selective SSRT variable is distinct from the other three, which are more similar.  These are the kinds of conclusions that can be drawn from a clustering analysis.  It is again important to point out that there is no single "right" number of clusters; different methods rely upon different assumptions or heuristics, and can give different results and interpretations.  In general, it's good to present the data clustered at several different levels, and make sure that this doesn't drastically change the interpretation of the data.
+
 
 ## Dimensionality reduction
 
@@ -381,7 +420,7 @@ It is often the case with multivariate data that many of the variables will be h
 
 ### Principal component analysis
 
-The idea behind principal component analysis is to find a lower-dimensional description of a set of variables that accounts for the maximum possible amount of variance in the full dataset.  A deep understanding of principal component analysis requires an understanding of linear algebra, which is beyond the scope of this book; see the resources at the end of this chapter for helpful guides to this topic. In this section I will outline the concept and hopefully whet your appetite to learn more.
+The idea behind principal component analysis is to find a lower-dimensional description of a set of variables that accounts for the maximum possible amount of information in the full dataset.  A deep understanding of principal component analysis requires an understanding of linear algebra, which is beyond the scope of this book; see the resources at the end of this chapter for helpful guides to this topic. In this section I will outline the concept and hopefully whet your appetite to learn more.
 
 ```{r pca_mkdata, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -405,7 +444,7 @@ names(sim_df) <- c("Y", "X")
 
 ```
 
-We will start with a simple example with just two variables in order to give an intuition for how it works.  First we generate some synthetic data for variables X and Y, with a correlation of 0.7 between the two variables. The goal of principal component analysis is to find a linear combination of the observed variables in the dataset that will explain the maximum amount of variance. The first principal component is the combination that explains the maximum variance. The second component is the the one that explains the maximum remaining variance, while also being uncorrelated with the first component. With more variables we can continue this process to obtain as many components as there are variables (assuming that there are more observations than there are variables), though in practice we usually hope to find a small number of components that can explain a large portion of the variance. 
+We will start with a simple example with just two variables in order to give an intuition for how it works.  First we generate some synthetic data for variables X and Y, with a correlation of 0.7 between the two variables. The goal of principal component analysis is to find a linear combination of the observed variables in the dataset that will explain the maximum amount of variance; the idea here is that the variance in the data is a combination of signal and noise, and we want to find the strongest common signal between the variables. The first principal component is the combination that explains the maximum variance. The second component is the the one that explains the maximum remaining variance, while also being uncorrelated with the first component. With more variables we can continue this process to obtain as many components as there are variables (assuming that there are more observations than there are variables), though in practice we usually hope to find a small number of components that can explain a large portion of the variance. 
 
 
 ```{r pca_compute, echo=F, message=F, warning=F}
@@ -506,15 +545,25 @@ fviz_screeplot(imp_pc, addlabels = TRUE, ylim = c(0, 50))
 ```
 
 
-```{r pca_var_plot, echo=FALSE, fig.width=5, fig.height=5, fig.cap='Plot of variable loadings in PCA solution including all self-control variables. The X axis reflects loadings on the first component, while the Y axis reflects loadings onthe second component.  Each variable is shown in terms of its loadings on each of the two components.'}
-fviz_pca_var(imp_pc, col.var = "black", geom='text', repel=TRUE)
+```{r pca_var_plot, echo=FALSE, fig.width=4, fig.height=4, fig.cap='Plot of variable loadings in PCA solution including all self-control variables. Each variable is shown in terms of its loadings on each of the two components; reflected in the two rows respectively.'}
+
+loading_df = as.data.frame(imp_pc$rotation) %>% 
+  select(PC1, PC2)
+  
+loading_df['Variable'] = rownames(loading_df)
+loading_df = loading_df %>% 
+  pivot_longer(!Variable, names_to='PC', values_to='Loading')
+
+ggplot(loading_df ,
+       aes(Variable, Loading)) + geom_bar(stat='identity')  + 
+      facet_grid(PC ~ .)
 ```
 
-Doing this for the impulsivity dataset (Figure \@ref(fig:pca_var_plot)), we see that the first component (labeled "Dim1" in the plot) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables.  This tells us that the first principal component captured mostly variance related to the impulsivity measures, while the second component captured mostly variance related to the response inhibition measures.
+Doing this for the impulsivity dataset (Figure \@ref(fig:pca_var_plot)), we see that the first component (in the first row of the figure) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables.  This tells us that the first principal component captured mostly variance related to the impulsivity measures, while the second component captured mostly variance related to the response inhibition measures.
 
 ### Factor analysis
 
-While principal component analysis can be useful for reducing a dataset to a smaller number of composite variables, the standard methods for PCA have some limitations.  Most importantly, it assumes that the components are uncorrelated; while this may sometimes be true, there are often cases where we want to extract dimensions that may be correlated with one another.  A second limitation is that PCA doesn't account for measurement error in the variables that are being analyzed, which can lead to difficult in interpreting the resulting loadings on the components.  Although there are modifications of PCA that can address these issues, it is more common in some fields (such as psychology) to use a technique called  *exploratory factor analysis* (or EFA) to reduce the dimensionality of a dataset.^[There is another application of factor analysis known as *confirmatory factor analysis* (or CFA) that we will not discuss here;  In practice its application can be problematic, and recent work has started to move towards modifications of EFA that can answer the questions often addressed using CFA.[@Marsh:2014th]]
+While principal component analysis can be useful for reducing a dataset to a smaller number of composite variables, the standard methods for PCA have some limitations.  Most importantly, it ensures that the components are uncorrelated; while this may sometimes be useful, there are often cases where we want to extract dimensions that may be correlated with one another.  A second limitation is that PCA doesn't account for measurement error in the variables that are being analyzed, which can lead to difficult in interpreting the resulting loadings on the components.  Although there are modifications of PCA that can address these issues, it is more common in some fields (such as psychology) to use a technique called  *exploratory factor analysis* (or EFA) to reduce the dimensionality of a dataset.^[There is another application of factor analysis known as *confirmatory factor analysis* (or CFA) that we will not discuss here;  In practice its application can be problematic, and recent work has started to move towards modifications of EFA that can answer the questions often addressed using CFA.[@Marsh:2014th]]
 
 The idea behind EFA is that each observed variable is created through a combination of contributions from a set of *latent variables* -- that is, variables that cannot be observed directly -- along with some amount of measurement error. For this reason, EFA models are often referred to as belonging to a class of statistical models known as *latent variable models*.  
 
