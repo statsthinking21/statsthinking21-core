@@ -28,11 +28,11 @@ theme_set(theme_minimal())
 
 The term *multivariate* refers to analyses that involve more than one random variable. Whereas we have seen previous examples where the model included multiple variables (as in linear regression), in those cases we were specifically interested in how the variation in a *dependent variable* could be explained in terms of one or more *independent variables* that are usually specified by the experimenter rather than measured.   In a multivariate analysis we generally treat all of the variables as equals, and seek to understand how they relate to one another as a group.
 
-There are many different kinds of multivariate analysis, but we will focus on two major approaches in this chapter.  First, we may simply want to understand and visualize the structure that exists in the data, by which we usually mean which variables or observations are related to which other.  We would usually define "related" in terms of some measure that indexes the distance between the values across variables.  One important method that fits under this category is known as *clustering*, which aims to find clusters of observations that are similar across variables.
+There are many different kinds of multivariate analysis, but we will focus on two major approaches in this chapter.  First, we may simply want to understand and visualize the structure that exists in the data, by which we usually mean which variables or observations are related to which other.  We would usually define "related" in terms of some measure that indexes the distance between the values across variables.  One important method that fits under this category is known as *clustering*, which aims to find clusters of variables or observations that are similar across variables.
 
 Second, we may want to take a large number of variables and reduce them to a smaller number of variables in a way that retains as much information as possible.  This is referred to as *dimensionality reduction*, where "dimensionality" refers to the number of variables in the dataset.  We will discuss two techniques commonly used for dimensionality reduction, known as *principal component analysis* and  *factor analysis*.
 
-Clustering and dimensionality reduction are often classified as forms of "unsupervised learning"; this is in contrast to *supervised learning* which characterizes models such as linear regression that you've learned about so far.  The reason that we consider linear regression to be "supervised" is that we know the value of thing that we are trying to predict (i.e. the dependent variable) and we are trying to find the model that best predicts those values.  In unspervised learning, we don't have a specific value that we are trying to predict; instead, we are trying to discover structure in the data that might be useful for understanding what's going on, which generally requires some assumptions about what kind of structure we want to find.
+Clustering and dimensionality reduction are often classified as forms of *unsupervised learning*; this is in contrast to *supervised learning* which characterizes models such as linear regression that you've learned about so far.  The reason that we consider linear regression to be "supervised" is that we know the value of thing that we are trying to predict (i.e. the dependent variable) and we are trying to find the model that best predicts those values.  In unspervised learning, we don't have a specific value that we are trying to predict; instead, we are trying to discover structure in the data that might be useful for understanding what's going on, which generally requires some assumptions about what kind of structure we want to find.
 
 One thing that you will discover in this chapter is that whereas there is generally a "right" answer in supervised learning (once we have agreed upon how to determine the "best" model, such as the sum of squared errors), there is often not an agreed-upon "right" answer in unsupervised learning.  Different unsupervised learning methods can give very different answers about the same data, and there is usually no way in principle to determine which of these is "correct", as it depends on the goals of the analysis and the assumptions that one is willing to make about the mechanisms that give rise to the data.  Some people find this frustrating, while others find it exhilarating; it will be up to you to figure out which of these camps you fall into.
 
@@ -167,7 +167,7 @@ heatmap.2(as.matrix(ccmtx_lh), trace='none', symm=T,
 
 ## Clustering
 
-Clustering refers to a set of methods for identifying groups of related observations or variables within a dataset, based on the similarity of the values of the observations.  Usually this similarity will be quantified in terms of some measure of the *distance* between observations.  The clustering method then finds the set of groups that have the lowest distance between their members.   
+Clustering refers to a set of methods for identifying groups of related observations or variables within a dataset, based on the similarity of the values of the observations.  Usually this similarity will be quantified in terms of some measure of the *distance* between multivariate values.  The clustering method then finds the set of groups that have the lowest distance between their members.   
 
 One commonly used measure of distance for clustering is the *Euclidean distance*, which is basically the length of the line that connects two data points.  Figure \@ref(fig:eucdist) shows an example of a dataset with two data points and two dimensions (X and Y).  The Euclidean distance between these two points is the length of the dotted line that connects the points in space.
 
@@ -178,7 +178,7 @@ ggplot(euc_df, aes(x,y)) + geom_point() +
   annotate('segment', x=1, y=2, xend=4, yend=3, linetype='dotted')
 ```
 
-The Euclidean distance is computed by squaring the differences in the locations of the points in each dimension, adding these squared differences, and then taking the square root.  When there are two dimnensions $x$ and $y$, this would be computed as:
+The Euclidean distance is computed by squaring the differences in the locations of the points in each dimension, adding these squared differences, and then taking the square root.  When there are two dimensions $x$ and $y$, this would be computed as:
 
 $$
 d(x, y) = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}
@@ -332,9 +332,9 @@ table(labels, countries$Continent)
 
 Although in this example we know the actual clusters (that is, the continents of the world), in general we don't actually know the ground truth for unsupervised learning problems, so we simply have to trust that the clustering method has found useful structure in the data. However, one important point about K-means clustering, and iterative procedures in general, is that they are not guaranteed to give the same answer each time they are run.  The use of random numbers to determine the starting points means that the starting points can differ each time, and depending on the data this can sometimes lead to different solutions being found.  For this example, K-means clustering will sometimes find a single cluster encompassing both North and South America, and sometimes find two clusters (as it did for the specific choice of random seed used here).  Whenever using a method that involves an iterative solution, it is important to rerun the method a number of times using different random seeds, to make sure that the answers don't diverge too greatly between runs.  If they do, then one should avoid making strong conclusions based on the unstable results.  In fact, it's probably a good idea to avoid strong conclusions on the basis of clustering results more generally; they are primarily useful for getting intuition about the structure that might be present in a dataset.
 
-We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another.  For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables.  With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters.  The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.
+We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another.  For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables.  With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters (as seen in Figure \@ref(fig:kmeans_sro)).  The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.
 
-```{r kmeans_sro, fig.width=4, fig.height=4, echo=FALSE, fig.cap='A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster. "}
+```{r kmeans_sro, fig.width=4, fig.height=4, echo=FALSE, fig.cap='A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster.'}
 
 set.seed(123)
 cluster_results = c()
@@ -352,7 +352,8 @@ for (i in 1:10){
 
 heatmap.2(cluster_results, dendrogram='none', trace='none',
           col=rainbow(3, start=0.1, alpha=0.5), notecol='black',
-          cellnote=cluster_results, notecex=1, key=FALSE)
+          cellnote=cluster_results, notecex=1, key=FALSE,
+           margins=c(12,8), srtCol=45, )
 ```
 
 ### Hierarchical clustering
@@ -409,7 +410,7 @@ names(ct_df) <- cutoff_names
 # ct_df
 ```
 
-Interestingly, the solution found by the hierarchical clustering analysis is identical to the solution found in the majority of the K-means clustering runs, which is comforting.  
+Interestingly, the solution found by the hierarchical clustering analysis of the self-control data is identical to the solution found in the majority of the K-means clustering runs, which is comforting.  
 
 Our interpretation of this analysis would be that there is a high degree of similarity within each of the variable sets (SSRT and UPPS) compared to between the sets. Within the UPPS variables, it seems that the sensation seeking variable stands separately from the others, which are much more similar to one another.  Within the SSRT variables, it seems that the stimulus selective SSRT variable is distinct from the other three, which are more similar.  These are the kinds of conclusions that can be drawn from a clustering analysis.  It is again important to point out that there is no single "right" number of clusters; different methods rely upon different assumptions or heuristics, and can give different results and interpretations.  In general, it's good to present the data clustered at several different levels, and make sure that this doesn't drastically change the interpretation of the data.
 
@@ -559,13 +560,13 @@ ggplot(loading_df ,
       facet_grid(PC ~ .)
 ```
 
-Doing this for the impulsivity dataset (Figure \@ref(fig:pca_var_plot)), we see that the first component (in the first row of the figure) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables.  This tells us that the first principal component captured mostly variance related to the impulsivity measures, while the second component captured mostly variance related to the response inhibition measures.
+Doing this for the impulsivity dataset (Figure \@ref(fig:pca_var_plot)), we see that the first component (in the first row of the figure) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables.  This tells us that the first principal component captured mostly variance related to the impulsivity measures, while the second component captured mostly variance related to the response inhibition measures. You might notice that the loadings are actually negative for most of these variables; the sign of the loadings is arbitrary, so we should make sure to look at large positive and negative loadings.
 
 ### Factor analysis
 
 While principal component analysis can be useful for reducing a dataset to a smaller number of composite variables, the standard methods for PCA have some limitations.  Most importantly, it ensures that the components are uncorrelated; while this may sometimes be useful, there are often cases where we want to extract dimensions that may be correlated with one another.  A second limitation is that PCA doesn't account for measurement error in the variables that are being analyzed, which can lead to difficult in interpreting the resulting loadings on the components.  Although there are modifications of PCA that can address these issues, it is more common in some fields (such as psychology) to use a technique called  *exploratory factor analysis* (or EFA) to reduce the dimensionality of a dataset.^[There is another application of factor analysis known as *confirmatory factor analysis* (or CFA) that we will not discuss here;  In practice its application can be problematic, and recent work has started to move towards modifications of EFA that can answer the questions often addressed using CFA.[@Marsh:2014th]]
 
-The idea behind EFA is that each observed variable is created through a combination of contributions from a set of *latent variables* -- that is, variables that cannot be observed directly -- along with some amount of measurement error. For this reason, EFA models are often referred to as belonging to a class of statistical models known as *latent variable models*.  
+The idea behind EFA is that each observed variable is created through a combination of contributions from a set of *latent variables* -- that is, variables that cannot be observed directly -- along with some amount of measurement error for each variable. For this reason, EFA models are often referred to as belonging to a class of statistical models known as *latent variable models*.  
 
 For example, let's say that we want to understand how measures of several different variables relate to the underlying factors that give rise to those measurements.  We will first generate a synthetic dataset to show how this might work.  We will generate a set of individuals for whom we will pretend that we know the values of several latent psychological variables: impulsivity, working memory capacity, and fluid reasoning  We will assume that working memory capacity and fluid reasoning are correlated with one another, but that neither is correlated with impulsivity. From these latent variables we will then generate a set of eight observed variables for each indivdiual, which are simply linear combinations of the latent variables along with random noise added to simulate measurement error.
 
@@ -603,8 +604,11 @@ names(observed_df) <- tasknames
 We can further examine the data by displaying a heatmap of the correlation matrix relating all of these variables (Figure \@ref(fig:dendro). We see from this that there are three clusters of variables corresponding to our three latent variables, which is as it should be.
 
 ```{r efa_cor_hmap, echo=FALSE, fig.cap='A heatmap showing the correlations between the variables generated from the three underlying latent variables.'}
+cormtx = t(cor(observed_df))
 
-heatmap.2(t(cor(observed_df)), trace='none', symm=TRUE, revC=TRUE,col=viridis(50))
+heatmap.2(cormtx, trace='none', symm=TRUE, 
+          revC=TRUE,col=viridis(50),
+          cellnote=round(cormtx, 2), notecol='black', key=FALSE,)
 ```
 
 We can think of EFA as estimating the parameters of a set of linear models all at once, where each  model relates each of the observed variables to the latent variables.  For our example, these equations would look as follows.  In these equations, the $\beta$ characters have two subscripts, one that refers to the task and the other than refers to the latent variable, and a variable $\epsilon$ that refers to the error.  Here we will assume that everything has a mean of zero, so that we don't need to include an extra intercept term for each equation.
@@ -660,7 +664,7 @@ for (i in 1:nrow(BIC_results)){
 ggplot(BIC_results, aes(nfactors, SABIC)) + geom_line()
 ```
 
-Now let's see what happens when we apply this model to real data from the Eisenberg et al. dataset, which contains measurements of all of the eight variables that were simulated in the above example. Figure \@ref(fig:sabic_sro) shows that the model with three factors also has the lowest SABIC for these real data.
+Now let's see what happens when we apply this model to real data from the Eisenberg et al. dataset, which contains measurements of all of the eight variables that were simulated in the above example. The model with three factors also has the lowest SABIC for these real data.
 
 ```{r sabic_sro, echo=FALSE, fig.cap='A plot of SABIC for the data from the Eisenberg et al. study.'}
 imp_efa_df <- behavdata %>%
@@ -690,8 +694,8 @@ for (i in 1:nrow(BIC_df)){
   BIC_df$SABIC[i] = fa_result$SABIC
 }
 
-ggplot(BIC_df, aes(nfactors, SABIC)) + 
-  geom_line()
+#ggplot(BIC_df, aes(nfactors, SABIC)) + 
+#  geom_line()
 ```
 
 ```{r fa_diagram_sro, echo=FALSE, fig.cap='Path diagram for the three-factor model on the Eisenberg et al. data.'}
