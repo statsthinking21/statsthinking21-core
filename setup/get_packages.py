@@ -7,7 +7,7 @@ import os,glob
 
 
 files=glob.glob('../*.Rmd') 
-packages=['StanHeaders']
+packages=['StanHeaders', 'multcompView']
 for file in files:
     with open(file) as f:
         lines=[i.strip().split('(')[1].replace(')','') for i in f.readlines() if i.find('library')==0 or i.find('require')==0]
@@ -23,9 +23,9 @@ with open('dockerfile_includes','w') as f:
        f.write('"%s", \\\n'%p) 
 with open('package_installs.R','w') as f:
     # solution to rstan compilation problem 
-    f.write("install.packages('rstan', repos='https://cloud.r-project.org/', dependencies=TRUE)\n")
-    f.write("install.packages('magick', repos='https://cloud.r-project.org/', dependencies=TRUE)\n")
+    f.write("install.packages('rstan', dependencies=TRUE)\n")
+    f.write("install.packages('magick', dependencies=TRUE)\n")
     for p in packages:
-        f.write('if (!require("%s")) install.packages("%s",repos="https://cran.rstudio.com",dependencies=TRUE)\n'%(p,p))
+        f.write('if (!require("%s")) install.packages("%s", dependencies=TRUE)\n'%(p,p))
     f.write('install.packages("https://cran.r-project.org/src/contrib/Archive/fiftystater/fiftystater_1.0.1.tar.gz",repos=NULL,dependencies=TRUE)\n')
     f.write('install.packages("fivethirtyeightdata", repos ="https://fivethirtyeightdata.github.io/drat/", type = "source")\n')

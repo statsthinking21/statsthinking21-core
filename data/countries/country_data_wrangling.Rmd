@@ -1,0 +1,81 @@
+---
+title: "Country data - wrangling"
+output: html_notebook
+---
+
+Wrangling of countries data into a single dataset
+
+
+
+```{r}
+library(tidyverse)
+```
+
+# country codes with continent from https://datahub.io/core/country-codes
+
+```{r}
+# north america is coded as NA so need to exclude it from NA list
+country_codes <- read_delim('country_codes.csv', na=c('')) %>%
+    rename(CountryCode = `ISO3166-1-Alpha-3`, 
+           Name = `UNTERM English Formal`) %>%
+    select(Continent, CountryCode)
+```
+
+
+# from google, this contains latitude/longitude
+
+```{r}
+countries <- read_delim('countries/countries.csv') %>%
+  rename(CountryName = name)
+```
+
+# from worldbank, this contains population over time
+# years are in columns
+
+```{r}
+population <- read_csv('worldbank/API_SP.POP.TOTL_DS2_en_csv_v2_3469297.csv', show_col_types = FALSE, skip=4) %>% 
+  select(-`...66`) %>%
+  rename(CountryName = `Country Name`,
+         CountryCode = `Country Code`,
+         Population2020 = `2020`) %>%
+  select(CountryName, CountryCode, Population2020)
+```
+
+```{r}
+country_metadata <- read_csv('worldbank/Metadata_Country_API_SP.POP.TOTL_DS2_en_csv_v2_3469297.csv', show_col_types = FALSE) %>% 
+  select(-`...6`) %>%
+  rename(CountryCode = `Country Code`) %>%
+  select(-SpecialNotes, -TableName)
+```
+
+```{r}
+popdata <- merge(population, country_metadata, by='CountryCode') %>%
+  drop_na(Region)  # remove regional summaries
+
+popdata <- merge(popdata, country_codes, by='CountryCode') %>%
+  drop_na(Continent)
+```
+
+```{r}
+popdata_with_geodata <- merge(popdata, countries, by="CountryName")
+```
+
+```{r}
+gdp <- read_csv('worldbank_gdp/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_3469429.csv', show_col_types = FALSE, skip=4) %>% 
+  select(-`...66`) %>%
+  rename(CountryName = `Country Name`,
+         CountryCode = `Country Code`,
+         GDP2020 = `2020`)  %>%
+  select(CountryCode, GDP2020) %>%
+  drop_na(GDP2020)
+
+popdata_with_geodata_and_gdp <- merge(popdata_with_geodata, gdp)
+```
+
+
+
+```{r}
+write_csv(popdata_with_geodata_and_gdp, 'country_data.csv')
+
+```
+
