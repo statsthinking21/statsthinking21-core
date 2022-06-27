@@ -548,12 +548,12 @@ fviz_screeplot(imp_pc, addlabels = TRUE, ylim = c(0, 50))
 
 ```{r pca_var_plot, echo=FALSE, fig.width=4, fig.height=4, fig.cap='Plot of variable loadings in PCA solution including all self-control variables. Each variable is shown in terms of its loadings on each of the two components; reflected in the two rows respectively.'}
 
-loading_df = as.data.frame(imp_pc$rotation) %>% 
-  select(PC1, PC2)
-  
+loading_df = as.data.frame(imp_pc$rotation) 
+
 loading_df['Variable'] = rownames(loading_df)
 loading_df = loading_df %>% 
-  pivot_longer(!Variable, names_to='PC', values_to='Loading')
+  pivot_longer(!Variable, names_to='PC', values_to='Loading') %>%
+  filter(PC %in% c('PC1', 'PC2'))
 
 ggplot(loading_df ,
        aes(Variable, Loading)) + geom_bar(stat='identity')  + 
