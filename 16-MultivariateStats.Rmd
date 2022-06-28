@@ -318,7 +318,7 @@ p + geom_point(data=all_centroids_df %>% filter(iter==0),
 
 Applying K-means clustering to the latitude/longitude data (Figure \@ref(fig:kmeans)), we see that there is a reasonable match between the resulting clusters and the continents, though none of the continents is perfectly matched to any of the clusters. We can further examine this by plotting a table that compares the membership of each cluster to the actual continents for each country; this kind of table is often called a *confusion matrix*.
 
-```{r echo=FALSE}
+```{r cluster_labels, echo=FALSE}
 table(labels, countries$Continent)
 
 ```
@@ -332,9 +332,7 @@ table(labels, countries$Continent)
 
 Although in this example we know the actual clusters (that is, the continents of the world), in general we don't actually know the ground truth for unsupervised learning problems, so we simply have to trust that the clustering method has found useful structure in the data. However, one important point about K-means clustering, and iterative procedures in general, is that they are not guaranteed to give the same answer each time they are run.  The use of random numbers to determine the starting points means that the starting points can differ each time, and depending on the data this can sometimes lead to different solutions being found.  For this example, K-means clustering will sometimes find a single cluster encompassing both North and South America, and sometimes find two clusters (as it did for the specific choice of random seed used here).  Whenever using a method that involves an iterative solution, it is important to rerun the method a number of times using different random seeds, to make sure that the answers don't diverge too greatly between runs.  If they do, then one should avoid making strong conclusions based on the unstable results.  In fact, it's probably a good idea to avoid strong conclusions on the basis of clustering results more generally; they are primarily useful for getting intuition about the structure that might be present in a dataset.
 
-We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another.  For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables.  With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters (as seen in Figure \@ref(fig:kmeans_sro)).  The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.
-
-```{r kmeans_sro, fig.width=4, fig.height=4, echo=FALSE, fig.cap='A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster.'}
+```{r kmeans_sro, fig.width=6, fig.height=6, echo=FALSE, fig.cap='A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster.'}
 
 set.seed(123)
 cluster_results = c()
@@ -353,8 +351,9 @@ for (i in 1:10){
 heatmap.2(cluster_results, dendrogram='none', trace='none',
           col=rainbow(3, start=0.1, alpha=0.5), notecol='black',
           cellnote=cluster_results, notecex=1, key=FALSE,
-           margins=c(12,8), srtCol=45, )
+           margins=c(8,8), srtCol=45, )
 ```
+We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another.  For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables.  With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters (as seen in Figure \@ref(fig:kmeans_sro)).  The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.
 
 ### Hierarchical clustering
 
