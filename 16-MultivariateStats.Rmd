@@ -332,7 +332,7 @@ table(labels, countries$Continent)
 
 Although in this example we know the actual clusters (that is, the continents of the world), in general we don't actually know the ground truth for unsupervised learning problems, so we simply have to trust that the clustering method has found useful structure in the data. However, one important point about K-means clustering, and iterative procedures in general, is that they are not guaranteed to give the same answer each time they are run.  The use of random numbers to determine the starting points means that the starting points can differ each time, and depending on the data this can sometimes lead to different solutions being found.  For this example, K-means clustering will sometimes find a single cluster encompassing both North and South America, and sometimes find two clusters (as it did for the specific choice of random seed used here).  Whenever using a method that involves an iterative solution, it is important to rerun the method a number of times using different random seeds, to make sure that the answers don't diverge too greatly between runs.  If they do, then one should avoid making strong conclusions based on the unstable results.  In fact, it's probably a good idea to avoid strong conclusions on the basis of clustering results more generally; they are primarily useful for getting intuition about the structure that might be present in a dataset.
 
-```{r kmeans_sro, fig.width=6, fig.height=6, echo=FALSE, fig.cap='A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster.'}
+```{r kmeansSro, fig.width=6, fig.height=6, echo=FALSE, fig.cap='A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster.'}
 
 set.seed(123)
 cluster_results = c()
@@ -353,7 +353,7 @@ heatmap.2(cluster_results, dendrogram='none', trace='none',
           cellnote=cluster_results, notecex=1, key=FALSE,
            margins=c(8,8), srtCol=45, )
 ```
-We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another.  For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables.  With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters (as seen in Figure \@ref(fig:kmeans_sro)).  The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.
+We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another.  For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables.  With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters (as seen in Figure \@ref(fig:kmeansSro)).  The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.
 
 ### Hierarchical clustering
 
@@ -466,9 +466,9 @@ sim_df_cov<- cov(sim_df)
 cov_eig <- eigen(sim_df_cov)
 ```
 
-In the case of our two-dimensional example, we can compute the principal components and plot them over the data (Figure \@ref(fig:pca_plot)).  What we see is that the first principal component (shown in green) follows the direction of the greatest variance.  This line is similar, though not identical, to the linear regression line; while the linear regression solution minimizes the distance between each data point and the regression line at the same X value (i.e. the vertical distance), the principal component minimizes the Euclidean distance between the data points and the line representing the component (i.e. the distance perpendicular to the component).  The second component points in a direction that is perpendicular to the first component (which is equivalent to being uncorrelated).
+In the case of our two-dimensional example, we can compute the principal components and plot them over the data (Figure \@ref(fig:pcaPlot)).  What we see is that the first principal component (shown in green) follows the direction of the greatest variance.  This line is similar, though not identical, to the linear regression line; while the linear regression solution minimizes the distance between each data point and the regression line at the same X value (i.e. the vertical distance), the principal component minimizes the Euclidean distance between the data points and the line representing the component (i.e. the distance perpendicular to the component).  The second component points in a direction that is perpendicular to the first component (which is equivalent to being uncorrelated).
 
-```{r pca_plot, echo=FALSE, fig.width=4, fig.height=4, message=F, warning=F, fig.cap='A plot of synthetic data, with the first principal component plotted in green and the second in red.'}
+```{r pcaPlot, echo=FALSE, fig.width=4, fig.height=4, message=F, warning=F, fig.cap='A plot of synthetic data, with the first principal component plotted in green and the second in red.'}
 
 g <- ggplot(sim_df, aes(X, Y)) + 
    geom_point(size=1.5) + 
@@ -545,7 +545,7 @@ fviz_screeplot(imp_pc, addlabels = TRUE, ylim = c(0, 50))
 ```
 
 
-```{r pca_var_plot, echo=FALSE, fig.width=4, fig.height=4, fig.cap='Plot of variable loadings in PCA solution including all self-control variables. Each variable is shown in terms of its loadings on each of the two components; reflected in the two rows respectively.'}
+```{r pcaVarPlot, echo=FALSE, fig.width=4, fig.height=4, fig.cap='Plot of variable loadings in PCA solution including all self-control variables. Each variable is shown in terms of its loadings on each of the two components; reflected in the two rows respectively.'}
 
 loading_df = as.data.frame(imp_pc$rotation) 
 
@@ -559,7 +559,7 @@ ggplot(loading_df ,
       facet_grid(PC ~ .)
 ```
 
-Doing this for the impulsivity dataset (Figure \@ref(fig:pca_var_plot)), we see that the first component (in the first row of the figure) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables.  This tells us that the first principal component captured mostly variance related to the impulsivity measures, while the second component captured mostly variance related to the response inhibition measures. You might notice that the loadings are actually negative for most of these variables; the sign of the loadings is arbitrary, so we should make sure to look at large positive and negative loadings.
+Doing this for the impulsivity dataset (Figure \@ref(fig:pcaVarPlot)), we see that the first component (in the first row of the figure) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables.  This tells us that the first principal component captured mostly variance related to the impulsivity measures, while the second component captured mostly variance related to the response inhibition measures. You might notice that the loadings are actually negative for most of these variables; the sign of the loadings is arbitrary, so we should make sure to look at large positive and negative loadings.
 
 ### Factor analysis
 
@@ -638,10 +638,10 @@ summary(fa_result)
 
 One question that we would like to ask is how well our model actually fits the data.  There is no single way to answer this question; rather, researchers have developed a number of different methods that provide some insight into how well the model fits the data.  For example, one commonly used criterion is based on the *root mean square error of approximation* (RMSEA) statistic, which quantifies how far the predicted covariances are from the actual covariances; a value of RMSEA less than 0.08 is often considered to reflect an adequately fitting model.  In the example here, the RMSEA value is 0.026, which suggests a model that fits quite well.
 
-We can also examine the parameter estimates in order to see whether the model has appropriately identified the structure in the data.  It's common to plot this as a graph, with arrows from the latent variables (represented as ellipses) pointing to the observed variables (represented as rectangles), where an arrow represents a substantial loading of the observed variable on the latent variable; this kind of graph is often referred to as a *path diagram* since it reflects the paths relating the variables. This is shown in Figure \@ref(fig:v]fa_diagram). In this case the EFA procedure correctly identified the structure present in the data, both in terms of which observed variables are related to each of the latent variables, and in terms of the correlations between latent variables.
+We can also examine the parameter estimates in order to see whether the model has appropriately identified the structure in the data.  It's common to plot this as a graph, with arrows from the latent variables (represented as ellipses) pointing to the observed variables (represented as rectangles), where an arrow represents a substantial loading of the observed variable on the latent variable; this kind of graph is often referred to as a *path diagram* since it reflects the paths relating the variables. This is shown in Figure \@ref(fig:faDiagram). In this case the EFA procedure correctly identified the structure present in the data, both in terms of which observed variables are related to each of the latent variables, and in terms of the correlations between latent variables.
 
 
-```{r fa_diagram, echo=FALSE, fig.cap='Path diagram for the exploratory factor analysis model.'}
+```{r faDiagram, echo=FALSE, fig.cap='Path diagram for the exploratory factor analysis model.'}
 fa.diagram(fa_result)
 ```
 
@@ -649,10 +649,10 @@ fa.diagram(fa_result)
 
 One of the main challenges in applying EFA is to determine the number of factors.  A common way to do this is to examine the fit of the model while varying the number of factors, and then selecting the model that gives the best fit.  This is not foolproof, and there are multiple ways to quantify the fit of the model that can sometimes give different answers. 
 
-One might think that we could simply look at how well the model fits and pick the number of factors with the best fit, but this won't work, because a more complex model will always fit the data better (as we saw in our earlier discussion of overfitting).  For this reason, we need to use a metric of model fit that penalizes for the number of parameters in the model.  For the purposes of this example we will select one of the common methods for quantifying model fit, which is known as the *sample-size adjusted Bayesian information criterion* (or *SABIC*).  This measure quantifies how well the model fits the data, while also taking into account the number of parameters in the model (which in this case is related to the number of factors) as well as the sample size.  While the absolute value of the SABIC is not interpretable, when using the same data and same kind of model we can compare models using SABIC to determine which is most appropriate for the data.  One important thing to know about SABIC and other measures like it (known as *information criteria*) is that lower values represent better fit of the model, so in this case we want to find the number of factors with the lowest SABIC. In Figure \@ref(fig:sabic_plot) we see that the model with the lowest SABIC has three factors, which shows that this approach was able to accurately determine the number of factors used to generate the data.
+One might think that we could simply look at how well the model fits and pick the number of factors with the best fit, but this won't work, because a more complex model will always fit the data better (as we saw in our earlier discussion of overfitting).  For this reason, we need to use a metric of model fit that penalizes for the number of parameters in the model.  For the purposes of this example we will select one of the common methods for quantifying model fit, which is known as the *sample-size adjusted Bayesian information criterion* (or *SABIC*).  This measure quantifies how well the model fits the data, while also taking into account the number of parameters in the model (which in this case is related to the number of factors) as well as the sample size.  While the absolute value of the SABIC is not interpretable, when using the same data and same kind of model we can compare models using SABIC to determine which is most appropriate for the data.  One important thing to know about SABIC and other measures like it (known as *information criteria*) is that lower values represent better fit of the model, so in this case we want to find the number of factors with the lowest SABIC. In Figure \@ref(fig:sabicPlot) we see that the model with the lowest SABIC has three factors, which shows that this approach was able to accurately determine the number of factors used to generate the data.
 
 
-```{r sabic_plot, echo=FALSE, fig.cap='Plot of SABIC for varying numbers of factors.'}
+```{r sabicPlot, echo=FALSE, fig.cap='Plot of SABIC for varying numbers of factors.'}
 
 BIC_results = data.frame(nfactors=seq(1, 4), SABIC=NA)
 
@@ -697,7 +697,7 @@ for (i in 1:nrow(BIC_df)){
 #  geom_line()
 ```
 
-```{r fa_diagram_sro, echo=FALSE, fig.cap='Path diagram for the three-factor model on the Eisenberg et al. data.'}
+```{r faDiagramSro, echo=FALSE, fig.cap='Path diagram for the three-factor model on the Eisenberg et al. data.'}
 
 fa_result <- fa(imp_efa_df, nfactors=3)
 
@@ -707,7 +707,7 @@ fa.diagram(fa_result)
 
 ```
 
-Plotting the path diagram (Figure \@ref(fig:fa_diagram_sro)) we see that the real data demonstrate a factor structure that is very similar to what we saw with the simulated data. This should not be surprising, since the simulated data were generated based on knowledge of these different tasks, but it's comforting to know that human behavior is systematic enough that we can reliably identify these kinds of relationships.  The main difference is that the correlation between the working memory factor (MR3) and the fluid reasoning factor (MR1) is even higher than it was in the simulated data. This result is scientifically useful because it shows us that while working memory and fluid reasoning are closely related, there is utility in separately modeling them.
+Plotting the path diagram (Figure \@ref(fig:faDiagramSro)) we see that the real data demonstrate a factor structure that is very similar to what we saw with the simulated data. This should not be surprising, since the simulated data were generated based on knowledge of these different tasks, but it's comforting to know that human behavior is systematic enough that we can reliably identify these kinds of relationships.  The main difference is that the correlation between the working memory factor (MR3) and the fluid reasoning factor (MR1) is even higher than it was in the simulated data. This result is scientifically useful because it shows us that while working memory and fluid reasoning are closely related, there is utility in separately modeling them.
 
 
 ## Learning objectives
