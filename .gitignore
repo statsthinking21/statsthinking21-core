@@ -1,3 +1,6 @@
 *.log
 .DS_Store
 .Rhistory
+.Rproj.user
+*.Rproj
+.gitignore
