@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Probability | Statistical Thinking for the 21st Century</title>
+  <meta name="description" content="A book about statistics." />
+  <meta name="generator" content="bookdown 0.31 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Probability | Statistical Thinking for the 21st Century" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="A book about statistics." />
+  <meta name="github-repo" content="poldrack/psych10-book" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Probability | Statistical Thinking for the 21st Century" />
+  
+  <meta name="twitter:description" content="A book about statistics." />
+  
+
+<meta name="author" content="Copyright 2019 Russell A. Poldrack" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="fitting-models.html"/>
+<link rel="next" href="sampling.html"/>
+<script src="book_assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="book_assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="book_assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="book_assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="book_assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129414074-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-129414074-1');
+</script>
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
+<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#why-does-this-book-exist"><i class="fa fa-check"></i><b>0.1</b> Why does this book exist?</a></li>
+<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#the-golden-age-of-data"><i class="fa fa-check"></i><b>0.2</b> The golden age of data</a></li>
+<li class="chapter" data-level="0.3" data-path="index.html"><a href="index.html#the-importance-of-doing-statistics"><i class="fa fa-check"></i><b>0.3</b> The importance of doing statistics</a></li>
+<li class="chapter" data-level="0.4" data-path="index.html"><a href="index.html#an-open-source-book"><i class="fa fa-check"></i><b>0.4</b> An open source book</a></li>
+<li class="chapter" data-level="0.5" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i><b>0.5</b> Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#what-is-statistical-thinking"><i class="fa fa-check"></i><b>1.1</b> What is statistical thinking?</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#dealing-with-statistics-anxiety"><i class="fa fa-check"></i><b>1.2</b> Dealing with statistics anxiety</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#what-can-statistics-do-for-us"><i class="fa fa-check"></i><b>1.3</b> What can statistics do for us?</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#the-big-ideas-of-statistics"><i class="fa fa-check"></i><b>1.4</b> The big ideas of statistics</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="introduction.html"><a href="introduction.html#learning-from-data"><i class="fa fa-check"></i><b>1.4.1</b> Learning from data</a></li>
+<li class="chapter" data-level="1.4.2" data-path="introduction.html"><a href="introduction.html#aggregation"><i class="fa fa-check"></i><b>1.4.2</b> Aggregation</a></li>
+<li class="chapter" data-level="1.4.3" data-path="introduction.html"><a href="introduction.html#uncertainty"><i class="fa fa-check"></i><b>1.4.3</b> Uncertainty</a></li>
+<li class="chapter" data-level="1.4.4" data-path="introduction.html"><a href="introduction.html#sampling-from-a-population"><i class="fa fa-check"></i><b>1.4.4</b> Sampling from a population</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="introduction.html"><a href="introduction.html#causality-and-statistics"><i class="fa fa-check"></i><b>1.5</b> Causality and statistics</a></li>
+<li class="chapter" data-level="1.6" data-path="introduction.html"><a href="introduction.html#learning-objectives"><i class="fa fa-check"></i><b>1.6</b> Learning objectives</a></li>
+<li class="chapter" data-level="1.7" data-path="introduction.html"><a href="introduction.html#suggested-readings"><i class="fa fa-check"></i><b>1.7</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="working-with-data.html"><a href="working-with-data.html"><i class="fa fa-check"></i><b>2</b> Working with data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="working-with-data.html"><a href="working-with-data.html#what-are-data"><i class="fa fa-check"></i><b>2.1</b> What are data?</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="working-with-data.html"><a href="working-with-data.html#qualitative-data"><i class="fa fa-check"></i><b>2.1.1</b> Qualitative data</a></li>
+<li class="chapter" data-level="2.1.2" data-path="working-with-data.html"><a href="working-with-data.html#quantitative-data"><i class="fa fa-check"></i><b>2.1.2</b> Quantitative data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="working-with-data.html"><a href="working-with-data.html#discrete-versus-continuous-measurements"><i class="fa fa-check"></i><b>2.2</b> Discrete versus continuous measurements</a></li>
+<li class="chapter" data-level="2.3" data-path="working-with-data.html"><a href="working-with-data.html#what-makes-a-good-measurement"><i class="fa fa-check"></i><b>2.3</b> What makes a good measurement?</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="working-with-data.html"><a href="working-with-data.html#reliability"><i class="fa fa-check"></i><b>2.3.1</b> Reliability</a></li>
+<li class="chapter" data-level="2.3.2" data-path="working-with-data.html"><a href="working-with-data.html#validity"><i class="fa fa-check"></i><b>2.3.2</b> Validity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="working-with-data.html"><a href="working-with-data.html#learning-objectives-1"><i class="fa fa-check"></i><b>2.4</b> Learning Objectives</a></li>
+<li class="chapter" data-level="2.5" data-path="working-with-data.html"><a href="working-with-data.html#suggested-readings-1"><i class="fa fa-check"></i><b>2.5</b> Suggested readings</a></li>
+<li class="chapter" data-level="2.6" data-path="working-with-data.html"><a href="working-with-data.html#appendix"><i class="fa fa-check"></i><b>2.6</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="working-with-data.html"><a href="working-with-data.html#scales-of-measurement"><i class="fa fa-check"></i><b>2.6.1</b> Scales of measurement</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="summarizing-data.html"><a href="summarizing-data.html"><i class="fa fa-check"></i><b>3</b> Summarizing data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="summarizing-data.html"><a href="summarizing-data.html#why-summarize-data"><i class="fa fa-check"></i><b>3.1</b> Why summarize data?</a></li>
+<li class="chapter" data-level="3.2" data-path="summarizing-data.html"><a href="summarizing-data.html#summarizing-data-using-tables"><i class="fa fa-check"></i><b>3.2</b> Summarizing data using tables</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="summarizing-data.html"><a href="summarizing-data.html#frequency-distributions"><i class="fa fa-check"></i><b>3.2.1</b> Frequency distributions</a></li>
+<li class="chapter" data-level="3.2.2" data-path="summarizing-data.html"><a href="summarizing-data.html#cumulative-distributions"><i class="fa fa-check"></i><b>3.2.2</b> Cumulative distributions</a></li>
+<li class="chapter" data-level="3.2.3" data-path="summarizing-data.html"><a href="summarizing-data.html#plotting-histograms"><i class="fa fa-check"></i><b>3.2.3</b> Plotting histograms</a></li>
+<li class="chapter" data-level="3.2.4" data-path="summarizing-data.html"><a href="summarizing-data.html#histogram-bins"><i class="fa fa-check"></i><b>3.2.4</b> Histogram bins</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="summarizing-data.html"><a href="summarizing-data.html#idealized-representations-of-distributions"><i class="fa fa-check"></i><b>3.3</b> Idealized representations of distributions</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="summarizing-data.html"><a href="summarizing-data.html#skewness"><i class="fa fa-check"></i><b>3.3.1</b> Skewness</a></li>
+<li class="chapter" data-level="3.3.2" data-path="summarizing-data.html"><a href="summarizing-data.html#long-tailed-distributions"><i class="fa fa-check"></i><b>3.3.2</b> Long-tailed distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="summarizing-data.html"><a href="summarizing-data.html#learning-objectives-2"><i class="fa fa-check"></i><b>3.4</b> Learning objectives</a></li>
+<li class="chapter" data-level="3.5" data-path="summarizing-data.html"><a href="summarizing-data.html#suggested-readings-2"><i class="fa fa-check"></i><b>3.5</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-visualization.html"><a href="data-visualization.html"><i class="fa fa-check"></i><b>4</b> Data Visualization</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="data-visualization.html"><a href="data-visualization.html#anatomy-of-a-plot"><i class="fa fa-check"></i><b>4.1</b> Anatomy of a plot</a></li>
+<li class="chapter" data-level="4.2" data-path="data-visualization.html"><a href="data-visualization.html#principles-of-good-visualization"><i class="fa fa-check"></i><b>4.2</b> Principles of good visualization</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="data-visualization.html"><a href="data-visualization.html#show-the-data-and-make-them-stand-out"><i class="fa fa-check"></i><b>4.2.1</b> Show the data and make them stand out</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data-visualization.html"><a href="data-visualization.html#maximize-the-dataink-ratio"><i class="fa fa-check"></i><b>4.2.2</b> Maximize the data/ink ratio</a></li>
+<li class="chapter" data-level="4.2.3" data-path="data-visualization.html"><a href="data-visualization.html#avoid-chartjunk"><i class="fa fa-check"></i><b>4.2.3</b> Avoid chartjunk</a></li>
+<li class="chapter" data-level="4.2.4" data-path="data-visualization.html"><a href="data-visualization.html#avoid-distorting-the-data"><i class="fa fa-check"></i><b>4.2.4</b> Avoid distorting the data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="data-visualization.html"><a href="data-visualization.html#accommodating-human-limitations"><i class="fa fa-check"></i><b>4.3</b> Accommodating human limitations</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="data-visualization.html"><a href="data-visualization.html#perceptual-limitations"><i class="fa fa-check"></i><b>4.3.1</b> Perceptual limitations</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="data-visualization.html"><a href="data-visualization.html#correcting-for-other-factors"><i class="fa fa-check"></i><b>4.4</b> Correcting for other factors</a></li>
+<li class="chapter" data-level="4.5" data-path="data-visualization.html"><a href="data-visualization.html#learning-objectives-3"><i class="fa fa-check"></i><b>4.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="4.6" data-path="data-visualization.html"><a href="data-visualization.html#suggested-readings-and-videos"><i class="fa fa-check"></i><b>4.6</b> Suggested readings and videos</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="fitting-models.html"><a href="fitting-models.html"><i class="fa fa-check"></i><b>5</b> Fitting models to data</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="fitting-models.html"><a href="fitting-models.html#what-is-a-model"><i class="fa fa-check"></i><b>5.1</b> What is a model?</a></li>
+<li class="chapter" data-level="5.2" data-path="fitting-models.html"><a href="fitting-models.html#statistical-modeling-an-example"><i class="fa fa-check"></i><b>5.2</b> Statistical modeling: An example</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="fitting-models.html"><a href="fitting-models.html#improving-our-model"><i class="fa fa-check"></i><b>5.2.1</b> Improving our model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="fitting-models.html"><a href="fitting-models.html#what-makes-a-model-good"><i class="fa fa-check"></i><b>5.3</b> What makes a model “good”?</a></li>
+<li class="chapter" data-level="5.4" data-path="fitting-models.html"><a href="fitting-models.html#overfitting"><i class="fa fa-check"></i><b>5.4</b> Can a model be too good?</a></li>
+<li class="chapter" data-level="5.5" data-path="fitting-models.html"><a href="fitting-models.html#summarizing-data-using-the-mean"><i class="fa fa-check"></i><b>5.5</b> Summarizing data using the mean</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="fitting-models.html"><a href="fitting-models.html#summarizing-data-robustly-using-the-median"><i class="fa fa-check"></i><b>5.5.1</b> Summarizing data robustly using the median</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="fitting-models.html"><a href="fitting-models.html#the-mode"><i class="fa fa-check"></i><b>5.6</b> The mode</a></li>
+<li class="chapter" data-level="5.7" data-path="fitting-models.html"><a href="fitting-models.html#variability-how-well-does-the-mean-fit-the-data"><i class="fa fa-check"></i><b>5.7</b> Variability: How well does the mean fit the data?</a></li>
+<li class="chapter" data-level="5.8" data-path="fitting-models.html"><a href="fitting-models.html#using-simulations-to-understand-statistics"><i class="fa fa-check"></i><b>5.8</b> Using simulations to understand statistics</a></li>
+<li class="chapter" data-level="5.9" data-path="fitting-models.html"><a href="fitting-models.html#z-scores"><i class="fa fa-check"></i><b>5.9</b> Z-scores</a>
+<ul>
+<li class="chapter" data-level="5.9.1" data-path="fitting-models.html"><a href="fitting-models.html#interpreting-z-scores"><i class="fa fa-check"></i><b>5.9.1</b> Interpreting Z-scores</a></li>
+<li class="chapter" data-level="5.9.2" data-path="fitting-models.html"><a href="fitting-models.html#standardized-scores"><i class="fa fa-check"></i><b>5.9.2</b> Standardized scores</a></li>
+</ul></li>
+<li class="chapter" data-level="5.10" data-path="fitting-models.html"><a href="fitting-models.html#learning-objectives-4"><i class="fa fa-check"></i><b>5.10</b> Learning objectives</a></li>
+<li class="chapter" data-level="5.11" data-path="fitting-models.html"><a href="fitting-models.html#appendix-1"><i class="fa fa-check"></i><b>5.11</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="5.11.1" data-path="fitting-models.html"><a href="fitting-models.html#proof-that-the-sum-of-errors-from-the-mean-is-zero"><i class="fa fa-check"></i><b>5.11.1</b> Proof that the sum of errors from the Mean is zero</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="probability.html"><a href="probability.html"><i class="fa fa-check"></i><b>6</b> Probability</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="probability.html"><a href="probability.html#what-is-probability"><i class="fa fa-check"></i><b>6.1</b> What is probability?</a></li>
+<li class="chapter" data-level="6.2" data-path="probability.html"><a href="probability.html#how-do-we-determine-probabilities"><i class="fa fa-check"></i><b>6.2</b> How do we determine probabilities?</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="probability.html"><a href="probability.html#personal-belief"><i class="fa fa-check"></i><b>6.2.1</b> Personal belief</a></li>
+<li class="chapter" data-level="6.2.2" data-path="probability.html"><a href="probability.html#empirical-frequency"><i class="fa fa-check"></i><b>6.2.2</b> Empirical frequency</a></li>
+<li class="chapter" data-level="6.2.3" data-path="probability.html"><a href="probability.html#classical-probability"><i class="fa fa-check"></i><b>6.2.3</b> Classical probability</a></li>
+<li class="chapter" data-level="6.2.4" data-path="probability.html"><a href="probability.html#solving-de-mérés-problem"><i class="fa fa-check"></i><b>6.2.4</b> Solving de Méré’s problem</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="probability.html"><a href="probability.html#probability-distributions"><i class="fa fa-check"></i><b>6.3</b> Probability distributions</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="probability.html"><a href="probability.html#cumulative-probability-distributions"><i class="fa fa-check"></i><b>6.3.1</b> Cumulative probability distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="probability.html"><a href="probability.html#conditional-probability"><i class="fa fa-check"></i><b>6.4</b> Conditional probability</a></li>
+<li class="chapter" data-level="6.5" data-path="probability.html"><a href="probability.html#computing-conditional-probabilities-from-data"><i class="fa fa-check"></i><b>6.5</b> Computing conditional probabilities from data</a></li>
+<li class="chapter" data-level="6.6" data-path="probability.html"><a href="probability.html#independence"><i class="fa fa-check"></i><b>6.6</b> Independence</a></li>
+<li class="chapter" data-level="6.7" data-path="probability.html"><a href="probability.html#bayestheorem"><i class="fa fa-check"></i><b>6.7</b> Reversing a conditional probability: Bayes’ rule</a></li>
+<li class="chapter" data-level="6.8" data-path="probability.html"><a href="probability.html#learning-from-data-1"><i class="fa fa-check"></i><b>6.8</b> Learning from data</a></li>
+<li class="chapter" data-level="6.9" data-path="probability.html"><a href="probability.html#odds-and-odds-ratios"><i class="fa fa-check"></i><b>6.9</b> Odds and odds ratios</a></li>
+<li class="chapter" data-level="6.10" data-path="probability.html"><a href="probability.html#what-do-probabilities-mean"><i class="fa fa-check"></i><b>6.10</b> What do probabilities mean?</a></li>
+<li class="chapter" data-level="6.11" data-path="probability.html"><a href="probability.html#learning-objectives-5"><i class="fa fa-check"></i><b>6.11</b> Learning objectives</a></li>
+<li class="chapter" data-level="6.12" data-path="probability.html"><a href="probability.html#suggested-readings-3"><i class="fa fa-check"></i><b>6.12</b> Suggested readings</a></li>
+<li class="chapter" data-level="6.13" data-path="probability.html"><a href="probability.html#appendix-2"><i class="fa fa-check"></i><b>6.13</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="6.13.1" data-path="probability.html"><a href="probability.html#derivation-of-bayes-rule"><i class="fa fa-check"></i><b>6.13.1</b> Derivation of Bayes’ rule</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="sampling.html"><a href="sampling.html"><i class="fa fa-check"></i><b>7</b> Sampling</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="sampling.html"><a href="sampling.html#how-do-we-sample"><i class="fa fa-check"></i><b>7.1</b> How do we sample?</a></li>
+<li class="chapter" data-level="7.2" data-path="sampling.html"><a href="sampling.html#samplingerror"><i class="fa fa-check"></i><b>7.2</b> Sampling error</a></li>
+<li class="chapter" data-level="7.3" data-path="sampling.html"><a href="sampling.html#standard-error-of-the-mean"><i class="fa fa-check"></i><b>7.3</b> Standard error of the mean</a></li>
+<li class="chapter" data-level="7.4" data-path="sampling.html"><a href="sampling.html#the-central-limit-theorem"><i class="fa fa-check"></i><b>7.4</b> The Central Limit Theorem</a></li>
+<li class="chapter" data-level="7.5" data-path="sampling.html"><a href="sampling.html#learning-objectives-6"><i class="fa fa-check"></i><b>7.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="7.6" data-path="sampling.html"><a href="sampling.html#suggested-readings-4"><i class="fa fa-check"></i><b>7.6</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html"><i class="fa fa-check"></i><b>8</b> Resampling and simulation</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#monte-carlo-simulation"><i class="fa fa-check"></i><b>8.1</b> Monte Carlo simulation</a></li>
+<li class="chapter" data-level="8.2" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#randomness-in-statistics"><i class="fa fa-check"></i><b>8.2</b> Randomness in statistics</a></li>
+<li class="chapter" data-level="8.3" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#generating-random-numbers"><i class="fa fa-check"></i><b>8.3</b> Generating random numbers</a></li>
+<li class="chapter" data-level="8.4" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#using-monte-carlo-simulation"><i class="fa fa-check"></i><b>8.4</b> Using Monte Carlo simulation</a></li>
+<li class="chapter" data-level="8.5" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#using-simulation-for-statistics-the-bootstrap"><i class="fa fa-check"></i><b>8.5</b> Using simulation for statistics: The bootstrap</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#computing-the-bootstrap"><i class="fa fa-check"></i><b>8.5.1</b> Computing the bootstrap</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#learning-objectives-7"><i class="fa fa-check"></i><b>8.6</b> Learning objectives</a></li>
+<li class="chapter" data-level="8.7" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#suggested-readings-5"><i class="fa fa-check"></i><b>8.7</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html"><i class="fa fa-check"></i><b>9</b> Hypothesis testing</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#null-hypothesis-statistical-testing-nhst"><i class="fa fa-check"></i><b>9.1</b> Null Hypothesis Statistical Testing (NHST)</a></li>
+<li class="chapter" data-level="9.2" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#null-hypothesis-statistical-testing-an-example"><i class="fa fa-check"></i><b>9.2</b> Null hypothesis statistical testing: An example</a></li>
+<li class="chapter" data-level="9.3" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#the-process-of-null-hypothesis-testing"><i class="fa fa-check"></i><b>9.3</b> The process of null hypothesis testing</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-1-formulate-a-hypothesis-of-interest"><i class="fa fa-check"></i><b>9.3.1</b> Step 1: Formulate a hypothesis of interest</a></li>
+<li class="chapter" data-level="9.3.2" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-2-specify-the-null-and-alternative-hypotheses"><i class="fa fa-check"></i><b>9.3.2</b> Step 2: Specify the null and alternative hypotheses</a></li>
+<li class="chapter" data-level="9.3.3" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-3-collect-some-data"><i class="fa fa-check"></i><b>9.3.3</b> Step 3: Collect some data</a></li>
+<li class="chapter" data-level="9.3.4" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-4-fit-a-model-to-the-data-and-compute-a-test-statistic"><i class="fa fa-check"></i><b>9.3.4</b> Step 4: Fit a model to the data and compute a test statistic</a></li>
+<li class="chapter" data-level="9.3.5" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-5-determine-the-probability-of-the-observed-result-under-the-null-hypothesis"><i class="fa fa-check"></i><b>9.3.5</b> Step 5: Determine the probability of the observed result under the null hypothesis</a></li>
+<li class="chapter" data-level="9.3.6" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-6-assess-the-statistical-significance-of-the-result"><i class="fa fa-check"></i><b>9.3.6</b> Step 6: Assess the “statistical significance” of the result</a></li>
+<li class="chapter" data-level="9.3.7" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#what-does-a-significant-result-mean"><i class="fa fa-check"></i><b>9.3.7</b> What does a significant result mean?</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#nhst-in-a-modern-context-multiple-testing"><i class="fa fa-check"></i><b>9.4</b> NHST in a modern context: Multiple testing</a></li>
+<li class="chapter" data-level="9.5" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#learning-objectives-8"><i class="fa fa-check"></i><b>9.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="9.6" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#suggested-readings-6"><i class="fa fa-check"></i><b>9.6</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html"><i class="fa fa-check"></i><b>10</b> Quantifying effects and designing studies</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#confidence-intervals"><i class="fa fa-check"></i><b>10.1</b> Confidence intervals</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#confidence-intervals-using-the-normal-distribution"><i class="fa fa-check"></i><b>10.1.1</b> Confidence intervals using the normal distribution</a></li>
+<li class="chapter" data-level="10.1.2" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#confidence-intervals-using-the-t-distribution"><i class="fa fa-check"></i><b>10.1.2</b> Confidence intervals using the t distribution</a></li>
+<li class="chapter" data-level="10.1.3" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#confidence-intervals-and-sample-size"><i class="fa fa-check"></i><b>10.1.3</b> Confidence intervals and sample size</a></li>
+<li class="chapter" data-level="10.1.4" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#computing-confidence-intervals-using-the-bootstrap"><i class="fa fa-check"></i><b>10.1.4</b> Computing confidence intervals using the bootstrap</a></li>
+<li class="chapter" data-level="10.1.5" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#relation-of-confidence-intervals-to-hypothesis-tests"><i class="fa fa-check"></i><b>10.1.5</b> Relation of confidence intervals to hypothesis tests</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#effect-sizes"><i class="fa fa-check"></i><b>10.2</b> Effect sizes</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#cohens-d"><i class="fa fa-check"></i><b>10.2.1</b> Cohen’s D</a></li>
+<li class="chapter" data-level="10.2.2" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#pearsons-r"><i class="fa fa-check"></i><b>10.2.2</b> Pearson’s r</a></li>
+<li class="chapter" data-level="10.2.3" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#odds-ratio"><i class="fa fa-check"></i><b>10.2.3</b> Odds ratio</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#statistical-power"><i class="fa fa-check"></i><b>10.3</b> Statistical power</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#power-analysis"><i class="fa fa-check"></i><b>10.3.1</b> Power analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#learning-objectives-9"><i class="fa fa-check"></i><b>10.4</b> Learning objectives</a></li>
+<li class="chapter" data-level="10.5" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#suggested-readings-7"><i class="fa fa-check"></i><b>10.5</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html"><i class="fa fa-check"></i><b>11</b> Bayesian statistics</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#generative-models"><i class="fa fa-check"></i><b>11.1</b> Generative models</a></li>
+<li class="chapter" data-level="11.2" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#bayes-theorem-and-inverse-inference"><i class="fa fa-check"></i><b>11.2</b> Bayes’ theorem and inverse inference</a></li>
+<li class="chapter" data-level="11.3" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#doing-bayesian-estimation"><i class="fa fa-check"></i><b>11.3</b> Doing Bayesian estimation</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#specifying-the-prior"><i class="fa fa-check"></i><b>11.3.1</b> Specifying the prior</a></li>
+<li class="chapter" data-level="11.3.2" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#collect-some-data"><i class="fa fa-check"></i><b>11.3.2</b> Collect some data</a></li>
+<li class="chapter" data-level="11.3.3" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-likelihood"><i class="fa fa-check"></i><b>11.3.3</b> Computing the likelihood</a></li>
+<li class="chapter" data-level="11.3.4" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-marginal-likelihood"><i class="fa fa-check"></i><b>11.3.4</b> Computing the marginal likelihood</a></li>
+<li class="chapter" data-level="11.3.5" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-posterior"><i class="fa fa-check"></i><b>11.3.5</b> Computing the posterior</a></li>
+</ul></li>
+<li class="chapter" data-level="11.4" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#estimating-posterior-distributions"><i class="fa fa-check"></i><b>11.4</b> Estimating posterior distributions</a>
+<ul>
+<li class="chapter" data-level="11.4.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#specifying-the-prior-1"><i class="fa fa-check"></i><b>11.4.1</b> Specifying the prior</a></li>
+<li class="chapter" data-level="11.4.2" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#collect-some-data-1"><i class="fa fa-check"></i><b>11.4.2</b> Collect some data</a></li>
+<li class="chapter" data-level="11.4.3" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-likelihood-1"><i class="fa fa-check"></i><b>11.4.3</b> Computing the likelihood</a></li>
+<li class="chapter" data-level="11.4.4" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-marginal-likelihood-1"><i class="fa fa-check"></i><b>11.4.4</b> Computing the marginal likelihood</a></li>
+<li class="chapter" data-level="11.4.5" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-posterior-1"><i class="fa fa-check"></i><b>11.4.5</b> Computing the posterior</a></li>
+<li class="chapter" data-level="11.4.6" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#maximum-a-posteriori-map-estimation"><i class="fa fa-check"></i><b>11.4.6</b> Maximum a posteriori (MAP) estimation</a></li>
+<li class="chapter" data-level="11.4.7" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#credible-intervals"><i class="fa fa-check"></i><b>11.4.7</b> Credible intervals</a></li>
+<li class="chapter" data-level="11.4.8" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#effects-of-different-priors"><i class="fa fa-check"></i><b>11.4.8</b> Effects of different priors</a></li>
+</ul></li>
+<li class="chapter" data-level="11.5" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#choosing-a-prior"><i class="fa fa-check"></i><b>11.5</b> Choosing a prior</a></li>
+<li class="chapter" data-level="11.6" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#bayesian-hypothesis-testing"><i class="fa fa-check"></i><b>11.6</b> Bayesian hypothesis testing</a>
+<ul>
+<li class="chapter" data-level="11.6.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#Bayes-factors"><i class="fa fa-check"></i><b>11.6.1</b> Bayes factors</a></li>
+<li class="chapter" data-level="11.6.2" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#bayes-factors-for-statistical-hypotheses"><i class="fa fa-check"></i><b>11.6.2</b> Bayes factors for statistical hypotheses</a></li>
+<li class="chapter" data-level="11.6.3" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#assessing-evidence-for-the-null-hypothesis"><i class="fa fa-check"></i><b>11.6.3</b> Assessing evidence for the null hypothesis</a></li>
+</ul></li>
+<li class="chapter" data-level="11.7" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#learning-objectives-10"><i class="fa fa-check"></i><b>11.7</b> Learning objectives</a></li>
+<li class="chapter" data-level="11.8" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#suggested-readings-8"><i class="fa fa-check"></i><b>11.8</b> Suggested readings</a></li>
+<li class="chapter" data-level="11.9" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#appendix-3"><i class="fa fa-check"></i><b>11.9</b> Appendix:</a>
+<ul>
+<li class="chapter" data-level="11.9.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#rejection-sampling"><i class="fa fa-check"></i><b>11.9.1</b> Rejection sampling</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html"><i class="fa fa-check"></i><b>12</b> Modeling categorical relationships</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#example-candy-colors"><i class="fa fa-check"></i><b>12.1</b> Example: Candy colors</a></li>
+<li class="chapter" data-level="12.2" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#chi-squared-test"><i class="fa fa-check"></i><b>12.2</b> Pearson’s chi-squared test</a></li>
+<li class="chapter" data-level="12.3" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#two-way-test"><i class="fa fa-check"></i><b>12.3</b> Contingency tables and the two-way test</a></li>
+<li class="chapter" data-level="12.4" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#standardized-residuals"><i class="fa fa-check"></i><b>12.4</b> Standardized residuals</a></li>
+<li class="chapter" data-level="12.5" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#odds-ratios"><i class="fa fa-check"></i><b>12.5</b> Odds ratios</a></li>
+<li class="chapter" data-level="12.6" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#bayes-factor"><i class="fa fa-check"></i><b>12.6</b> Bayes factor</a></li>
+<li class="chapter" data-level="12.7" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#categorical-analysis-beyond-the-2-x-2-table"><i class="fa fa-check"></i><b>12.7</b> Categorical analysis beyond the 2 X 2 table</a></li>
+<li class="chapter" data-level="12.8" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#beware-of-simpsons-paradox"><i class="fa fa-check"></i><b>12.8</b> Beware of Simpson’s paradox</a></li>
+<li class="chapter" data-level="12.9" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#learning-objectives-11"><i class="fa fa-check"></i><b>12.9</b> Learning objectives</a></li>
+<li class="chapter" data-level="12.10" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#additional-readings"><i class="fa fa-check"></i><b>12.10</b> Additional readings</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html"><i class="fa fa-check"></i><b>13</b> Modeling continuous relationships</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#an-example-hate-crimes-and-income-inequality"><i class="fa fa-check"></i><b>13.1</b> An example: Hate crimes and income inequality</a></li>
+<li class="chapter" data-level="13.2" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#is-income-inequality-related-to-hate-crimes"><i class="fa fa-check"></i><b>13.2</b> Is income inequality related to hate crimes?</a></li>
+<li class="chapter" data-level="13.3" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#covariance-and-correlation"><i class="fa fa-check"></i><b>13.3</b> Covariance and correlation</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#hypothesis-testing-for-correlations"><i class="fa fa-check"></i><b>13.3.1</b> Hypothesis testing for correlations</a></li>
+<li class="chapter" data-level="13.3.2" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#robust-correlations"><i class="fa fa-check"></i><b>13.3.2</b> Robust correlations</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#correlation-and-causation"><i class="fa fa-check"></i><b>13.4</b> Correlation and causation</a>
+<ul>
+<li class="chapter" data-level="13.4.1" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#causal-graphs"><i class="fa fa-check"></i><b>13.4.1</b> Causal graphs</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#learning-objectives-12"><i class="fa fa-check"></i><b>13.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="13.6" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#suggested-readings-9"><i class="fa fa-check"></i><b>13.6</b> Suggested readings</a></li>
+<li class="chapter" data-level="13.7" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#appendix-4"><i class="fa fa-check"></i><b>13.7</b> Appendix:</a>
+<ul>
+<li class="chapter" data-level="13.7.1" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#quantifying-inequality-the-gini-index"><i class="fa fa-check"></i><b>13.7.1</b> Quantifying inequality: The Gini index</a></li>
+<li class="chapter" data-level="13.7.2" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#bayesian-correlation-analysis"><i class="fa fa-check"></i><b>13.7.2</b> Bayesian correlation analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html"><i class="fa fa-check"></i><b>14</b> The General Linear Model</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#linear-regression"><i class="fa fa-check"></i><b>14.1</b> Linear regression</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#regression-to-the-mean"><i class="fa fa-check"></i><b>14.1.1</b> Regression to the mean</a></li>
+<li class="chapter" data-level="14.1.2" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#the-relation-between-correlation-and-regression"><i class="fa fa-check"></i><b>14.1.2</b> The relation between correlation and regression</a></li>
+<li class="chapter" data-level="14.1.3" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#standard-errors-for-regression-models"><i class="fa fa-check"></i><b>14.1.3</b> Standard errors for regression models</a></li>
+<li class="chapter" data-level="14.1.4" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#statistical-tests-for-regression-parameters"><i class="fa fa-check"></i><b>14.1.4</b> Statistical tests for regression parameters</a></li>
+<li class="chapter" data-level="14.1.5" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#quantifying-goodness-of-fit-of-the-model"><i class="fa fa-check"></i><b>14.1.5</b> Quantifying goodness of fit of the model</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#fitting-more-complex-models"><i class="fa fa-check"></i><b>14.2</b> Fitting more complex models</a></li>
+<li class="chapter" data-level="14.3" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#interactions-between-variables"><i class="fa fa-check"></i><b>14.3</b> Interactions between variables</a></li>
+<li class="chapter" data-level="14.4" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#beyond-linear-predictors-and-outcomes"><i class="fa fa-check"></i><b>14.4</b> Beyond linear predictors and outcomes</a></li>
+<li class="chapter" data-level="14.5" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#model-criticism"><i class="fa fa-check"></i><b>14.5</b> Criticizing our model and checking assumptions</a></li>
+<li class="chapter" data-level="14.6" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#what-does-predict-really-mean"><i class="fa fa-check"></i><b>14.6</b> What does “predict” really mean?</a>
+<ul>
+<li class="chapter" data-level="14.6.1" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#cross-validation"><i class="fa fa-check"></i><b>14.6.1</b> Cross-validation</a></li>
+</ul></li>
+<li class="chapter" data-level="14.7" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#learning-objectives-13"><i class="fa fa-check"></i><b>14.7</b> Learning objectives</a></li>
+<li class="chapter" data-level="14.8" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#suggested-readings-10"><i class="fa fa-check"></i><b>14.8</b> Suggested readings</a></li>
+<li class="chapter" data-level="14.9" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#appendix-5"><i class="fa fa-check"></i><b>14.9</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="14.9.1" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#estimating-linear-regression-parameters"><i class="fa fa-check"></i><b>14.9.1</b> Estimating linear regression parameters</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="comparing-means.html"><a href="comparing-means.html"><i class="fa fa-check"></i><b>15</b> Comparing means</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="comparing-means.html"><a href="comparing-means.html#single-mean"><i class="fa fa-check"></i><b>15.1</b> Testing the value of a single mean</a></li>
+<li class="chapter" data-level="15.2" data-path="comparing-means.html"><a href="comparing-means.html#comparing-two-means"><i class="fa fa-check"></i><b>15.2</b> Comparing two means</a></li>
+<li class="chapter" data-level="15.3" data-path="comparing-means.html"><a href="comparing-means.html#ttest-linear-model"><i class="fa fa-check"></i><b>15.3</b> The t-test as a linear model</a>
+<ul>
+<li class="chapter" data-level="15.3.1" data-path="comparing-means.html"><a href="comparing-means.html#effect-sizes-for-comparing-two-means"><i class="fa fa-check"></i><b>15.3.1</b> Effect sizes for comparing two means</a></li>
+</ul></li>
+<li class="chapter" data-level="15.4" data-path="comparing-means.html"><a href="comparing-means.html#bayes-factor-for-mean-differences"><i class="fa fa-check"></i><b>15.4</b> Bayes factor for mean differences</a></li>
+<li class="chapter" data-level="15.5" data-path="comparing-means.html"><a href="comparing-means.html#paired-ttests"><i class="fa fa-check"></i><b>15.5</b> Comparing paired observations</a>
+<ul>
+<li class="chapter" data-level="15.5.1" data-path="comparing-means.html"><a href="comparing-means.html#sign-test"><i class="fa fa-check"></i><b>15.5.1</b> Sign test</a></li>
+<li class="chapter" data-level="15.5.2" data-path="comparing-means.html"><a href="comparing-means.html#paired-t-test"><i class="fa fa-check"></i><b>15.5.2</b> Paired t-test</a></li>
+</ul></li>
+<li class="chapter" data-level="15.6" data-path="comparing-means.html"><a href="comparing-means.html#comparing-more-than-two-means"><i class="fa fa-check"></i><b>15.6</b> Comparing more than two means</a>
+<ul>
+<li class="chapter" data-level="15.6.1" data-path="comparing-means.html"><a href="comparing-means.html#ANOVA"><i class="fa fa-check"></i><b>15.6.1</b> Analysis of variance</a></li>
+</ul></li>
+<li class="chapter" data-level="15.7" data-path="comparing-means.html"><a href="comparing-means.html#learning-objectives-14"><i class="fa fa-check"></i><b>15.7</b> Learning objectives</a></li>
+<li class="chapter" data-level="15.8" data-path="comparing-means.html"><a href="comparing-means.html#appendix-6"><i class="fa fa-check"></i><b>15.8</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="15.8.1" data-path="comparing-means.html"><a href="comparing-means.html#the-paired-t-test-as-a-linear-model"><i class="fa fa-check"></i><b>15.8.1</b> The paired t-test as a linear model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="multivariate.html"><a href="multivariate.html"><i class="fa fa-check"></i><b>16</b> Multivariate statistics</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="multivariate.html"><a href="multivariate.html#multivariate-data-an-example"><i class="fa fa-check"></i><b>16.1</b> Multivariate data: An example</a></li>
+<li class="chapter" data-level="16.2" data-path="multivariate.html"><a href="multivariate.html#visualizing-multivariate-data"><i class="fa fa-check"></i><b>16.2</b> Visualizing multivariate data</a>
+<ul>
+<li class="chapter" data-level="16.2.1" data-path="multivariate.html"><a href="multivariate.html#scatterplot-of-matrices"><i class="fa fa-check"></i><b>16.2.1</b> Scatterplot of matrices</a></li>
+<li class="chapter" data-level="16.2.2" data-path="multivariate.html"><a href="multivariate.html#heatmap"><i class="fa fa-check"></i><b>16.2.2</b> Heatmap</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="multivariate.html"><a href="multivariate.html#clustering"><i class="fa fa-check"></i><b>16.3</b> Clustering</a>
+<ul>
+<li class="chapter" data-level="16.3.1" data-path="multivariate.html"><a href="multivariate.html#k-means-clustering"><i class="fa fa-check"></i><b>16.3.1</b> K-means clustering</a></li>
+<li class="chapter" data-level="16.3.2" data-path="multivariate.html"><a href="multivariate.html#hierarchical-clustering"><i class="fa fa-check"></i><b>16.3.2</b> Hierarchical clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="multivariate.html"><a href="multivariate.html#dimensionality-reduction"><i class="fa fa-check"></i><b>16.4</b> Dimensionality reduction</a>
+<ul>
+<li class="chapter" data-level="16.4.1" data-path="multivariate.html"><a href="multivariate.html#principal-component-analysis"><i class="fa fa-check"></i><b>16.4.1</b> Principal component analysis</a></li>
+<li class="chapter" data-level="16.4.2" data-path="multivariate.html"><a href="multivariate.html#factor-analysis"><i class="fa fa-check"></i><b>16.4.2</b> Factor analysis</a></li>
+<li class="chapter" data-level="16.4.3" data-path="multivariate.html"><a href="multivariate.html#determining-the-number-of-factors"><i class="fa fa-check"></i><b>16.4.3</b> Determining the number of factors</a></li>
+</ul></li>
+<li class="chapter" data-level="16.5" data-path="multivariate.html"><a href="multivariate.html#learning-objectives-15"><i class="fa fa-check"></i><b>16.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="16.6" data-path="multivariate.html"><a href="multivariate.html#suggested-readings-11"><i class="fa fa-check"></i><b>16.6</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="practical-example.html"><a href="practical-example.html"><i class="fa fa-check"></i><b>17</b> Practical statistical modeling</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="practical-example.html"><a href="practical-example.html#the-process-of-statistical-modeling"><i class="fa fa-check"></i><b>17.1</b> The process of statistical modeling</a>
+<ul>
+<li class="chapter" data-level="17.1.1" data-path="practical-example.html"><a href="practical-example.html#specify-your-question-of-interest"><i class="fa fa-check"></i><b>17.1.1</b> 1: Specify your question of interest</a></li>
+<li class="chapter" data-level="17.1.2" data-path="practical-example.html"><a href="practical-example.html#identify-or-collect-the-appropriate-data"><i class="fa fa-check"></i><b>17.1.2</b> 2: Identify or collect the appropriate data</a></li>
+<li class="chapter" data-level="17.1.3" data-path="practical-example.html"><a href="practical-example.html#prepare-the-data-for-analysis"><i class="fa fa-check"></i><b>17.1.3</b> 3: Prepare the data for analysis</a></li>
+<li class="chapter" data-level="17.1.4" data-path="practical-example.html"><a href="practical-example.html#determine-the-appropriate-model"><i class="fa fa-check"></i><b>17.1.4</b> 4. Determine the appropriate model</a></li>
+<li class="chapter" data-level="17.1.5" data-path="practical-example.html"><a href="practical-example.html#fit-the-model-to-the-data"><i class="fa fa-check"></i><b>17.1.5</b> 5. Fit the model to the data</a></li>
+<li class="chapter" data-level="17.1.6" data-path="practical-example.html"><a href="practical-example.html#criticize-the-model-to-make-sure-it-fits-properly"><i class="fa fa-check"></i><b>17.1.6</b> 6. Criticize the model to make sure it fits properly</a></li>
+<li class="chapter" data-level="17.1.7" data-path="practical-example.html"><a href="practical-example.html#test-hypothesis-and-quantify-effect-size"><i class="fa fa-check"></i><b>17.1.7</b> 7. Test hypothesis and quantify effect size</a></li>
+<li class="chapter" data-level="17.1.8" data-path="practical-example.html"><a href="practical-example.html#what-about-possible-confounds"><i class="fa fa-check"></i><b>17.1.8</b> What about possible confounds?</a></li>
+</ul></li>
+<li class="chapter" data-level="17.2" data-path="practical-example.html"><a href="practical-example.html#getting-help"><i class="fa fa-check"></i><b>17.2</b> Getting help</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html"><i class="fa fa-check"></i><b>18</b> Doing reproducible research</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#how-we-think-science-should-work"><i class="fa fa-check"></i><b>18.1</b> How we think science should work</a></li>
+<li class="chapter" data-level="18.2" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#how-science-sometimes-actually-works"><i class="fa fa-check"></i><b>18.2</b> How science (sometimes) actually works</a></li>
+<li class="chapter" data-level="18.3" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#the-reproducibility-crisis-in-science"><i class="fa fa-check"></i><b>18.3</b> The reproducibility crisis in science</a>
+<ul>
+<li class="chapter" data-level="18.3.1" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#positive-predictive-value-and-statistical-significance"><i class="fa fa-check"></i><b>18.3.1</b> Positive predictive value and statistical significance</a></li>
+<li class="chapter" data-level="18.3.2" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#the-winners-curse"><i class="fa fa-check"></i><b>18.3.2</b> The winner’s curse</a></li>
+</ul></li>
+<li class="chapter" data-level="18.4" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#questionable-research-practices"><i class="fa fa-check"></i><b>18.4</b> Questionable research practices</a>
+<ul>
+<li class="chapter" data-level="18.4.1" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#esp-or-qrp"><i class="fa fa-check"></i><b>18.4.1</b> ESP or QRP?</a></li>
+</ul></li>
+<li class="chapter" data-level="18.5" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#doing-reproducible-research-1"><i class="fa fa-check"></i><b>18.5</b> Doing reproducible research</a>
+<ul>
+<li class="chapter" data-level="18.5.1" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#pre-registration"><i class="fa fa-check"></i><b>18.5.1</b> Pre-registration</a></li>
+<li class="chapter" data-level="18.5.2" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#reproducible-practices"><i class="fa fa-check"></i><b>18.5.2</b> Reproducible practices</a></li>
+<li class="chapter" data-level="18.5.3" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#replication"><i class="fa fa-check"></i><b>18.5.3</b> Replication</a></li>
+</ul></li>
+<li class="chapter" data-level="18.6" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#doing-reproducible-data-analysis"><i class="fa fa-check"></i><b>18.6</b> Doing reproducible data analysis</a></li>
+<li class="chapter" data-level="18.7" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#conclusion-doing-better-science"><i class="fa fa-check"></i><b>18.7</b> Conclusion: Doing better science</a></li>
+<li class="chapter" data-level="18.8" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#learning-objectives-16"><i class="fa fa-check"></i><b>18.8</b> Learning objectives</a></li>
+<li class="chapter" data-level="18.9" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#suggested-readings-12"><i class="fa fa-check"></i><b>18.9</b> Suggested Readings</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Thinking for the 21st Century</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="probability" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Probability<a href="probability.html#probability" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Probability theory is the branch of mathematics that deals with chance and uncertainty. It forms an important part of the foundation for statistics, because it provides us with the mathematical tools to describe uncertain events. The study of probability arose in part due to interest in understanding games of chance, like cards or dice. These games provide useful examples of many statistical concepts, because when we repeat these games the likelihood of different outcomes remains (mostly) the same. However, there are deep questions about the meaning of probability that we will not address here; see Suggested Readings at the end if you are interested in learning more about this fascinating topic and its history.</p>
+<div id="what-is-probability" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> What is probability?<a href="probability.html#what-is-probability" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Informally, we usually think of probability as a number that describes the likelihood of some event occurring, which ranges from zero (impossibility) to one (certainty). Sometimes probabilities will instead be expressed in percentages, which range from zero to one hundred, as when the weather forecast predicts a twenty percent chance of rain today. In each case, these numbers are expressing how likely that particular event is, ranging from absolutely impossible to absolutely certain.</p>
+<p>To formalize probability theory, we first need to define a few terms:</p>
+<ul>
+<li>An <strong>experiment</strong> is any activity that produces or observes an outcome. Examples are flipping a coin, rolling a 6-sided die, or trying a new route to work to see if it’s faster than the old route.</li>
+<li>The <strong>sample space</strong> is the set of possible outcomes for an experiment. We represent these by listing them within a set of squiggly brackets. For a coin flip, the sample space is {heads, tails}. For a six-sided die, the sample space is each of the possible numbers that can appear: {1,2,3,4,5,6}. For the amount of time it takes to get to work, the sample space is all possible real numbers greater than zero (since it can’t take a negative amount of time to get somewhere, at least not yet). We won’t bother trying to write out all of those numbers within the brackets.</li>
+<li>An <strong>event</strong> is a subset of the sample space. In principle it could be one or more of possible outcomes in the sample space, but here we will focus primarily on <em>elementary events</em> which consist of exactly one possible outcome. For example, this could be obtaining heads in a single coin flip, rolling a 4 on a throw of the die, or taking 21 minutes to get home by the new route.</li>
+</ul>
+<p>Now that we have those definitions, we can outline the formal features of a probability, which were first defined by the Russian mathematician Andrei Kolmogorov. These are the features that a value <em>has</em> to have if it is going to be a probability. Let’s say that we have a sample space defined by N independent events, <span class="math inline">\({E_1, E_2, ... , E_N}\)</span>, and <span class="math inline">\(X\)</span> is a random variable denoting which of the events has occurred. <span class="math inline">\(P(X=E_i)\)</span> is the probability of event <span class="math inline">\(i\)</span>:</p>
+<ul>
+<li>Probability cannot be negative: <span class="math inline">\(P(X=E_i) \ge 0\)</span></li>
+<li>The total probability of all outcomes in the sample space is 1; that is, if the , if we take the probability of each Ei and add them up, they must sum to 1. We can express this using the summation symbol <span class="math inline">\(\sum\)</span>:
+<span class="math display">\[
+\sum_{i=1}^N{P(X=E_i)} = P(X=E_1) + P(X=E_2) + ... + P(X=E_N) = 1
+\]</span>
+This is interpreted as saying “Take all of the N elementary events, which we have labeled from 1 to N, and add up their probabilities. These must sum to one.”<br />
+</li>
+<li>The probability of any individual event cannot be greater than one: <span class="math inline">\(P(X=E_i)\le 1\)</span>. This is implied by the previous point; since they must sum to one, and they can’t be negative, then any particular probability cannot exceed one.</li>
+</ul>
+</div>
+<div id="how-do-we-determine-probabilities" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> How do we determine probabilities?<a href="probability.html#how-do-we-determine-probabilities" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Now that we know what a probability is, how do we actually figure out what the probability is for any particular event?</p>
+<div id="personal-belief" class="section level3 hasAnchor" number="6.2.1">
+<h3><span class="header-section-number">6.2.1</span> Personal belief<a href="probability.html#personal-belief" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s say that I asked you what the probability was that Bernie Sanders would have won the 2016 presidential election if he had been the democratic nominee instead of Hilary Clinton? We can’t actually do the experiment to find the outcome. However, most people with knowledge of American politics would be willing to at least offer a guess at the probability of this event. In many cases personal knowledge and/or opinion is the only guide we have determining the probability of an event, but this is not very scientifically satisfying.</p>
+</div>
+<div id="empirical-frequency" class="section level3 hasAnchor" number="6.2.2">
+<h3><span class="header-section-number">6.2.2</span> Empirical frequency<a href="probability.html#empirical-frequency" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Another way to determine the probability of an event is to do the experiment many times and count how often each event happens. From the relative frequency of the different outcomes, we can compute the probability of each outcome. For example, let’s say that we are interested in knowing the probability of rain in San Francisco. We first have to define the experiment — let’s say that we will look at the National Weather Service data for each day in 2017 and determine whether there was any rain at the downtown San Francisco weather station. According to these data, in 2017 there were 73 rainy days. To compute the probability of rain in San Francisco, we simply divide the number of rainy days by the number of days counted (365), giving P(rain in SF in 2017) = 0.2.</p>
+<p>How do we know that empirical probability gives us the right number? The answer to this question comes from the <em>law of large numbers</em>, which shows that the empirical probability will approach the true probability as the sample size increases. We can see this by simulating a large number of coin flips, and looking at our estimate of the probability of heads after each flip. We will spend more time discussing simulation in a later chapter; for now, just assume that we have a computational way to generate a random outcome for each coin flip.</p>
+<p>The left panel of Figure <a href="probability.html#fig:ElectionResults">6.1</a> shows that as the number of samples (i.e., coin flip trials) increases, the estimated probability of heads converges onto the true value of 0.5. However, note that the estimates can be very far off from the true value when the sample sizes are small. A real-world example of this was seen in the 2017 special election for the US Senate in Alabama, which pitted the Republican Roy Moore against Democrat Doug Jones. The right panel of Figure <a href="probability.html#fig:ElectionResults">6.1</a> shows the relative amount of the vote reported for each of the candidates over the course of the evening, as an increasing number of ballots were counted. Early in the evening the vote counts were especially volatile, swinging from a large initial lead for Jones to a long period where Moore had the lead, until finally Jones took the lead to win the race.</p>
+<div class="figure"><span style="display:block;" id="fig:ElectionResults"></span>
+<img src="StatsThinking21_files/figure-html/ElectionResults-1.png" alt="Left: A demonstration of the law of large numbers.  A coin was flipped 30,000 times, and after each flip the probability of heads was computed based on the number of heads and tail collected up to that point.  It takes about 15,000 flips for the probability to settle at the true probability of 0.5. Right: Relative proportion of the vote in the Dec 12, 2017 special election for the US Senate seat in Alabama, as a function of the percentage of precincts reporting. These data were transcribed from https://www.ajc.com/news/national/alabama-senate-race-live-updates-roy-moore-doug-jones/KPRfkdaweoiXICW3FHjXqI/" width="768" height="50%" />
+<p class="caption">
+Figure 6.1: Left: A demonstration of the law of large numbers. A coin was flipped 30,000 times, and after each flip the probability of heads was computed based on the number of heads and tail collected up to that point. It takes about 15,000 flips for the probability to settle at the true probability of 0.5. Right: Relative proportion of the vote in the Dec 12, 2017 special election for the US Senate seat in Alabama, as a function of the percentage of precincts reporting. These data were transcribed from <a href="https://www.ajc.com/news/national/alabama-senate-race-live-updates-roy-moore-doug-jones/KPRfkdaweoiXICW3FHjXqI/" class="uri">https://www.ajc.com/news/national/alabama-senate-race-live-updates-roy-moore-doug-jones/KPRfkdaweoiXICW3FHjXqI/</a>
+</p>
+</div>
+<p>These two examples show that while large samples will ultimately converge on the true probability, the results with small samples can be far off. Unfortunately, many people forget this and overinterpret results from small samples. This was referred to as the <em>law of small numbers</em> by the psychologists Danny Kahneman and Amos Tversky, who showed that people (even trained researchers) often behave as if the law of large numbers applies even to small samples, giving too much credence to results based on small datasets. We will see examples throughout the course of just how unstable statistical results can be when they are generated on the basis of small samples.</p>
+</div>
+<div id="classical-probability" class="section level3 hasAnchor" number="6.2.3">
+<h3><span class="header-section-number">6.2.3</span> Classical probability<a href="probability.html#classical-probability" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>It’s unlikely that any of us has ever flipped a coin tens of thousands of times, but we are nonetheless willing to believe that the probability of flipping heads is 0.5. This reflects the use of yet another approach to computing probabilities, which we refer to as <em>classical probability</em>. In this approach, we compute the probability directly based on our knowledge of the situation.</p>
+<p>Classical probability arose from the study of games of chance such as dice and cards. A famous example arose from a problem encountered by a French gambler who went by the name of Chevalier de Méré. de Méré played two different dice games: In the first he bet on the chance of at least one six on four rolls of a six-sided die, while in the second he bet on the chance of at least one double-six on 24 rolls of two dice. He expected to win money on both of these gambles, but he found that while on average he won money on the first gamble, he actually lost money on average when he played the second gamble many times. To understand this he turned to his friend, the mathematician Blaise Pascal, who is now recognized as one of the founders of probability theory.</p>
+<p>How can we understand this question using probability theory? In classical probability, we start with the assumption that all of the elementary events in the sample space are equally likely; that is, when you roll a die, each of the possible outcomes ({1,2,3,4,5,6}) is equally likely to occur. (No loaded dice allowed!) Given this, we can compute the probability of any individual outcome as one divided by the number of possible outcomes:</p>
+<p><span class="math display">\[
+P(outcome_i) = \frac{1}{\text{number of possible outcomes}}
+\]</span></p>
+<p>For the six-sided die, the probability of each individual outcome is 1/6.</p>
+<p>This is nice, but de Méré was interested in more complex events, like what happens on multiple dice throws. How do we compute the probability of a complex event (which is a <em>union</em> of single events), like rolling a six on the first <em>or</em> the second throw? We represent the union of events mathematically using the <span class="math inline">\(\cup\)</span> symbol: for example, if the probability of rolling a six on the first throw is referred to as <span class="math inline">\(P(Roll6_{throw1})\)</span> and the probability of rolling a six on the second throw is <span class="math inline">\(P(Roll6_{throw2})\)</span>, then the union is referred to as <span class="math inline">\(P(Roll6_{throw1} \cup Roll6_{throw2})\)</span>.</p>
+<p>de Méré thought (incorrectly, as we will see below) that he could simply add together the probabilities of the individual events to compute the probability of the combined event, meaning that the probability of rolling a six on the first or second roll would be computed as follows:</p>
+<p><span class="math display">\[
+P(Roll6_{throw1}) = 1/6
+\]</span>
+<span class="math display">\[
+P(Roll6_{throw2}) = 1/6
+\]</span></p>
+<p><span class="math display">\[
+de Méré&#39;s \ error:
+\]</span>
+<span class="math display">\[
+P(Roll6_{throw1} \cup Roll6_{throw2}) = P(Roll6_{throw1}) + P(Roll6_{throw2}) = 1/6 + 1/6 = 1/3
+\]</span></p>
+<p>de Méré reasoned based on this incorrect assumption that the probability of at least one six in four rolls was the sum of the probabilities on each of the individual throws: <span class="math inline">\(4*\frac{1}{6}=\frac{2}{3}\)</span>. Similarly, he reasoned that since the probability of a double-six when throwing two dice is 1/36, then the probability of at least one double-six on 24 rolls of two dice would be <span class="math inline">\(24*\frac{1}{36}=\frac{2}{3}\)</span>. Yet, while he consistently won money on the first bet, he lost money on the second bet. What gives?</p>
+<p>To understand de Méré’s error, we need to introduce some of the rules of probability theory. The first is the <em>rule of subtraction</em>, which says that the probability of some event A <em>not</em> happening is one minus the probability of the event happening:</p>
+<p><span class="math display">\[
+P(\neg A) = 1 - P(A)
+\]</span></p>
+<p>where <span class="math inline">\(\neg A\)</span> means “not A”. This rule derives directly from the axioms that we discussed above; because A and <span class="math inline">\(\neg A\)</span> are the only possible outcomes, then their total probability must sum to 1. For example, if the probability of rolling a one in a single throw is <span class="math inline">\(\frac{1}{6}\)</span>, then the probability of rolling anything other than a one is <span class="math inline">\(\frac{5}{6}\)</span>.</p>
+<p>A second rule tells us how to compute the probability of a conjoint event – that is, the probability that both of two events will occur. We refer to this as an <em>intersection</em>, which is signified by the <span class="math inline">\(\cap\)</span> symbol; thus, <span class="math inline">\(P(A \cap B)\)</span> means the probability that both A and B will occur. We will focus on a version of the rule that tells us how to compute this quantity in the special case when the two events are independent from one another; we will learn later exactly what the concept of <em>independence</em> means, but for now we can just take it for granted that the two die throws are independent events. We compute the probability of the intersection of two independent events by simply multiplying the probabilities of the individual events:</p>
+<p><span class="math display">\[
+P(A \cap B) = P(A) * P(B)\ \text{if and only if A and B are independent}
+\]</span>
+Thus, the probability of throwing a six on both of two rolls is <span class="math inline">\(\frac{1}{6}*\frac{1}{6}=\frac{1}{36}\)</span>.</p>
+<p>The third rule tells us how to add together probabilities - and it is here that we see the source of de Méré’s error. The addition rule tells us that to obtain the probability of either of two events occurring, we add together the individual probabilities, but then subtract the likelihood of both occurring together:</p>
+<p><span class="math display">\[
+P(A \cup B) = P(A) + P(B) - P(A \cap B)
+\]</span>
+In a sense, this prevents us from counting those instances twice, and that’s what distinguishes the rule from de Méré’s incorrect computation. Let’s say that we want to find the probability of rolling 6 on either of two throws. According to our rules:</p>
+<p><span class="math display">\[
+P(Roll6_{throw1} \cup Roll6_{throw2}) = P(Roll6_{throw1}) + P(Roll6_{throw2}) - P(Roll6_{throw1} \cap Roll6_{throw2})
+\]</span>
+<span class="math display">\[
+= \frac{1}{6} + \frac{1}{6} - \frac{1}{36} = \frac{11}{36}
+\]</span></p>
+<div class="figure"><span style="display:block;" id="fig:ThrowMatrix"></span>
+<img src="StatsThinking21_files/figure-html/ThrowMatrix-1.png" alt="Each cell in this matrix represents one outcome of two throws of a die, with the columns representing the first throw and the rows representing the second throw. Cells shown in red represent the cells with a six in either the first or second throw; the rest are shown in blue." width="384" height="50%" />
+<p class="caption">
+Figure 6.2: Each cell in this matrix represents one outcome of two throws of a die, with the columns representing the first throw and the rows representing the second throw. Cells shown in red represent the cells with a six in either the first or second throw; the rest are shown in blue.
+</p>
+</div>
+<p>Let’s use a graphical depiction to get a different view of this rule. Figure <a href="probability.html#fig:ThrowMatrix">6.2</a> shows a matrix representing all possible combinations of results across two throws, and highlights the cells that involve a six on either the first or second throw. If you count up the cells in red you will see that there are 11 such cells. This shows why the addition rule gives a different answer from de Méré’s; if we were to simply add together the probabilities for the two throws as he did, then we would count (6,6) towards both, when it should really only be counted once.</p>
+</div>
+<div id="solving-de-mérés-problem" class="section level3 hasAnchor" number="6.2.4">
+<h3><span class="header-section-number">6.2.4</span> Solving de Méré’s problem<a href="probability.html#solving-de-mérés-problem" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Blaise Pascal used the rules of probability to come up with a solution to de Méré’s problem. First, he realized that computing the probability of at least one event out of a combination was tricky, whereas computing the probability that something does not occur across several events is relatively easy – it’s just the product of the probabilities of the individual events. Thus, rather than computing the probability of at least one six in four rolls, he instead computed the probability of no sixes across all rolls:</p>
+<p><span class="math display">\[
+P(\text{no sixes in four rolls}) = \frac{5}{6}*\frac{5}{6}*\frac{5}{6}*\frac{5}{6}=\bigg(\frac{5}{6}\bigg)^4=0.482
+\]</span></p>
+<p>He then used the fact that the probability of no sixes in four rolls is the complement of at least one six in four rolls (thus they must sum to one), and used the rule of subtraction to compute the probability of interest:</p>
+<p><span class="math display">\[
+P(\text{at least one six in four rolls}) = 1 - \bigg(\frac{5}{6}\bigg)^4=0.517
+\]</span></p>
+<p>de Méré’s gamble that he would throw at least one six in four rolls has a probability of greater than 0.5, explaning why de Méré made money on this bet on average.</p>
+<p>But what about de Méré’s second bet? Pascal used the same trick:</p>
+<p><span class="math display">\[
+P(\text{no double six in 24 rolls}) = \bigg(\frac{35}{36}\bigg)^{24}=0.509
+\]</span>
+<span class="math display">\[
+P(\text{at least one double six in 24 rolls}) = 1 - \bigg(\frac{35}{36}\bigg)^{24}=0.491
+\]</span></p>
+<p>The probability of this outcome was slightly below 0.5, showing why de Méré lost money on average on this bet.</p>
+</div>
+</div>
+<div id="probability-distributions" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Probability distributions<a href="probability.html#probability-distributions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A <em>probability distribution</em> describes the probability of all of the possible outcomes in an experiment. For example, on Jan 20 2018, the basketball player Steph Curry hit only 2 out of 4 free throws in a game against the Houston Rockets. We know that Curry’s overall probability of hitting free throws across the entire season was 0.91, so it seems pretty unlikely that he would hit only 50% of his free throws in a game, but exactly how unlikely is it? We can determine this using a theoretical probability distribution; throughout this book we will encounter a number of these probability distributions, each of which is appropriate to describe different types of data. In this case, we use the <em>binomial</em> distribution, which provides a way to compute the probability of some number of successes out of a number of trials on which there is either success or failure and nothing in between (known as “Bernoulli trials”), given some known probability of success on each trial. This distribution is defined as:</p>
+<p><span class="math display">\[
+P(k; n,p) = P(X=k) = \binom{n}{k} p^k(1-p)^{n-k}
+\]</span></p>
+<p>This refers to the probability of k successes on n trials when the probability of success is p. You may not be familiar with <span class="math inline">\(\binom{n}{k}\)</span>, which is referred to as the <em>binomial coefficient</em>. The binomial coefficient is also referred to as “n-choose-k” because it describes the number of different ways that one can choose k items out of n total items. The binomial coefficient is computed as:</p>
+<p><span class="math display">\[
+\binom{n}{k} = \frac{n!}{k!(n-k)!}
+\]</span>
+where the exclamation point (!) refers to the <em>factorial</em> of the number:</p>
+<p><span class="math display">\[
+n! = \prod_{i=1}^n i = n*(n-1)*...*2*1
+\]</span></p>
+<p>The product operator <span class="math inline">\(\prod\)</span> is similar to the summation operator <span class="math inline">\(\sum\)</span>, except that it multiplies instead of adds. In this case, it is multiplying together all numbers from one to <span class="math inline">\(n\)</span>.</p>
+<p>In the example of Steph Curry’s free throws:</p>
+<p><span class="math display">\[
+P(2;4,0.91) = \binom{4}{2} 0.91^2(1-0.91)^{4-2} = 0.040
+\]</span></p>
+<p>This shows that given Curry’s overall free throw percentage, it is very unlikely that he would hit only 2 out of 4 free throws. Which just goes to show that unlikely things do actually happen in the real world.</p>
+<div id="cumulative-probability-distributions" class="section level3 hasAnchor" number="6.3.1">
+<h3><span class="header-section-number">6.3.1</span> Cumulative probability distributions<a href="probability.html#cumulative-probability-distributions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Often we want to know not just how likely a specific value is, but how likely it is to find a value that is as extreme or more than a particular value; this will become very important when we discuss hypothesis testing in Chapter 9. To answer this question, we can use a <em>cumulative</em> probability distribution; whereas a standard probability distribution tells us the probability of some specific value, the cumulative distribution tells us the probability of a value as large or larger (or as small or smaller) than some specific value.</p>
+<p>In the free throw example, we might want to know: What is the probability that Steph Curry hits 2 <em>or fewer</em> free throws out of four, given his overall free throw probability of 0.91. To determine this, we could simply use the the binomial probability equation and plug in all of the possible values of k and add them together:</p>
+<p><span class="math display">\[
+P(k\le2)= P(k=2) + P(k=1) + P(k=0) = 6e^{-5} + .002 + .040 = .043  
+\]</span></p>
+<p>In many cases the number of possible outcomes would be too large for us to compute the cumulative probability by enumerating all possible values; fortunately, it can be computed directly for any theoretical probability distribution. Table <a href="probability.html#tab:freethrow">6.1</a> shows the cumulative probability of each possible number of successful free throws in the example from above, from which we can see that the probability of Curry landing 2 or fewer free throws out of 4 attempts is 0.043.</p>
+<table>
+<caption><span id="tab:freethrow">Table 6.1: </span>Simple and cumulative probability distributions for number of successful free throws by Steph Curry in 4 attempts.</caption>
+<thead>
+<tr class="header">
+<th align="right">numSuccesses</th>
+<th align="right">Probability</th>
+<th align="right">CumulativeProbability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">0.003</td>
+<td align="right">0.003</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">0.040</td>
+<td align="right">0.043</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">0.271</td>
+<td align="right">0.314</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">0.686</td>
+<td align="right">1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="conditional-probability" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Conditional probability<a href="probability.html#conditional-probability" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>So far we have limited ourselves to simple probabilities - that is, the probability of a single event or combination of events. However, we often wish to determine the probability of some event given that some other event has occurred, which are known as <em>conditional probabilities</em>.</p>
+<p>Let’s take the 2016 US Presidential election as an example. There are two simple probabilities that we could use to describe the electorate. First, we know the probability that a voter in the US is affiliated with the Republican party: <span class="math inline">\(p(Republican) = 0.44\)</span>. We also know the probability that a voter cast their vote in favor of Donald Trump: <span class="math inline">\(p(Trump voter)=0.46\)</span>. However, let’s say that we want to know the following: What is the probability that a person cast their vote for Donald Trump, <em>given that they are a Republican</em>?</p>
+<p>To compute the conditional probability of A given B (which we write as <span class="math inline">\(P(A|B)\)</span>, “probability of A, given B”), we need to know the <em>joint probability</em> (that is, the probability of both A and B occurring) as well as the overall probability of B:</p>
+<p><span class="math display">\[
+P(A|B) = \frac{P(A \cap B)}{P(B)}
+\]</span></p>
+<p>That is, we want to know the probability that both things are true, given that the one being conditioned upon is true.</p>
+<div class="figure"><span style="display:block;" id="fig:conditionalProbability"></span>
+<img src="images/conditional_probability.png" alt="A graphical depiction of conditional probability, showing how the conditional probability limits our analysis to a subset of the data." width="288" height="50%" />
+<p class="caption">
+Figure 6.3: A graphical depiction of conditional probability, showing how the conditional probability limits our analysis to a subset of the data.
+</p>
+</div>
+<p>It can be useful to think of this graphically. Figure <a href="probability.html#fig:conditionalProbability">6.3</a> shows a flow chart depicting how the full population of voters breaks down into Republicans and Democrats, and how the conditional probability (conditioning on party) further breaks down the members of each party according to their vote.</p>
+</div>
+<div id="computing-conditional-probabilities-from-data" class="section level2 hasAnchor" number="6.5">
+<h2><span class="header-section-number">6.5</span> Computing conditional probabilities from data<a href="probability.html#computing-conditional-probabilities-from-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We can also compute conditional probabilities directly from data. Let’s say that we are interested in the following question: What is the probability that someone has diabetes, given that they are not physically active? – that is, <span class="math inline">\(P(diabetes|inactive)\)</span>. The NHANES dataset includes two variables that address the two parts of this question. The first (<code>Diabetes</code>) asks whether the person has ever been told that they have diabetes, and the second (<code>PhysActive</code>) records whether the person engages in sports, fitness, or recreational activities that are at least of moderate intensity. Let’s first compute the simple probabilities, which are shown in Table <a href="probability.html#tab:simpleProb">6.2</a>. The table shows that the probability that someone in the NHANES dataset has diabetes is .1, and the probability that someone is inactive is .45.</p>
+<table>
+<caption><span id="tab:simpleProb">Table 6.2: </span>Summary data for diabetes and physical activity</caption>
+<thead>
+<tr class="header">
+<th align="left">Answer</th>
+<th align="right">N_diabetes</th>
+<th align="right">P_diabetes</th>
+<th align="right">N_PhysActive</th>
+<th align="right">P_PhysActive</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No</td>
+<td align="right">4893</td>
+<td align="right">0.9</td>
+<td align="right">2472</td>
+<td align="right">0.45</td>
+</tr>
+<tr class="even">
+<td align="left">Yes</td>
+<td align="right">550</td>
+<td align="right">0.1</td>
+<td align="right">2971</td>
+<td align="right">0.55</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:jointProb">Table 6.3: </span>Joint probabilities for Diabetes and PhysActive variables.</caption>
+<thead>
+<tr class="header">
+<th align="left">Diabetes</th>
+<th align="left">PhysActive</th>
+<th align="right">n</th>
+<th align="right">prob</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="right">2123</td>
+<td align="right">0.39</td>
+</tr>
+<tr class="even">
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="right">2770</td>
+<td align="right">0.51</td>
+</tr>
+<tr class="odd">
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="right">349</td>
+<td align="right">0.06</td>
+</tr>
+<tr class="even">
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="right">201</td>
+<td align="right">0.04</td>
+</tr>
+</tbody>
+</table>
+<p>To compute <span class="math inline">\(P(diabetes|inactive)\)</span> we would also need to know the joint probability of being diabetic <em>and</em> inactive, in addition to the simple probabilities of each. These are shown in Table <a href="probability.html#tab:jointProb">6.3</a>.
+Based on these joint probabilities, we can compute <span class="math inline">\(P(diabetes|inactive)\)</span>. One way to do this in a computer program is to first determine the whether the PhysActive variable was equal to “No” for each indivdual, and then take the mean of those truth values. Since TRUE/FALSE values are treated as 1/0 respectively by most programming languages (including R and Python), this allows us to easily identify the probability of a simple event by simply taking the mean of a logical variable representing its truth value. We then use that value to compute the conditional probability, where we find that the probability of someone having diabetes given that they are physically inactive is 0.141.</p>
+</div>
+<div id="independence" class="section level2 hasAnchor" number="6.6">
+<h2><span class="header-section-number">6.6</span> Independence<a href="probability.html#independence" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The term “independent” has a very specific meaning in statistics, which is somewhat different from the common usage of the term. Statistical independence between two variables means that knowing the value of one variable doesn’t tell us anything about the value of the other. This can be expressed as:</p>
+<p><span class="math display">\[
+P(A|B) = P(A)
+\]</span></p>
+<p>That is, the probability of A given some value of B is just the same as the overall probability of A. Looking at it this way, we see that many cases of what we would call “independence” in the real world are not actually statistically independent. For example, there is currently a move by a small group of California citizens to declare a new independent state called Jefferson, which would comprise a number of counties in northern California and Oregon. If this were to happen, then the probability that a current California resident would now live in the state of Jefferson would be <span class="math inline">\(P(\text{Jeffersonian})=0.014\)</span>, whereas the probability that they would remain a California resident would be <span class="math inline">\(P(\text{Californian})=0.986\)</span>. The new states might be politically independent, but they would <em>not</em> be statistically independent, because if we know that a person is Jeffersonian, then we can be sure that they are <em>not</em> Californian! That is, while independence in common language often refers to sets that are exclusive, statistical independence refers to the case where one cannot predict anything about one variable from the value of another variable. For example, knowing a person’s hair color is unlikely to tell you whether they prefer chocolate or strawberry ice cream.</p>
+<p>Let’s look at another example, using the NHANES data: Are physical health and mental health independent of one another? NHANES includes two relevant questions: <em>PhysActive</em>, which asks whether the individual is physically active, and <em>DaysMentHlthBad</em>, which asks how many days out of the last 30 that the individual experienced bad mental health. Let’s consider anyone who had more than 7 days of bad mental health in the last month to be in bad mental health. Based on this, we can define a new variable called <em>badMentalHealth</em> as a logical variable telling whether each person had more than 7 days of bad mental health or not. We can first summarize the data to show how many individuals fall into each combination of the two variables (shown in Table <a href="probability.html#tab:mhCounts">6.4</a>), and then divide by the total number of observations to create a table of proportions (shown in Table <a href="probability.html#tab:mhProps">6.5</a>):</p>
+<table>
+<caption><span id="tab:mhCounts">Table 6.4: </span>Summary of absolute frequency data for mental health and physical activity.</caption>
+<thead>
+<tr class="header">
+<th align="left">PhysActive</th>
+<th align="right">Bad Mental Health</th>
+<th align="right">Good Mental Health</th>
+<th align="right">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No</td>
+<td align="right">414</td>
+<td align="right">1664</td>
+<td align="right">2078</td>
+</tr>
+<tr class="even">
+<td align="left">Yes</td>
+<td align="right">292</td>
+<td align="right">1926</td>
+<td align="right">2218</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="right">706</td>
+<td align="right">3590</td>
+<td align="right">4296</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:mhProps">Table 6.5: </span>Summary of relative frequency data for mental health and physical activity.</caption>
+<thead>
+<tr class="header">
+<th align="left">PhysActive</th>
+<th align="right">Bad Mental Health</th>
+<th align="right">Good Mental Health</th>
+<th align="right">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No</td>
+<td align="right">0.10</td>
+<td align="right">0.39</td>
+<td align="right">0.48</td>
+</tr>
+<tr class="even">
+<td align="left">Yes</td>
+<td align="right">0.07</td>
+<td align="right">0.45</td>
+<td align="right">0.52</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="right">0.16</td>
+<td align="right">0.84</td>
+<td align="right">1.00</td>
+</tr>
+</tbody>
+</table>
+<p>This shows us the proportion of all observations that fall into each cell. However, what we want to know here is the conditional probability of bad mental health, depending on whether one is physically active or not. To compute this, we divide each physical activity group by its total number of observations, so that each row now sums to one (shown in Table <a href="probability.html#tab:condProb">6.6</a>). Here we see the conditional probabilities of bad or good mental health for each physical activity group (in the top two rows) along with the overall probability of good or bad mental health in the third row. To determine whether mental health and physical activity are independent, we would compare the simple probability of bad mental health (in the third row) to the conditional probability of bad mental health given that one is physically active (in the second row).</p>
+<table>
+<caption><span id="tab:condProb">Table 6.6: </span>Summary of conditional probabilities for mental health given physical activity.</caption>
+<thead>
+<tr class="header">
+<th align="left">PhysActive</th>
+<th align="right">Bad Mental Health</th>
+<th align="right">Good Mental Health</th>
+<th align="right">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No</td>
+<td align="right">0.20</td>
+<td align="right">0.80</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Yes</td>
+<td align="right">0.13</td>
+<td align="right">0.87</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="right">0.16</td>
+<td align="right">0.84</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<p>The overall probability of bad mental health <span class="math inline">\(P(\text{bad mental health})\)</span> is 0.16 while the conditional probability <span class="math inline">\(P(\text{bad mental health|physically active})\)</span> is 0.13. Thus, it seems that the conditional probability is somewhat smaller than the overall probability, suggesting that they are not independent, though we can’t know for sure just by looking at the numbers, since these numbers might be different due to random variability in our sample. Later in the book we will discuss statistical tools that will let us directly test whether two variables are independent.</p>
+</div>
+<div id="bayestheorem" class="section level2 hasAnchor" number="6.7">
+<h2><span class="header-section-number">6.7</span> Reversing a conditional probability: Bayes’ rule<a href="probability.html#bayestheorem" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In many cases, we know <span class="math inline">\(P(A|B)\)</span> but we really want to know <span class="math inline">\(P(B|A)\)</span>. This commonly occurs in medical screening, where we know <span class="math inline">\(P(\text{positive test result| disease})\)</span> but what we want to know is <span class="math inline">\(P(\text{disease|positive test result})\)</span>. For example, some doctors recommend that men over the age of 50 undergo screening using a test called prostate specific antigen (PSA) to screen for possible prostate cancer. Before a test is approved for use in medical practice, the manufacturer needs to test two aspects of the test’s performance. First, they need to show how <em>sensitive</em> it is – that is, how likely is it to find the disease when it is present: <span class="math inline">\(\text{sensitivity} = P(\text{positive test| disease})\)</span>. They also need to show how <em>specific</em> it is: that is, how likely is it to give a negative result when there is no disease present: <span class="math inline">\(\text{specificity} = P(\text{negative test|no disease})\)</span>. For the PSA test, we know that sensitivity is about 80% and specificity is about 70%. However, these don’t answer the question that the physician wants to answer for any particular patient: what is the likelihood that they actually have cancer, given that the test comes back positive? This requires that we reverse the conditional probability that defines sensitivity: instead of <span class="math inline">\(P(positive\ test| disease)\)</span> we want to know <span class="math inline">\(P(disease|positive\ test)\)</span>.</p>
+<p>In order to reverse a conditional probability, we can use <em>Bayes’ rule</em>:</p>
+<p><span class="math display">\[
+P(B|A) = \frac{P(A|B)*P(B)}{P(A)}
+\]</span></p>
+<p>Bayes’ rule is fairly easy to derive, based on the rules of probability that we learned earlier in the chapter (see the Appendix for this derivation).</p>
+<p>If we have only two outcomes, we can express Bayes’ rule in a somewhat clearer way, using the sum rule to redefine <span class="math inline">\(P(A)\)</span>:</p>
+<p><span class="math display">\[
+P(A) = P(A|B)*P(B) + P(A|\neg B)*P(\neg B)
+\]</span></p>
+<p>Using this, we can redefine Bayes’s rule:</p>
+<p><span class="math display">\[
+P(B|A) = \frac{P(A|B)*P(B)}{P(A|B)*P(B) + P(A|\neg B)*P(\neg B)}
+\]</span></p>
+<p>We can plug the relevant numbers into this equation to determine the likelihood that an individual with a positive PSA result actually has cancer – but note that in order to do this, we also need to know the overall probability of cancer for that person, which we often refer to as the <em>base rate</em>. Let’s take a 60 year old man, for whom the probability of prostate cancer in the next 10 years is <span class="math inline">\(P(cancer)=0.058\)</span>. Using the sensitivity and specificity values that we outlined above, we can compute the individual’s likelihood of having cancer given a positive test:</p>
+<p><span class="math display">\[
+P(\text{cancer|test}) = \frac{P(\text{test|cancer})*P(\text{cancer})}{P(\text{test|cancer})*P(\text{cancer}) + P(\text{test|}\neg\text{cancer})*P(\neg\text{cancer})}
+\]</span>
+<span class="math display">\[
+= \frac{0.8*0.058}{0.8*0.058 +0.3*0.942 } = 0.14
+\]</span>
+That’s pretty small – do you find that surprising? Many people do, and in fact there is a substantial psychological literature showing that people systematically neglect <em>base rates</em> (i.e. overall prevalence) in their judgments.</p>
+</div>
+<div id="learning-from-data-1" class="section level2 hasAnchor" number="6.8">
+<h2><span class="header-section-number">6.8</span> Learning from data<a href="probability.html#learning-from-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Another way to think of Bayes’ rule is as a way to update our beliefs on the basis of data – that is, learning about the world using data. Let’s look at Bayes’ rule again:</p>
+<p><span class="math display">\[
+P(B|A) =  \frac{P(A|B)*P(B)}{P(A)}
+\]</span></p>
+<p>The different parts of Bayes’ rule have specific names, that relate to their role in using Bayes’ rule to update our beliefs. We start out with an initial guess about the probability of B (<span class="math inline">\(P(B)\)</span>), which we refer to as the <em>prior</em> probability. In the PSA example we used the base rate as our prior, since it was our best guess as to the individual’s chance of cancer before we knew the test result. We then collect some data, which in our example was the test result. The degree to which the data A are consistent with outcome B is given by <span class="math inline">\(P(A|B)\)</span>, which we refer to as the <em>likelihood</em>. You can think of this as how likely the data are, given that the particular hypothesis being tested is true. In our example, the hypothesis being tested was whether the individual had cancer, and the likelihood was based on our knowledge about the sensitivity of the test (that is, the probability of a positive test outcome given cancer is present). The denominator (<span class="math inline">\(P(A)\)</span>) is referred to as the <em>marginal likelihood</em>, because it expresses the overall likelihood of the data, averaged across all of the possible values of B (which in our example were disease present and disease absent).
+The outcome to the left (<span class="math inline">\(P(B|A)\)</span>) is referred to as the <em>posterior</em> - because it’s what comes out the back end of the computation.</p>
+<p>There is another way of writing Bayes rule that makes this a bit clearer:</p>
+<p><span class="math display">\[
+P(B|A) = \frac{P(A|B)}{P(A)}*P(B)
+\]</span></p>
+<p>The part on the left (<span class="math inline">\(\frac{P(A|B)}{P(A)}\)</span>) tells us how much more or less likely the data A are given B, relative to the overall (marginal) likelihood of the data, while the part on the right side (<span class="math inline">\(P(B)\)</span>) tells us how likely we thought B was before we knew anything about the data. This makes it clearer that the role of Bayes theorem is to update our prior knowledge based on the degree to which the data are more likely given B than they would be overall. If the hypothesis is more likely given the data than it would be in general, then we increase our belief in the hypothesis; if it’s less likely given the data, then we decrease our belief.</p>
+</div>
+<div id="odds-and-odds-ratios" class="section level2 hasAnchor" number="6.9">
+<h2><span class="header-section-number">6.9</span> Odds and odds ratios<a href="probability.html#odds-and-odds-ratios" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The result in the last section showed that the likelihood that the individual has cancer based on a positive PSA test result is still fairly low, even though it’s more than twice as big as it was before we knew the test result. We would often like to quantify the relation between probabilities more directly, which we can do by converting them into <em>odds</em> which express the relative likelihood of something happening or not:<br />
+<span class="math display">\[
+\text{odds of A} = \frac{P(A)}{P(\neg A)}
+\]</span></p>
+<p>In our PSA example, the odds of having cancer (given the positive test) are:</p>
+<p><span class="math display">\[
+\text{odds of cancer} = \frac{P(\text{cancer})}{P(\neg \text{cancer})} =\frac{0.14}{1 - 0.14} = 0.16
+\]</span></p>
+<p>This tells us that the that the odds are fairly low of having cancer, even though the test was positive. For comparison, the odds of rolling a 6 in a single dice throw are:</p>
+<p><span class="math display">\[
+\text{odds of 6} = \frac{1}{5} = 0.2
+\]</span></p>
+<p>As an aside, this is a reason why many medical researchers have become increasingly wary of the use of widespread screening tests for relatively uncommon conditions; most positive results will turn out to be false positives, resulting in unneccessary followup tests with possible complications, not to mention added stress for the patient.</p>
+<p>We can also use odds to compare different probabilities, by computing what is called an <em>odds ratio</em> - which is exactly what it sounds like. For example, let’s say that we want to know how much the positive test increases the individual’s odds of having cancer. We can first compute the <em>prior odds</em> – that is, the odds before we knew that the person had tested positively. These are computed using the base rate:</p>
+<p><span class="math display">\[
+\text{prior odds} = \frac{P(\text{cancer})}{P(\neg \text{cancer})} =\frac{0.058}{1 - 0.058} = 0.061
+\]</span></p>
+<p>We can then compare these with the posterior odds, which are computed using the posterior probability:</p>
+<p><span class="math display">\[
+\text{odds ratio} = \frac{\text{posterior odds}}{\text{prior odds}} = \frac{0.16}{0.061} = 2.62
+\]</span></p>
+<p>This tells us that the odds of having cancer are increased by 2.62 times given the positive test result. An odds ratio is an example of what we will later call an <em>effect size</em>, which is a way of quantifying how relatively large any particular statistical effect is.</p>
+</div>
+<div id="what-do-probabilities-mean" class="section level2 hasAnchor" number="6.10">
+<h2><span class="header-section-number">6.10</span> What do probabilities mean?<a href="probability.html#what-do-probabilities-mean" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>It might strike you that it is a bit odd to talk about the probability of a person having cancer depending on a test result; after all, the person either has cancer or they don’t. Historically, there have been two different ways that probabilities have been interpreted. The first (known as the <em>frequentist</em> interpretation) interprets probabilities in terms of long-run frequencies. For example, in the case of a coin flip, it would reflect the relative frequencies of heads in the long run after a large number of flips. While this interpretation might make sense for events that can be repeated many times like a coin flip, it makes less sense for events that will only happen once, like an individual person’s life or a particular presidential election; and as the economist John Maynard Keynes famously said, “In the long run, we are all dead.”</p>
+<p>The other interpretation of probablities (known as the <em>Bayesian</em> interpretation) is as a degree of belief in a particular proposition. If I were to ask you “How likely is it that the US will return to the moon by 2040”, you can provide an answer to this question based on your knowledge and beliefs, even though there are no relevant frequencies to compute a frequentist probability. One way that we often frame subjective probabilities is in terms of one’s willingness to accept a particular gamble. For example, if you think that the probability of the US landing on the moon by 2040 is 0.1 (i.e. odds of 9 to 1), then that means that you should be willing to accept a gamble that would pay off with anything more than 9 to 1 odds if the event occurs.</p>
+<p>As we will see, these two different definitions of probability are very relevant to the two different ways that statisticians think about testing statistical hypotheses, which we will encounter in later chapters.</p>
+</div>
+<div id="learning-objectives-5" class="section level2 hasAnchor" number="6.11">
+<h2><span class="header-section-number">6.11</span> Learning objectives<a href="probability.html#learning-objectives-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Having read this chapter, you should be able to:</p>
+<ul>
+<li>Describe the sample space for a selected random experiment.</li>
+<li>Compute relative frequency and empirical probability for a given set of events</li>
+<li>Compute probabilities of single events, complementary events, and the unions and intersections of collections of events.</li>
+<li>Describe the law of large numbers.</li>
+<li>Describe the difference between a probability and a conditional probability</li>
+<li>Describe the concept of statistical independence</li>
+<li>Use Bayes’ theorem to compute the inverse conditional probability.</li>
+</ul>
+</div>
+<div id="suggested-readings-3" class="section level2 hasAnchor" number="6.12">
+<h2><span class="header-section-number">6.12</span> Suggested readings<a href="probability.html#suggested-readings-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><em>The Drunkard’s Walk: How Randomness Rules Our Lives</em>, by Leonard Mlodinow</li>
+<li><em>Ten Great Ideas about Chance</em>, by Persi Diaconis and Brian Skyrms</li>
+</ul>
+</div>
+<div id="appendix-2" class="section level2 hasAnchor" number="6.13">
+<h2><span class="header-section-number">6.13</span> Appendix<a href="probability.html#appendix-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="derivation-of-bayes-rule" class="section level3 hasAnchor" number="6.13.1">
+<h3><span class="header-section-number">6.13.1</span> Derivation of Bayes’ rule<a href="probability.html#derivation-of-bayes-rule" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>First, remember the rule for computing a conditional probability:</p>
+<p><span class="math display">\[
+P(A|B) = \frac{P(A \cap B)}{P(B)}
+\]</span></p>
+<p>We can rearrange this to get the formula to compute the joint probability using the conditional:</p>
+<p><span class="math display">\[
+P(A \cap B) = P(A|B) * P(B)
+\]</span></p>
+<p>Using this we can compute the inverse probability:</p>
+<p><span class="math display">\[
+P(B|A) = \frac{P(A \cap B)}{P(A)} =   \frac{P(A|B)*P(B)}{P(A)}
+\]</span></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="fitting-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="sampling.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="book_assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/statsthinking21/statsthinking21-core/edit/master/06-Probability.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["StatsThinking21.pdf", "StatsThinking21.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 16 Multivariate statistics | Statistical Thinking for the 21st Century</title>
+  <meta name="description" content="A book about statistics." />
+  <meta name="generator" content="bookdown 0.31 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 16 Multivariate statistics | Statistical Thinking for the 21st Century" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="A book about statistics." />
+  <meta name="github-repo" content="poldrack/psych10-book" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 16 Multivariate statistics | Statistical Thinking for the 21st Century" />
+  
+  <meta name="twitter:description" content="A book about statistics." />
+  
+
+<meta name="author" content="Copyright 2019 Russell A. Poldrack" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="comparing-means.html"/>
+<link rel="next" href="practical-example.html"/>
+<script src="book_assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="book_assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="book_assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="book_assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="book_assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="book_assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129414074-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-129414074-1');
+</script>
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
+<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#why-does-this-book-exist"><i class="fa fa-check"></i><b>0.1</b> Why does this book exist?</a></li>
+<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#the-golden-age-of-data"><i class="fa fa-check"></i><b>0.2</b> The golden age of data</a></li>
+<li class="chapter" data-level="0.3" data-path="index.html"><a href="index.html#the-importance-of-doing-statistics"><i class="fa fa-check"></i><b>0.3</b> The importance of doing statistics</a></li>
+<li class="chapter" data-level="0.4" data-path="index.html"><a href="index.html#an-open-source-book"><i class="fa fa-check"></i><b>0.4</b> An open source book</a></li>
+<li class="chapter" data-level="0.5" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i><b>0.5</b> Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#what-is-statistical-thinking"><i class="fa fa-check"></i><b>1.1</b> What is statistical thinking?</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#dealing-with-statistics-anxiety"><i class="fa fa-check"></i><b>1.2</b> Dealing with statistics anxiety</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#what-can-statistics-do-for-us"><i class="fa fa-check"></i><b>1.3</b> What can statistics do for us?</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction.html"><a href="introduction.html#the-big-ideas-of-statistics"><i class="fa fa-check"></i><b>1.4</b> The big ideas of statistics</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="introduction.html"><a href="introduction.html#learning-from-data"><i class="fa fa-check"></i><b>1.4.1</b> Learning from data</a></li>
+<li class="chapter" data-level="1.4.2" data-path="introduction.html"><a href="introduction.html#aggregation"><i class="fa fa-check"></i><b>1.4.2</b> Aggregation</a></li>
+<li class="chapter" data-level="1.4.3" data-path="introduction.html"><a href="introduction.html#uncertainty"><i class="fa fa-check"></i><b>1.4.3</b> Uncertainty</a></li>
+<li class="chapter" data-level="1.4.4" data-path="introduction.html"><a href="introduction.html#sampling-from-a-population"><i class="fa fa-check"></i><b>1.4.4</b> Sampling from a population</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="introduction.html"><a href="introduction.html#causality-and-statistics"><i class="fa fa-check"></i><b>1.5</b> Causality and statistics</a></li>
+<li class="chapter" data-level="1.6" data-path="introduction.html"><a href="introduction.html#learning-objectives"><i class="fa fa-check"></i><b>1.6</b> Learning objectives</a></li>
+<li class="chapter" data-level="1.7" data-path="introduction.html"><a href="introduction.html#suggested-readings"><i class="fa fa-check"></i><b>1.7</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="working-with-data.html"><a href="working-with-data.html"><i class="fa fa-check"></i><b>2</b> Working with data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="working-with-data.html"><a href="working-with-data.html#what-are-data"><i class="fa fa-check"></i><b>2.1</b> What are data?</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="working-with-data.html"><a href="working-with-data.html#qualitative-data"><i class="fa fa-check"></i><b>2.1.1</b> Qualitative data</a></li>
+<li class="chapter" data-level="2.1.2" data-path="working-with-data.html"><a href="working-with-data.html#quantitative-data"><i class="fa fa-check"></i><b>2.1.2</b> Quantitative data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="working-with-data.html"><a href="working-with-data.html#discrete-versus-continuous-measurements"><i class="fa fa-check"></i><b>2.2</b> Discrete versus continuous measurements</a></li>
+<li class="chapter" data-level="2.3" data-path="working-with-data.html"><a href="working-with-data.html#what-makes-a-good-measurement"><i class="fa fa-check"></i><b>2.3</b> What makes a good measurement?</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="working-with-data.html"><a href="working-with-data.html#reliability"><i class="fa fa-check"></i><b>2.3.1</b> Reliability</a></li>
+<li class="chapter" data-level="2.3.2" data-path="working-with-data.html"><a href="working-with-data.html#validity"><i class="fa fa-check"></i><b>2.3.2</b> Validity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="working-with-data.html"><a href="working-with-data.html#learning-objectives-1"><i class="fa fa-check"></i><b>2.4</b> Learning Objectives</a></li>
+<li class="chapter" data-level="2.5" data-path="working-with-data.html"><a href="working-with-data.html#suggested-readings-1"><i class="fa fa-check"></i><b>2.5</b> Suggested readings</a></li>
+<li class="chapter" data-level="2.6" data-path="working-with-data.html"><a href="working-with-data.html#appendix"><i class="fa fa-check"></i><b>2.6</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="working-with-data.html"><a href="working-with-data.html#scales-of-measurement"><i class="fa fa-check"></i><b>2.6.1</b> Scales of measurement</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="summarizing-data.html"><a href="summarizing-data.html"><i class="fa fa-check"></i><b>3</b> Summarizing data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="summarizing-data.html"><a href="summarizing-data.html#why-summarize-data"><i class="fa fa-check"></i><b>3.1</b> Why summarize data?</a></li>
+<li class="chapter" data-level="3.2" data-path="summarizing-data.html"><a href="summarizing-data.html#summarizing-data-using-tables"><i class="fa fa-check"></i><b>3.2</b> Summarizing data using tables</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="summarizing-data.html"><a href="summarizing-data.html#frequency-distributions"><i class="fa fa-check"></i><b>3.2.1</b> Frequency distributions</a></li>
+<li class="chapter" data-level="3.2.2" data-path="summarizing-data.html"><a href="summarizing-data.html#cumulative-distributions"><i class="fa fa-check"></i><b>3.2.2</b> Cumulative distributions</a></li>
+<li class="chapter" data-level="3.2.3" data-path="summarizing-data.html"><a href="summarizing-data.html#plotting-histograms"><i class="fa fa-check"></i><b>3.2.3</b> Plotting histograms</a></li>
+<li class="chapter" data-level="3.2.4" data-path="summarizing-data.html"><a href="summarizing-data.html#histogram-bins"><i class="fa fa-check"></i><b>3.2.4</b> Histogram bins</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="summarizing-data.html"><a href="summarizing-data.html#idealized-representations-of-distributions"><i class="fa fa-check"></i><b>3.3</b> Idealized representations of distributions</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="summarizing-data.html"><a href="summarizing-data.html#skewness"><i class="fa fa-check"></i><b>3.3.1</b> Skewness</a></li>
+<li class="chapter" data-level="3.3.2" data-path="summarizing-data.html"><a href="summarizing-data.html#long-tailed-distributions"><i class="fa fa-check"></i><b>3.3.2</b> Long-tailed distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="summarizing-data.html"><a href="summarizing-data.html#learning-objectives-2"><i class="fa fa-check"></i><b>3.4</b> Learning objectives</a></li>
+<li class="chapter" data-level="3.5" data-path="summarizing-data.html"><a href="summarizing-data.html#suggested-readings-2"><i class="fa fa-check"></i><b>3.5</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-visualization.html"><a href="data-visualization.html"><i class="fa fa-check"></i><b>4</b> Data Visualization</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="data-visualization.html"><a href="data-visualization.html#anatomy-of-a-plot"><i class="fa fa-check"></i><b>4.1</b> Anatomy of a plot</a></li>
+<li class="chapter" data-level="4.2" data-path="data-visualization.html"><a href="data-visualization.html#principles-of-good-visualization"><i class="fa fa-check"></i><b>4.2</b> Principles of good visualization</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="data-visualization.html"><a href="data-visualization.html#show-the-data-and-make-them-stand-out"><i class="fa fa-check"></i><b>4.2.1</b> Show the data and make them stand out</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data-visualization.html"><a href="data-visualization.html#maximize-the-dataink-ratio"><i class="fa fa-check"></i><b>4.2.2</b> Maximize the data/ink ratio</a></li>
+<li class="chapter" data-level="4.2.3" data-path="data-visualization.html"><a href="data-visualization.html#avoid-chartjunk"><i class="fa fa-check"></i><b>4.2.3</b> Avoid chartjunk</a></li>
+<li class="chapter" data-level="4.2.4" data-path="data-visualization.html"><a href="data-visualization.html#avoid-distorting-the-data"><i class="fa fa-check"></i><b>4.2.4</b> Avoid distorting the data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="data-visualization.html"><a href="data-visualization.html#accommodating-human-limitations"><i class="fa fa-check"></i><b>4.3</b> Accommodating human limitations</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="data-visualization.html"><a href="data-visualization.html#perceptual-limitations"><i class="fa fa-check"></i><b>4.3.1</b> Perceptual limitations</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="data-visualization.html"><a href="data-visualization.html#correcting-for-other-factors"><i class="fa fa-check"></i><b>4.4</b> Correcting for other factors</a></li>
+<li class="chapter" data-level="4.5" data-path="data-visualization.html"><a href="data-visualization.html#learning-objectives-3"><i class="fa fa-check"></i><b>4.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="4.6" data-path="data-visualization.html"><a href="data-visualization.html#suggested-readings-and-videos"><i class="fa fa-check"></i><b>4.6</b> Suggested readings and videos</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="fitting-models.html"><a href="fitting-models.html"><i class="fa fa-check"></i><b>5</b> Fitting models to data</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="fitting-models.html"><a href="fitting-models.html#what-is-a-model"><i class="fa fa-check"></i><b>5.1</b> What is a model?</a></li>
+<li class="chapter" data-level="5.2" data-path="fitting-models.html"><a href="fitting-models.html#statistical-modeling-an-example"><i class="fa fa-check"></i><b>5.2</b> Statistical modeling: An example</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="fitting-models.html"><a href="fitting-models.html#improving-our-model"><i class="fa fa-check"></i><b>5.2.1</b> Improving our model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="fitting-models.html"><a href="fitting-models.html#what-makes-a-model-good"><i class="fa fa-check"></i><b>5.3</b> What makes a model “good”?</a></li>
+<li class="chapter" data-level="5.4" data-path="fitting-models.html"><a href="fitting-models.html#overfitting"><i class="fa fa-check"></i><b>5.4</b> Can a model be too good?</a></li>
+<li class="chapter" data-level="5.5" data-path="fitting-models.html"><a href="fitting-models.html#summarizing-data-using-the-mean"><i class="fa fa-check"></i><b>5.5</b> Summarizing data using the mean</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="fitting-models.html"><a href="fitting-models.html#summarizing-data-robustly-using-the-median"><i class="fa fa-check"></i><b>5.5.1</b> Summarizing data robustly using the median</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="fitting-models.html"><a href="fitting-models.html#the-mode"><i class="fa fa-check"></i><b>5.6</b> The mode</a></li>
+<li class="chapter" data-level="5.7" data-path="fitting-models.html"><a href="fitting-models.html#variability-how-well-does-the-mean-fit-the-data"><i class="fa fa-check"></i><b>5.7</b> Variability: How well does the mean fit the data?</a></li>
+<li class="chapter" data-level="5.8" data-path="fitting-models.html"><a href="fitting-models.html#using-simulations-to-understand-statistics"><i class="fa fa-check"></i><b>5.8</b> Using simulations to understand statistics</a></li>
+<li class="chapter" data-level="5.9" data-path="fitting-models.html"><a href="fitting-models.html#z-scores"><i class="fa fa-check"></i><b>5.9</b> Z-scores</a>
+<ul>
+<li class="chapter" data-level="5.9.1" data-path="fitting-models.html"><a href="fitting-models.html#interpreting-z-scores"><i class="fa fa-check"></i><b>5.9.1</b> Interpreting Z-scores</a></li>
+<li class="chapter" data-level="5.9.2" data-path="fitting-models.html"><a href="fitting-models.html#standardized-scores"><i class="fa fa-check"></i><b>5.9.2</b> Standardized scores</a></li>
+</ul></li>
+<li class="chapter" data-level="5.10" data-path="fitting-models.html"><a href="fitting-models.html#learning-objectives-4"><i class="fa fa-check"></i><b>5.10</b> Learning objectives</a></li>
+<li class="chapter" data-level="5.11" data-path="fitting-models.html"><a href="fitting-models.html#appendix-1"><i class="fa fa-check"></i><b>5.11</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="5.11.1" data-path="fitting-models.html"><a href="fitting-models.html#proof-that-the-sum-of-errors-from-the-mean-is-zero"><i class="fa fa-check"></i><b>5.11.1</b> Proof that the sum of errors from the Mean is zero</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="probability.html"><a href="probability.html"><i class="fa fa-check"></i><b>6</b> Probability</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="probability.html"><a href="probability.html#what-is-probability"><i class="fa fa-check"></i><b>6.1</b> What is probability?</a></li>
+<li class="chapter" data-level="6.2" data-path="probability.html"><a href="probability.html#how-do-we-determine-probabilities"><i class="fa fa-check"></i><b>6.2</b> How do we determine probabilities?</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="probability.html"><a href="probability.html#personal-belief"><i class="fa fa-check"></i><b>6.2.1</b> Personal belief</a></li>
+<li class="chapter" data-level="6.2.2" data-path="probability.html"><a href="probability.html#empirical-frequency"><i class="fa fa-check"></i><b>6.2.2</b> Empirical frequency</a></li>
+<li class="chapter" data-level="6.2.3" data-path="probability.html"><a href="probability.html#classical-probability"><i class="fa fa-check"></i><b>6.2.3</b> Classical probability</a></li>
+<li class="chapter" data-level="6.2.4" data-path="probability.html"><a href="probability.html#solving-de-mérés-problem"><i class="fa fa-check"></i><b>6.2.4</b> Solving de Méré’s problem</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="probability.html"><a href="probability.html#probability-distributions"><i class="fa fa-check"></i><b>6.3</b> Probability distributions</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="probability.html"><a href="probability.html#cumulative-probability-distributions"><i class="fa fa-check"></i><b>6.3.1</b> Cumulative probability distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="probability.html"><a href="probability.html#conditional-probability"><i class="fa fa-check"></i><b>6.4</b> Conditional probability</a></li>
+<li class="chapter" data-level="6.5" data-path="probability.html"><a href="probability.html#computing-conditional-probabilities-from-data"><i class="fa fa-check"></i><b>6.5</b> Computing conditional probabilities from data</a></li>
+<li class="chapter" data-level="6.6" data-path="probability.html"><a href="probability.html#independence"><i class="fa fa-check"></i><b>6.6</b> Independence</a></li>
+<li class="chapter" data-level="6.7" data-path="probability.html"><a href="probability.html#bayestheorem"><i class="fa fa-check"></i><b>6.7</b> Reversing a conditional probability: Bayes’ rule</a></li>
+<li class="chapter" data-level="6.8" data-path="probability.html"><a href="probability.html#learning-from-data-1"><i class="fa fa-check"></i><b>6.8</b> Learning from data</a></li>
+<li class="chapter" data-level="6.9" data-path="probability.html"><a href="probability.html#odds-and-odds-ratios"><i class="fa fa-check"></i><b>6.9</b> Odds and odds ratios</a></li>
+<li class="chapter" data-level="6.10" data-path="probability.html"><a href="probability.html#what-do-probabilities-mean"><i class="fa fa-check"></i><b>6.10</b> What do probabilities mean?</a></li>
+<li class="chapter" data-level="6.11" data-path="probability.html"><a href="probability.html#learning-objectives-5"><i class="fa fa-check"></i><b>6.11</b> Learning objectives</a></li>
+<li class="chapter" data-level="6.12" data-path="probability.html"><a href="probability.html#suggested-readings-3"><i class="fa fa-check"></i><b>6.12</b> Suggested readings</a></li>
+<li class="chapter" data-level="6.13" data-path="probability.html"><a href="probability.html#appendix-2"><i class="fa fa-check"></i><b>6.13</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="6.13.1" data-path="probability.html"><a href="probability.html#derivation-of-bayes-rule"><i class="fa fa-check"></i><b>6.13.1</b> Derivation of Bayes’ rule</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="sampling.html"><a href="sampling.html"><i class="fa fa-check"></i><b>7</b> Sampling</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="sampling.html"><a href="sampling.html#how-do-we-sample"><i class="fa fa-check"></i><b>7.1</b> How do we sample?</a></li>
+<li class="chapter" data-level="7.2" data-path="sampling.html"><a href="sampling.html#samplingerror"><i class="fa fa-check"></i><b>7.2</b> Sampling error</a></li>
+<li class="chapter" data-level="7.3" data-path="sampling.html"><a href="sampling.html#standard-error-of-the-mean"><i class="fa fa-check"></i><b>7.3</b> Standard error of the mean</a></li>
+<li class="chapter" data-level="7.4" data-path="sampling.html"><a href="sampling.html#the-central-limit-theorem"><i class="fa fa-check"></i><b>7.4</b> The Central Limit Theorem</a></li>
+<li class="chapter" data-level="7.5" data-path="sampling.html"><a href="sampling.html#learning-objectives-6"><i class="fa fa-check"></i><b>7.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="7.6" data-path="sampling.html"><a href="sampling.html#suggested-readings-4"><i class="fa fa-check"></i><b>7.6</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html"><i class="fa fa-check"></i><b>8</b> Resampling and simulation</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#monte-carlo-simulation"><i class="fa fa-check"></i><b>8.1</b> Monte Carlo simulation</a></li>
+<li class="chapter" data-level="8.2" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#randomness-in-statistics"><i class="fa fa-check"></i><b>8.2</b> Randomness in statistics</a></li>
+<li class="chapter" data-level="8.3" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#generating-random-numbers"><i class="fa fa-check"></i><b>8.3</b> Generating random numbers</a></li>
+<li class="chapter" data-level="8.4" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#using-monte-carlo-simulation"><i class="fa fa-check"></i><b>8.4</b> Using Monte Carlo simulation</a></li>
+<li class="chapter" data-level="8.5" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#using-simulation-for-statistics-the-bootstrap"><i class="fa fa-check"></i><b>8.5</b> Using simulation for statistics: The bootstrap</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#computing-the-bootstrap"><i class="fa fa-check"></i><b>8.5.1</b> Computing the bootstrap</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#learning-objectives-7"><i class="fa fa-check"></i><b>8.6</b> Learning objectives</a></li>
+<li class="chapter" data-level="8.7" data-path="resampling-and-simulation.html"><a href="resampling-and-simulation.html#suggested-readings-5"><i class="fa fa-check"></i><b>8.7</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html"><i class="fa fa-check"></i><b>9</b> Hypothesis testing</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#null-hypothesis-statistical-testing-nhst"><i class="fa fa-check"></i><b>9.1</b> Null Hypothesis Statistical Testing (NHST)</a></li>
+<li class="chapter" data-level="9.2" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#null-hypothesis-statistical-testing-an-example"><i class="fa fa-check"></i><b>9.2</b> Null hypothesis statistical testing: An example</a></li>
+<li class="chapter" data-level="9.3" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#the-process-of-null-hypothesis-testing"><i class="fa fa-check"></i><b>9.3</b> The process of null hypothesis testing</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-1-formulate-a-hypothesis-of-interest"><i class="fa fa-check"></i><b>9.3.1</b> Step 1: Formulate a hypothesis of interest</a></li>
+<li class="chapter" data-level="9.3.2" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-2-specify-the-null-and-alternative-hypotheses"><i class="fa fa-check"></i><b>9.3.2</b> Step 2: Specify the null and alternative hypotheses</a></li>
+<li class="chapter" data-level="9.3.3" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-3-collect-some-data"><i class="fa fa-check"></i><b>9.3.3</b> Step 3: Collect some data</a></li>
+<li class="chapter" data-level="9.3.4" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-4-fit-a-model-to-the-data-and-compute-a-test-statistic"><i class="fa fa-check"></i><b>9.3.4</b> Step 4: Fit a model to the data and compute a test statistic</a></li>
+<li class="chapter" data-level="9.3.5" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-5-determine-the-probability-of-the-observed-result-under-the-null-hypothesis"><i class="fa fa-check"></i><b>9.3.5</b> Step 5: Determine the probability of the observed result under the null hypothesis</a></li>
+<li class="chapter" data-level="9.3.6" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#step-6-assess-the-statistical-significance-of-the-result"><i class="fa fa-check"></i><b>9.3.6</b> Step 6: Assess the “statistical significance” of the result</a></li>
+<li class="chapter" data-level="9.3.7" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#what-does-a-significant-result-mean"><i class="fa fa-check"></i><b>9.3.7</b> What does a significant result mean?</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#nhst-in-a-modern-context-multiple-testing"><i class="fa fa-check"></i><b>9.4</b> NHST in a modern context: Multiple testing</a></li>
+<li class="chapter" data-level="9.5" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#learning-objectives-8"><i class="fa fa-check"></i><b>9.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="9.6" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#suggested-readings-6"><i class="fa fa-check"></i><b>9.6</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html"><i class="fa fa-check"></i><b>10</b> Quantifying effects and designing studies</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#confidence-intervals"><i class="fa fa-check"></i><b>10.1</b> Confidence intervals</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#confidence-intervals-using-the-normal-distribution"><i class="fa fa-check"></i><b>10.1.1</b> Confidence intervals using the normal distribution</a></li>
+<li class="chapter" data-level="10.1.2" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#confidence-intervals-using-the-t-distribution"><i class="fa fa-check"></i><b>10.1.2</b> Confidence intervals using the t distribution</a></li>
+<li class="chapter" data-level="10.1.3" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#confidence-intervals-and-sample-size"><i class="fa fa-check"></i><b>10.1.3</b> Confidence intervals and sample size</a></li>
+<li class="chapter" data-level="10.1.4" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#computing-confidence-intervals-using-the-bootstrap"><i class="fa fa-check"></i><b>10.1.4</b> Computing confidence intervals using the bootstrap</a></li>
+<li class="chapter" data-level="10.1.5" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#relation-of-confidence-intervals-to-hypothesis-tests"><i class="fa fa-check"></i><b>10.1.5</b> Relation of confidence intervals to hypothesis tests</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#effect-sizes"><i class="fa fa-check"></i><b>10.2</b> Effect sizes</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#cohens-d"><i class="fa fa-check"></i><b>10.2.1</b> Cohen’s D</a></li>
+<li class="chapter" data-level="10.2.2" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#pearsons-r"><i class="fa fa-check"></i><b>10.2.2</b> Pearson’s r</a></li>
+<li class="chapter" data-level="10.2.3" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#odds-ratio"><i class="fa fa-check"></i><b>10.2.3</b> Odds ratio</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#statistical-power"><i class="fa fa-check"></i><b>10.3</b> Statistical power</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#power-analysis"><i class="fa fa-check"></i><b>10.3.1</b> Power analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#learning-objectives-9"><i class="fa fa-check"></i><b>10.4</b> Learning objectives</a></li>
+<li class="chapter" data-level="10.5" data-path="ci-effect-size-power.html"><a href="ci-effect-size-power.html#suggested-readings-7"><i class="fa fa-check"></i><b>10.5</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html"><i class="fa fa-check"></i><b>11</b> Bayesian statistics</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#generative-models"><i class="fa fa-check"></i><b>11.1</b> Generative models</a></li>
+<li class="chapter" data-level="11.2" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#bayes-theorem-and-inverse-inference"><i class="fa fa-check"></i><b>11.2</b> Bayes’ theorem and inverse inference</a></li>
+<li class="chapter" data-level="11.3" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#doing-bayesian-estimation"><i class="fa fa-check"></i><b>11.3</b> Doing Bayesian estimation</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#specifying-the-prior"><i class="fa fa-check"></i><b>11.3.1</b> Specifying the prior</a></li>
+<li class="chapter" data-level="11.3.2" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#collect-some-data"><i class="fa fa-check"></i><b>11.3.2</b> Collect some data</a></li>
+<li class="chapter" data-level="11.3.3" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-likelihood"><i class="fa fa-check"></i><b>11.3.3</b> Computing the likelihood</a></li>
+<li class="chapter" data-level="11.3.4" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-marginal-likelihood"><i class="fa fa-check"></i><b>11.3.4</b> Computing the marginal likelihood</a></li>
+<li class="chapter" data-level="11.3.5" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-posterior"><i class="fa fa-check"></i><b>11.3.5</b> Computing the posterior</a></li>
+</ul></li>
+<li class="chapter" data-level="11.4" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#estimating-posterior-distributions"><i class="fa fa-check"></i><b>11.4</b> Estimating posterior distributions</a>
+<ul>
+<li class="chapter" data-level="11.4.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#specifying-the-prior-1"><i class="fa fa-check"></i><b>11.4.1</b> Specifying the prior</a></li>
+<li class="chapter" data-level="11.4.2" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#collect-some-data-1"><i class="fa fa-check"></i><b>11.4.2</b> Collect some data</a></li>
+<li class="chapter" data-level="11.4.3" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-likelihood-1"><i class="fa fa-check"></i><b>11.4.3</b> Computing the likelihood</a></li>
+<li class="chapter" data-level="11.4.4" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-marginal-likelihood-1"><i class="fa fa-check"></i><b>11.4.4</b> Computing the marginal likelihood</a></li>
+<li class="chapter" data-level="11.4.5" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#computing-the-posterior-1"><i class="fa fa-check"></i><b>11.4.5</b> Computing the posterior</a></li>
+<li class="chapter" data-level="11.4.6" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#maximum-a-posteriori-map-estimation"><i class="fa fa-check"></i><b>11.4.6</b> Maximum a posteriori (MAP) estimation</a></li>
+<li class="chapter" data-level="11.4.7" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#credible-intervals"><i class="fa fa-check"></i><b>11.4.7</b> Credible intervals</a></li>
+<li class="chapter" data-level="11.4.8" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#effects-of-different-priors"><i class="fa fa-check"></i><b>11.4.8</b> Effects of different priors</a></li>
+</ul></li>
+<li class="chapter" data-level="11.5" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#choosing-a-prior"><i class="fa fa-check"></i><b>11.5</b> Choosing a prior</a></li>
+<li class="chapter" data-level="11.6" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#bayesian-hypothesis-testing"><i class="fa fa-check"></i><b>11.6</b> Bayesian hypothesis testing</a>
+<ul>
+<li class="chapter" data-level="11.6.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#Bayes-factors"><i class="fa fa-check"></i><b>11.6.1</b> Bayes factors</a></li>
+<li class="chapter" data-level="11.6.2" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#bayes-factors-for-statistical-hypotheses"><i class="fa fa-check"></i><b>11.6.2</b> Bayes factors for statistical hypotheses</a></li>
+<li class="chapter" data-level="11.6.3" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#assessing-evidence-for-the-null-hypothesis"><i class="fa fa-check"></i><b>11.6.3</b> Assessing evidence for the null hypothesis</a></li>
+</ul></li>
+<li class="chapter" data-level="11.7" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#learning-objectives-10"><i class="fa fa-check"></i><b>11.7</b> Learning objectives</a></li>
+<li class="chapter" data-level="11.8" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#suggested-readings-8"><i class="fa fa-check"></i><b>11.8</b> Suggested readings</a></li>
+<li class="chapter" data-level="11.9" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#appendix-3"><i class="fa fa-check"></i><b>11.9</b> Appendix:</a>
+<ul>
+<li class="chapter" data-level="11.9.1" data-path="bayesian-statistics.html"><a href="bayesian-statistics.html#rejection-sampling"><i class="fa fa-check"></i><b>11.9.1</b> Rejection sampling</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html"><i class="fa fa-check"></i><b>12</b> Modeling categorical relationships</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#example-candy-colors"><i class="fa fa-check"></i><b>12.1</b> Example: Candy colors</a></li>
+<li class="chapter" data-level="12.2" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#chi-squared-test"><i class="fa fa-check"></i><b>12.2</b> Pearson’s chi-squared test</a></li>
+<li class="chapter" data-level="12.3" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#two-way-test"><i class="fa fa-check"></i><b>12.3</b> Contingency tables and the two-way test</a></li>
+<li class="chapter" data-level="12.4" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#standardized-residuals"><i class="fa fa-check"></i><b>12.4</b> Standardized residuals</a></li>
+<li class="chapter" data-level="12.5" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#odds-ratios"><i class="fa fa-check"></i><b>12.5</b> Odds ratios</a></li>
+<li class="chapter" data-level="12.6" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#bayes-factor"><i class="fa fa-check"></i><b>12.6</b> Bayes factor</a></li>
+<li class="chapter" data-level="12.7" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#categorical-analysis-beyond-the-2-x-2-table"><i class="fa fa-check"></i><b>12.7</b> Categorical analysis beyond the 2 X 2 table</a></li>
+<li class="chapter" data-level="12.8" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#beware-of-simpsons-paradox"><i class="fa fa-check"></i><b>12.8</b> Beware of Simpson’s paradox</a></li>
+<li class="chapter" data-level="12.9" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#learning-objectives-11"><i class="fa fa-check"></i><b>12.9</b> Learning objectives</a></li>
+<li class="chapter" data-level="12.10" data-path="modeling-categorical-relationships.html"><a href="modeling-categorical-relationships.html#additional-readings"><i class="fa fa-check"></i><b>12.10</b> Additional readings</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html"><i class="fa fa-check"></i><b>13</b> Modeling continuous relationships</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#an-example-hate-crimes-and-income-inequality"><i class="fa fa-check"></i><b>13.1</b> An example: Hate crimes and income inequality</a></li>
+<li class="chapter" data-level="13.2" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#is-income-inequality-related-to-hate-crimes"><i class="fa fa-check"></i><b>13.2</b> Is income inequality related to hate crimes?</a></li>
+<li class="chapter" data-level="13.3" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#covariance-and-correlation"><i class="fa fa-check"></i><b>13.3</b> Covariance and correlation</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#hypothesis-testing-for-correlations"><i class="fa fa-check"></i><b>13.3.1</b> Hypothesis testing for correlations</a></li>
+<li class="chapter" data-level="13.3.2" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#robust-correlations"><i class="fa fa-check"></i><b>13.3.2</b> Robust correlations</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#correlation-and-causation"><i class="fa fa-check"></i><b>13.4</b> Correlation and causation</a>
+<ul>
+<li class="chapter" data-level="13.4.1" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#causal-graphs"><i class="fa fa-check"></i><b>13.4.1</b> Causal graphs</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#learning-objectives-12"><i class="fa fa-check"></i><b>13.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="13.6" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#suggested-readings-9"><i class="fa fa-check"></i><b>13.6</b> Suggested readings</a></li>
+<li class="chapter" data-level="13.7" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#appendix-4"><i class="fa fa-check"></i><b>13.7</b> Appendix:</a>
+<ul>
+<li class="chapter" data-level="13.7.1" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#quantifying-inequality-the-gini-index"><i class="fa fa-check"></i><b>13.7.1</b> Quantifying inequality: The Gini index</a></li>
+<li class="chapter" data-level="13.7.2" data-path="modeling-continuous-relationships.html"><a href="modeling-continuous-relationships.html#bayesian-correlation-analysis"><i class="fa fa-check"></i><b>13.7.2</b> Bayesian correlation analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html"><i class="fa fa-check"></i><b>14</b> The General Linear Model</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#linear-regression"><i class="fa fa-check"></i><b>14.1</b> Linear regression</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#regression-to-the-mean"><i class="fa fa-check"></i><b>14.1.1</b> Regression to the mean</a></li>
+<li class="chapter" data-level="14.1.2" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#the-relation-between-correlation-and-regression"><i class="fa fa-check"></i><b>14.1.2</b> The relation between correlation and regression</a></li>
+<li class="chapter" data-level="14.1.3" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#standard-errors-for-regression-models"><i class="fa fa-check"></i><b>14.1.3</b> Standard errors for regression models</a></li>
+<li class="chapter" data-level="14.1.4" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#statistical-tests-for-regression-parameters"><i class="fa fa-check"></i><b>14.1.4</b> Statistical tests for regression parameters</a></li>
+<li class="chapter" data-level="14.1.5" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#quantifying-goodness-of-fit-of-the-model"><i class="fa fa-check"></i><b>14.1.5</b> Quantifying goodness of fit of the model</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#fitting-more-complex-models"><i class="fa fa-check"></i><b>14.2</b> Fitting more complex models</a></li>
+<li class="chapter" data-level="14.3" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#interactions-between-variables"><i class="fa fa-check"></i><b>14.3</b> Interactions between variables</a></li>
+<li class="chapter" data-level="14.4" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#beyond-linear-predictors-and-outcomes"><i class="fa fa-check"></i><b>14.4</b> Beyond linear predictors and outcomes</a></li>
+<li class="chapter" data-level="14.5" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#model-criticism"><i class="fa fa-check"></i><b>14.5</b> Criticizing our model and checking assumptions</a></li>
+<li class="chapter" data-level="14.6" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#what-does-predict-really-mean"><i class="fa fa-check"></i><b>14.6</b> What does “predict” really mean?</a>
+<ul>
+<li class="chapter" data-level="14.6.1" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#cross-validation"><i class="fa fa-check"></i><b>14.6.1</b> Cross-validation</a></li>
+</ul></li>
+<li class="chapter" data-level="14.7" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#learning-objectives-13"><i class="fa fa-check"></i><b>14.7</b> Learning objectives</a></li>
+<li class="chapter" data-level="14.8" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#suggested-readings-10"><i class="fa fa-check"></i><b>14.8</b> Suggested readings</a></li>
+<li class="chapter" data-level="14.9" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#appendix-5"><i class="fa fa-check"></i><b>14.9</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="14.9.1" data-path="the-general-linear-model.html"><a href="the-general-linear-model.html#estimating-linear-regression-parameters"><i class="fa fa-check"></i><b>14.9.1</b> Estimating linear regression parameters</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="comparing-means.html"><a href="comparing-means.html"><i class="fa fa-check"></i><b>15</b> Comparing means</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="comparing-means.html"><a href="comparing-means.html#single-mean"><i class="fa fa-check"></i><b>15.1</b> Testing the value of a single mean</a></li>
+<li class="chapter" data-level="15.2" data-path="comparing-means.html"><a href="comparing-means.html#comparing-two-means"><i class="fa fa-check"></i><b>15.2</b> Comparing two means</a></li>
+<li class="chapter" data-level="15.3" data-path="comparing-means.html"><a href="comparing-means.html#ttest-linear-model"><i class="fa fa-check"></i><b>15.3</b> The t-test as a linear model</a>
+<ul>
+<li class="chapter" data-level="15.3.1" data-path="comparing-means.html"><a href="comparing-means.html#effect-sizes-for-comparing-two-means"><i class="fa fa-check"></i><b>15.3.1</b> Effect sizes for comparing two means</a></li>
+</ul></li>
+<li class="chapter" data-level="15.4" data-path="comparing-means.html"><a href="comparing-means.html#bayes-factor-for-mean-differences"><i class="fa fa-check"></i><b>15.4</b> Bayes factor for mean differences</a></li>
+<li class="chapter" data-level="15.5" data-path="comparing-means.html"><a href="comparing-means.html#paired-ttests"><i class="fa fa-check"></i><b>15.5</b> Comparing paired observations</a>
+<ul>
+<li class="chapter" data-level="15.5.1" data-path="comparing-means.html"><a href="comparing-means.html#sign-test"><i class="fa fa-check"></i><b>15.5.1</b> Sign test</a></li>
+<li class="chapter" data-level="15.5.2" data-path="comparing-means.html"><a href="comparing-means.html#paired-t-test"><i class="fa fa-check"></i><b>15.5.2</b> Paired t-test</a></li>
+</ul></li>
+<li class="chapter" data-level="15.6" data-path="comparing-means.html"><a href="comparing-means.html#comparing-more-than-two-means"><i class="fa fa-check"></i><b>15.6</b> Comparing more than two means</a>
+<ul>
+<li class="chapter" data-level="15.6.1" data-path="comparing-means.html"><a href="comparing-means.html#ANOVA"><i class="fa fa-check"></i><b>15.6.1</b> Analysis of variance</a></li>
+</ul></li>
+<li class="chapter" data-level="15.7" data-path="comparing-means.html"><a href="comparing-means.html#learning-objectives-14"><i class="fa fa-check"></i><b>15.7</b> Learning objectives</a></li>
+<li class="chapter" data-level="15.8" data-path="comparing-means.html"><a href="comparing-means.html#appendix-6"><i class="fa fa-check"></i><b>15.8</b> Appendix</a>
+<ul>
+<li class="chapter" data-level="15.8.1" data-path="comparing-means.html"><a href="comparing-means.html#the-paired-t-test-as-a-linear-model"><i class="fa fa-check"></i><b>15.8.1</b> The paired t-test as a linear model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="multivariate.html"><a href="multivariate.html"><i class="fa fa-check"></i><b>16</b> Multivariate statistics</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="multivariate.html"><a href="multivariate.html#multivariate-data-an-example"><i class="fa fa-check"></i><b>16.1</b> Multivariate data: An example</a></li>
+<li class="chapter" data-level="16.2" data-path="multivariate.html"><a href="multivariate.html#visualizing-multivariate-data"><i class="fa fa-check"></i><b>16.2</b> Visualizing multivariate data</a>
+<ul>
+<li class="chapter" data-level="16.2.1" data-path="multivariate.html"><a href="multivariate.html#scatterplot-of-matrices"><i class="fa fa-check"></i><b>16.2.1</b> Scatterplot of matrices</a></li>
+<li class="chapter" data-level="16.2.2" data-path="multivariate.html"><a href="multivariate.html#heatmap"><i class="fa fa-check"></i><b>16.2.2</b> Heatmap</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="multivariate.html"><a href="multivariate.html#clustering"><i class="fa fa-check"></i><b>16.3</b> Clustering</a>
+<ul>
+<li class="chapter" data-level="16.3.1" data-path="multivariate.html"><a href="multivariate.html#k-means-clustering"><i class="fa fa-check"></i><b>16.3.1</b> K-means clustering</a></li>
+<li class="chapter" data-level="16.3.2" data-path="multivariate.html"><a href="multivariate.html#hierarchical-clustering"><i class="fa fa-check"></i><b>16.3.2</b> Hierarchical clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="multivariate.html"><a href="multivariate.html#dimensionality-reduction"><i class="fa fa-check"></i><b>16.4</b> Dimensionality reduction</a>
+<ul>
+<li class="chapter" data-level="16.4.1" data-path="multivariate.html"><a href="multivariate.html#principal-component-analysis"><i class="fa fa-check"></i><b>16.4.1</b> Principal component analysis</a></li>
+<li class="chapter" data-level="16.4.2" data-path="multivariate.html"><a href="multivariate.html#factor-analysis"><i class="fa fa-check"></i><b>16.4.2</b> Factor analysis</a></li>
+<li class="chapter" data-level="16.4.3" data-path="multivariate.html"><a href="multivariate.html#determining-the-number-of-factors"><i class="fa fa-check"></i><b>16.4.3</b> Determining the number of factors</a></li>
+</ul></li>
+<li class="chapter" data-level="16.5" data-path="multivariate.html"><a href="multivariate.html#learning-objectives-15"><i class="fa fa-check"></i><b>16.5</b> Learning objectives</a></li>
+<li class="chapter" data-level="16.6" data-path="multivariate.html"><a href="multivariate.html#suggested-readings-11"><i class="fa fa-check"></i><b>16.6</b> Suggested readings</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="practical-example.html"><a href="practical-example.html"><i class="fa fa-check"></i><b>17</b> Practical statistical modeling</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="practical-example.html"><a href="practical-example.html#the-process-of-statistical-modeling"><i class="fa fa-check"></i><b>17.1</b> The process of statistical modeling</a>
+<ul>
+<li class="chapter" data-level="17.1.1" data-path="practical-example.html"><a href="practical-example.html#specify-your-question-of-interest"><i class="fa fa-check"></i><b>17.1.1</b> 1: Specify your question of interest</a></li>
+<li class="chapter" data-level="17.1.2" data-path="practical-example.html"><a href="practical-example.html#identify-or-collect-the-appropriate-data"><i class="fa fa-check"></i><b>17.1.2</b> 2: Identify or collect the appropriate data</a></li>
+<li class="chapter" data-level="17.1.3" data-path="practical-example.html"><a href="practical-example.html#prepare-the-data-for-analysis"><i class="fa fa-check"></i><b>17.1.3</b> 3: Prepare the data for analysis</a></li>
+<li class="chapter" data-level="17.1.4" data-path="practical-example.html"><a href="practical-example.html#determine-the-appropriate-model"><i class="fa fa-check"></i><b>17.1.4</b> 4. Determine the appropriate model</a></li>
+<li class="chapter" data-level="17.1.5" data-path="practical-example.html"><a href="practical-example.html#fit-the-model-to-the-data"><i class="fa fa-check"></i><b>17.1.5</b> 5. Fit the model to the data</a></li>
+<li class="chapter" data-level="17.1.6" data-path="practical-example.html"><a href="practical-example.html#criticize-the-model-to-make-sure-it-fits-properly"><i class="fa fa-check"></i><b>17.1.6</b> 6. Criticize the model to make sure it fits properly</a></li>
+<li class="chapter" data-level="17.1.7" data-path="practical-example.html"><a href="practical-example.html#test-hypothesis-and-quantify-effect-size"><i class="fa fa-check"></i><b>17.1.7</b> 7. Test hypothesis and quantify effect size</a></li>
+<li class="chapter" data-level="17.1.8" data-path="practical-example.html"><a href="practical-example.html#what-about-possible-confounds"><i class="fa fa-check"></i><b>17.1.8</b> What about possible confounds?</a></li>
+</ul></li>
+<li class="chapter" data-level="17.2" data-path="practical-example.html"><a href="practical-example.html#getting-help"><i class="fa fa-check"></i><b>17.2</b> Getting help</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html"><i class="fa fa-check"></i><b>18</b> Doing reproducible research</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#how-we-think-science-should-work"><i class="fa fa-check"></i><b>18.1</b> How we think science should work</a></li>
+<li class="chapter" data-level="18.2" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#how-science-sometimes-actually-works"><i class="fa fa-check"></i><b>18.2</b> How science (sometimes) actually works</a></li>
+<li class="chapter" data-level="18.3" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#the-reproducibility-crisis-in-science"><i class="fa fa-check"></i><b>18.3</b> The reproducibility crisis in science</a>
+<ul>
+<li class="chapter" data-level="18.3.1" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#positive-predictive-value-and-statistical-significance"><i class="fa fa-check"></i><b>18.3.1</b> Positive predictive value and statistical significance</a></li>
+<li class="chapter" data-level="18.3.2" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#the-winners-curse"><i class="fa fa-check"></i><b>18.3.2</b> The winner’s curse</a></li>
+</ul></li>
+<li class="chapter" data-level="18.4" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#questionable-research-practices"><i class="fa fa-check"></i><b>18.4</b> Questionable research practices</a>
+<ul>
+<li class="chapter" data-level="18.4.1" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#esp-or-qrp"><i class="fa fa-check"></i><b>18.4.1</b> ESP or QRP?</a></li>
+</ul></li>
+<li class="chapter" data-level="18.5" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#doing-reproducible-research-1"><i class="fa fa-check"></i><b>18.5</b> Doing reproducible research</a>
+<ul>
+<li class="chapter" data-level="18.5.1" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#pre-registration"><i class="fa fa-check"></i><b>18.5.1</b> Pre-registration</a></li>
+<li class="chapter" data-level="18.5.2" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#reproducible-practices"><i class="fa fa-check"></i><b>18.5.2</b> Reproducible practices</a></li>
+<li class="chapter" data-level="18.5.3" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#replication"><i class="fa fa-check"></i><b>18.5.3</b> Replication</a></li>
+</ul></li>
+<li class="chapter" data-level="18.6" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#doing-reproducible-data-analysis"><i class="fa fa-check"></i><b>18.6</b> Doing reproducible data analysis</a></li>
+<li class="chapter" data-level="18.7" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#conclusion-doing-better-science"><i class="fa fa-check"></i><b>18.7</b> Conclusion: Doing better science</a></li>
+<li class="chapter" data-level="18.8" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#learning-objectives-16"><i class="fa fa-check"></i><b>18.8</b> Learning objectives</a></li>
+<li class="chapter" data-level="18.9" data-path="doing-reproducible-research.html"><a href="doing-reproducible-research.html#suggested-readings-12"><i class="fa fa-check"></i><b>18.9</b> Suggested Readings</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Thinking for the 21st Century</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="multivariate" class="section level1 hasAnchor" number="16">
+<h1><span class="header-section-number">Chapter 16</span> Multivariate statistics<a href="multivariate.html#multivariate" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>The term <em>multivariate</em> refers to analyses that involve more than one random variable. Whereas we have seen previous examples where the model included multiple variables (as in linear regression), in those cases we were specifically interested in how the variation in a <em>dependent variable</em> could be explained in terms of one or more <em>independent variables</em> that are usually specified by the experimenter rather than measured. In a multivariate analysis we generally treat all of the variables as equals, and seek to understand how they relate to one another as a group.</p>
+<p>There are many different kinds of multivariate analysis, but we will focus on two major approaches in this chapter. First, we may simply want to understand and visualize the structure that exists in the data, by which we usually mean which variables or observations are related to which other. We would usually define “related” in terms of some measure that indexes the distance between the values across variables. One important method that fits under this category is known as <em>clustering</em>, which aims to find clusters of variables or observations that are similar across variables.</p>
+<p>Second, we may want to take a large number of variables and reduce them to a smaller number of variables in a way that retains as much information as possible. This is referred to as <em>dimensionality reduction</em>, where “dimensionality” refers to the number of variables in the dataset. We will discuss two techniques commonly used for dimensionality reduction, known as <em>principal component analysis</em> and <em>factor analysis</em>.</p>
+<p>Clustering and dimensionality reduction are often classified as forms of <em>unsupervised learning</em>; this is in contrast to <em>supervised learning</em> which characterizes models such as linear regression that you’ve learned about so far. The reason that we consider linear regression to be “supervised” is that we know the value of thing that we are trying to predict (i.e. the dependent variable) and we are trying to find the model that best predicts those values. In unspervised learning, we don’t have a specific value that we are trying to predict; instead, we are trying to discover structure in the data that might be useful for understanding what’s going on, which generally requires some assumptions about what kind of structure we want to find.</p>
+<p>One thing that you will discover in this chapter is that whereas there is generally a “right” answer in supervised learning (once we have agreed upon how to determine the “best” model, such as the sum of squared errors), there is often not an agreed-upon “right” answer in unsupervised learning. Different unsupervised learning methods can give very different answers about the same data, and there is usually no way in principle to determine which of these is “correct”, as it depends on the goals of the analysis and the assumptions that one is willing to make about the mechanisms that give rise to the data. Some people find this frustrating, while others find it exhilarating; it will be up to you to figure out which of these camps you fall into.</p>
+<div id="multivariate-data-an-example" class="section level2 hasAnchor" number="16.1">
+<h2><span class="header-section-number">16.1</span> Multivariate data: An example<a href="multivariate.html#multivariate-data-an-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As an example of multivariate analysis, we will look at a dataset collected by my group and published by Eisenberg et al. <span class="citation">(<a href="#ref-Eisenberg:2019um" role="doc-biblioref"><strong>Eisenberg:2019um?</strong></a>)</span>. This dataset is useful both because it has a large number of interesting variables collected on a relatively large number of individuals, and because it is freely available online, so that you can explore it on your own.</p>
+<p>This study was performed because we were interested in understanding how several different aspects of psychological function are related to one another, focusing particularly on psychological measures of self-control and related concepts. Participants performed a ten-hour long battery of cognitive tests and surveys over the course of a week; in this first example we will focus on variables related to two specific aspects of self-control. <em>Response inhibition</em> is defined as the ability to quickly stop an action, and in this study was measured using a set of tasks known as <em>stop-signal tasks</em>. The variable of interest for these tasks is an estimate of how long it takes a person to stop themself, known as the <em>stop-signal reaction time</em> (<em>SSRT</em>), of which there are four different measures in the dataset. <em>Impulsivity</em> is defined as the tendency to make decisions on impulse, without regard to potential consequences and longer-term goals. The study included a number of different surveys measuring impulsivity, but we will focus on the <em>UPPS-P</em> survey, which assesses five different facets of impulsivity.</p>
+<p>After these scores have been computed for each of the 522 participants in Eisenberg’s study, we end up with 9 numbers for each individual. While multivariate data can sometimes have thousands or even millions of variables, it’s useful to see how the methods work with a small number of variables first.</p>
+</div>
+<div id="visualizing-multivariate-data" class="section level2 hasAnchor" number="16.2">
+<h2><span class="header-section-number">16.2</span> Visualizing multivariate data<a href="multivariate.html#visualizing-multivariate-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A fundamental challenge of multivariate data is that the human eye and brain are simply not equipped to visualize data with more than three dimensions. There are various tools that we can use to try to visualize multivariate data, but all of them break down as the number of variables grows. Once the number of variables becomes too large to directly visualize, one approach is to first reduce the number of dimensions (as discussed further below), and then visualize that reduced dataset.</p>
+<div id="scatterplot-of-matrices" class="section level3 hasAnchor" number="16.2.1">
+<h3><span class="header-section-number">16.2.1</span> Scatterplot of matrices<a href="multivariate.html#scatterplot-of-matrices" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>One useful way to visualize a small number of variables is to plot each pair of variables against one another, sometimes known as a “scatterplot of matrices”; An example is shown in Figure <a href="multivariate.html#fig:pairpanel">16.1</a>. Each row/column in the panel refers to a single variable – in this case one of our psychological variables from the earlier example. The diagonal elements on the plot show the distribution of each variable as a histogram. The elements below the diagonal show a scatterplot for each pair of matrices, overlaid with a regression line describing the relationship between the variables. The elements above the diagonal show the correlation coefficient for each pair of variables. When the number of variables is relatively small (about 10 or less) this can be a useful way to get good insight into a multivariate dataset.</p>
+<div class="figure"><span style="display:block;" id="fig:pairpanel"></span>
+<img src="StatsThinking21_files/figure-html/pairpanel-1.png" alt="Scatterplot of matrices for the nine variables in the self-control dataset.  The diagonal elements in the matrix show the histogram for each of the individual variables.  The lower left panels show scatterplots of the relationship between each pair of variables, and the upper right panel shows the correlation coefficient for each pair of variables." width="768" />
+<p class="caption">
+Figure 16.1: Scatterplot of matrices for the nine variables in the self-control dataset. The diagonal elements in the matrix show the histogram for each of the individual variables. The lower left panels show scatterplots of the relationship between each pair of variables, and the upper right panel shows the correlation coefficient for each pair of variables.
+</p>
+</div>
+</div>
+<div id="heatmap" class="section level3 hasAnchor" number="16.2.2">
+<h3><span class="header-section-number">16.2.2</span> Heatmap<a href="multivariate.html#heatmap" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In some cases we wish to visualize the relationships between a large number of variables at once, usually focusing on the correlation coefficient. A useful way to do this can be to plot the correlation values as a <em>heatmap</em>, in which the color of the map relates to the value of the correlation. Figure <a href="multivariate.html#fig:hmap">16.2</a> shows an example with a relatively small number of variables, using our psychological example from above. In this case, the heatmap helps the structure of the data “pop out” at us; we see that there are strong intercorrelations within the SSRT variables and within the UPPS variables, with relatively little correlation between the two sets of variables.</p>
+<div class="figure"><span style="display:block;" id="fig:hmap"></span>
+<img src="StatsThinking21_files/figure-html/hmap-1.png" alt="Heatmap of the correlation matrix for the nine self-control variables.  The brighter yellow areas in the top left and bottom right highlight the higher correlations within the two subsets of variables." width="768" />
+<p class="caption">
+Figure 16.2: Heatmap of the correlation matrix for the nine self-control variables. The brighter yellow areas in the top left and bottom right highlight the higher correlations within the two subsets of variables.
+</p>
+</div>
+<p>Heatmaps become particularly useful for visualizing correlations between large numbers of variables. We can use brain imaging data as an example. It is common for neuroscience researchers to collect data about brain function from a large number of locations in the brain using functional magnetic resonance imaging (fMRI), and then to assess the correlation between those locations, to measure “function connectivity” between the regions. For example, Figure <a href="multivariate.html#fig:parcelheatmap">16.3</a> shows a heatmap for a large correlation matrix, based on activity in over 300 regions in the brain of a single individual (yours truly). The presence of clear structure in the data pops out simply by looking at the heatmap. In particular we see that there are large sets of brain regions whose activity is highly correlated with each other (visible in the large yellow blocks along the diagonal of the correlation matrix), whereas these blocks are also strongly negatively correlated with other blocks (visible in the large blue blocks seen off the diagonal). Heatmaps are a powerful tool for easily visualizing large data matrices.</p>
+<div class="figure"><span style="display:block;" id="fig:parcelheatmap"></span>
+<img src="StatsThinking21_files/figure-html/parcelheatmap-1.png" alt="A heatmap showing the correlation coefficient of brain activity between 316 regions in the left hemisphere of a single individiual.  Cells in yellow reflect strong positive correlation, whereas cells in blue reflect strong negative correlation. The large blocks of positive correlation along the diagonal of the matrix correspond to the major connected networks in the brain" width="768" />
+<p class="caption">
+Figure 16.3: A heatmap showing the correlation coefficient of brain activity between 316 regions in the left hemisphere of a single individiual. Cells in yellow reflect strong positive correlation, whereas cells in blue reflect strong negative correlation. The large blocks of positive correlation along the diagonal of the matrix correspond to the major connected networks in the brain
+</p>
+</div>
+</div>
+</div>
+<div id="clustering" class="section level2 hasAnchor" number="16.3">
+<h2><span class="header-section-number">16.3</span> Clustering<a href="multivariate.html#clustering" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Clustering refers to a set of methods for identifying groups of related observations or variables within a dataset, based on the similarity of the values of the observations. Usually this similarity will be quantified in terms of some measure of the <em>distance</em> between multivariate values. The clustering method then finds the set of groups that have the lowest distance between their members.</p>
+<p>One commonly used measure of distance for clustering is the <em>Euclidean distance</em>, which is basically the length of the line that connects two data points. Figure <a href="multivariate.html#fig:eucdist">16.4</a> shows an example of a dataset with two data points and two dimensions (X and Y). The Euclidean distance between these two points is the length of the dotted line that connects the points in space.</p>
+<div class="figure"><span style="display:block;" id="fig:eucdist"></span>
+<img src="StatsThinking21_files/figure-html/eucdist-1.png" alt="A depiction of the Euclidean distance between two points, (1,2) and (4,3).  The two points differ by 3 along the X axis and by 1 along the Y axis." width="384" />
+<p class="caption">
+Figure 16.4: A depiction of the Euclidean distance between two points, (1,2) and (4,3). The two points differ by 3 along the X axis and by 1 along the Y axis.
+</p>
+</div>
+<p>The Euclidean distance is computed by squaring the differences in the locations of the points in each dimension, adding these squared differences, and then taking the square root. When there are two dimensions <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, this would be computed as:</p>
+<p><span class="math display">\[
+d(x, y) = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}
+\]</span></p>
+<p>Plugging in the values from our example data:</p>
+<p><span class="math display">\[
+d(x, y) = \sqrt{(1 - 4)^2 + (2 - 3)^2} = 3.16
+\]</span></p>
+<p>If the formula for Euclidean distance seems slightly familiar, this is because it is identical to the <em>Pythagorean theorem</em> that most of us learned in geometry class, which computes the length of the hypotenuse of a right triangle based on the lengths of the two sides. In this case, the length of the sides of the triangle correspond to the distance between the points along each of the two dimensions. While this example was in two dimensions, we will often work with data that have many more than two dimensions, but the same idea extends to arbitrary numbers of dimensions.</p>
+<p>One important feature of the Euclidean distance is that it is sensitive to the overall mean and variability of the data. In this sense it is unlike the correlation coefficient, which measures the linear relationship between variables in a way that is insensitive to the overall mean or variability. For this reason, it is common to <em>scale</em> the data prior to computing the Euclidean distance, which is equivalent to converting each variable into its Z-scored version.</p>
+<div id="k-means-clustering" class="section level3 hasAnchor" number="16.3.1">
+<h3><span class="header-section-number">16.3.1</span> K-means clustering<a href="multivariate.html#k-means-clustering" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>One commonly used method for clustering data is <em>K-means clustering</em>. This technique identifies a set of cluster centers, and then assigns each data point to the cluster whose center is the closest (that is, has the lowest Euclidean distance) from the data point. As an example, let’s take the latitude and longitude of a number of countries around the world as our data points, and see whether K-means clustering can effectively identify the continents of the world.</p>
+<p>Most statistical software packages have a built-in function for performing K-means clustering using a single command, but it’s useful to understand how it works step by step. We must first decide on a specific value for <em>K</em>, the number of clusters to be found in the data. It’s important to point out that there is no unique “correct” value for the number of clusters; there are various techniques that one can use to try to determine which solution is “best” but they can often give different answers, as they incorporate different assumptions or tradeoffs. Nonetheless, clustering techniques such as K-means are an important tool for understanding the structure of data, especially as they become high-dimensional.</p>
+<p>Having selected the number of clusters (<em>K</em>) that we wish to find, we must come up with K locations that will be our starting guesses for the centers of our clusters (since we don’t initially know where the centers are). One simple way to start is to choose K of the actual data points at random and use those as our starting points, which are referred to as <em>centroids</em>. We then compute the Euclidean distance of each data point to each of the centroids, and assign each point to a cluster based on its closest centroid. Using these new cluster assignments, we recompute the centroid of each cluster by averaging the location of all of the points assigned to that cluster. This process is then repeated until a stable solution is found; we refer to this as an <em>iterative</em> processes, because it iterates until the answer doesn’t change, or until some other kind of limit is reached, such as a maximum number of possible iterations.</p>
+<div class="figure"><span style="display:block;" id="fig:kmeans"></span>
+<img src="StatsThinking21_files/figure-html/kmeans-1.png" alt="A two-dimensional depiction of clustering on the latitude and longitude of countries across the world.  The square black symbols show the starting centroids for each cluster, and the lines show the movement of the centroid for that cluster across the iterations of the algorithm." width="768" />
+<p class="caption">
+Figure 16.5: A two-dimensional depiction of clustering on the latitude and longitude of countries across the world. The square black symbols show the starting centroids for each cluster, and the lines show the movement of the centroid for that cluster across the iterations of the algorithm.
+</p>
+</div>
+<p>Applying K-means clustering to the latitude/longitude data (Figure <a href="multivariate.html#fig:kmeans">16.5</a>), we see that there is a reasonable match between the resulting clusters and the continents, though none of the continents is perfectly matched to any of the clusters. We can further examine this by plotting a table that compares the membership of each cluster to the actual continents for each country; this kind of table is often called a <em>confusion matrix</em>.</p>
+<pre><code>##       
+## labels AF AS EU NA OC SA
+##      1  5  1 36  0  0  0
+##      2  3 24  0  0  0  0
+##      3  0  0  0  0  0  7
+##      4  0  0  0 15  0  4
+##      5  0 10  0  0  6  0
+##      6 35  0  0  0  0  0</code></pre>
+<ul>
+<li>Cluster 1 contains all European countries, as well as countries from northern Africa and Asia.</li>
+<li>Cluster 2 contains contains Asian countries as well as several African countries.</li>
+<li>Cluster 3 contains countries from the southern part of South America.</li>
+<li>Cluster 4 contains all of the North American countries as well as northern South American countries.</li>
+<li>Cluster 5 contains Oceania as well as several Asian countries</li>
+<li>Cluster 6 contains all of the remaining African countries.</li>
+</ul>
+<p>Although in this example we know the actual clusters (that is, the continents of the world), in general we don’t actually know the ground truth for unsupervised learning problems, so we simply have to trust that the clustering method has found useful structure in the data. However, one important point about K-means clustering, and iterative procedures in general, is that they are not guaranteed to give the same answer each time they are run. The use of random numbers to determine the starting points means that the starting points can differ each time, and depending on the data this can sometimes lead to different solutions being found. For this example, K-means clustering will sometimes find a single cluster encompassing both North and South America, and sometimes find two clusters (as it did for the specific choice of random seed used here). Whenever using a method that involves an iterative solution, it is important to rerun the method a number of times using different random seeds, to make sure that the answers don’t diverge too greatly between runs. If they do, then one should avoid making strong conclusions based on the unstable results. In fact, it’s probably a good idea to avoid strong conclusions on the basis of clustering results more generally; they are primarily useful for getting intuition about the structure that might be present in a dataset.</p>
+<div class="figure"><span style="display:block;" id="fig:kmeansSro"></span>
+<img src="StatsThinking21_files/figure-html/kmeansSro-1.png" alt="A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster." width="576" />
+<p class="caption">
+Figure 16.6: A visualization of the clustering results from 10 runs of the K-means clustering algorithm with K=3. Each row in the figure represents a different run of the clustering algorithm (with different random starting points), and variables sharing the same color are members of the same cluster.
+</p>
+</div>
+<p>We can apply K-means clustering to the self-control variables in order to determine which variables are most closely related to one another. For K=2, the K-means algorithm consistently picks out one cluster containing the SSRT variables and one containing the impulsivity variables. With higher values of K, the results are less consistent; for example, with K=3 the algorithm sometimes identifies a third cluster containing only the UPPS sensation seeking variable, whereas in other cases it splits the SSRT variables into two separate clusters (as seen in Figure <a href="multivariate.html#fig:kmeansSro">16.6</a>). The stability of the clusters with K=2 suggests that this is probably the most robust clustering for these data, but these results also highlight the importance of running the algorithm multiple times to determine whether any particular clustering result is stable.</p>
+</div>
+<div id="hierarchical-clustering" class="section level3 hasAnchor" number="16.3.2">
+<h3><span class="header-section-number">16.3.2</span> Hierarchical clustering<a href="multivariate.html#hierarchical-clustering" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Another useful method for examining the structure of a multivariate dataset is known as <em>hierarchical clustering</em>. This technique also uses the distances between data points to determine clusters, but it also provides a way to visualize the relationships between data points in terms of a tree-like structure known as a <em>dendrogram</em>.</p>
+<p>The most commonly used hierarchical clustering procedure is known as <em>agglomerative clustering</em>. This procedure starts by treating each data point as its own cluster, and then progressively creates new clusters by combining the two clusters with the least distance between them. It continues to do this until there is only a single cluster. This requires computing the distance between clusters, and there are numerous ways to do this; in this example we will use the <em>average linkage</em> method, which simply takes the average of all of the distances between each each data point in each of two clusters. As an example, we will examine the relationship between the self-control variables that were described above.</p>
+<div class="figure"><span style="display:block;" id="fig:dendro"></span>
+<img src="StatsThinking21_files/figure-html/dendro-1.png" alt="A dendrogram depicting the relative similarity of the nine self-control variables.  The three colored vertical lines represent three different cutoffs, resulting in either two (blue line), three (green line), or four (red line) clusters." width="576" />
+<p class="caption">
+Figure 16.7: A dendrogram depicting the relative similarity of the nine self-control variables. The three colored vertical lines represent three different cutoffs, resulting in either two (blue line), three (green line), or four (red line) clusters.
+</p>
+</div>
+<p>Figure <a href="multivariate.html#fig:dendro">16.7</a> shows the dendrogram generated from the self-regulation dataset. Here we see that there is structure in the relationships between variables that can be understood at various levels by “cutting” the tree to create different numbers of clusters: if we cut the tree at 25, we get two clusters; if we cut it at 20 we get three clusters, and at 19 we get four clusters.</p>
+<p>Interestingly, the solution found by the hierarchical clustering analysis of the self-control data is identical to the solution found in the majority of the K-means clustering runs, which is comforting.</p>
+<p>Our interpretation of this analysis would be that there is a high degree of similarity within each of the variable sets (SSRT and UPPS) compared to between the sets. Within the UPPS variables, it seems that the sensation seeking variable stands separately from the others, which are much more similar to one another. Within the SSRT variables, it seems that the stimulus selective SSRT variable is distinct from the other three, which are more similar. These are the kinds of conclusions that can be drawn from a clustering analysis. It is again important to point out that there is no single “right” number of clusters; different methods rely upon different assumptions or heuristics, and can give different results and interpretations. In general, it’s good to present the data clustered at several different levels, and make sure that this doesn’t drastically change the interpretation of the data.</p>
+</div>
+</div>
+<div id="dimensionality-reduction" class="section level2 hasAnchor" number="16.4">
+<h2><span class="header-section-number">16.4</span> Dimensionality reduction<a href="multivariate.html#dimensionality-reduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>It is often the case with multivariate data that many of the variables will be highly similar to one another, such that they are largely measuring the same thing. One way to think of this is that while the data have a particular number of variables, which we call its <em>dimensionality</em>, in reality there are not as many underlying sources of information as there are variables. The idea behind <em>dimensionality reduction</em> is to reduce the number of variables in order to create composite variables that reflect underlying signals in the data.</p>
+<div id="principal-component-analysis" class="section level3 hasAnchor" number="16.4.1">
+<h3><span class="header-section-number">16.4.1</span> Principal component analysis<a href="multivariate.html#principal-component-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The idea behind principal component analysis is to find a lower-dimensional description of a set of variables that accounts for the maximum possible amount of information in the full dataset. A deep understanding of principal component analysis requires an understanding of linear algebra, which is beyond the scope of this book; see the resources at the end of this chapter for helpful guides to this topic. In this section I will outline the concept and hopefully whet your appetite to learn more.</p>
+<p>We will start with a simple example with just two variables in order to give an intuition for how it works. First we generate some synthetic data for variables X and Y, with a correlation of 0.7 between the two variables. The goal of principal component analysis is to find a linear combination of the observed variables in the dataset that will explain the maximum amount of variance; the idea here is that the variance in the data is a combination of signal and noise, and we want to find the strongest common signal between the variables. The first principal component is the combination that explains the maximum variance. The second component is the the one that explains the maximum remaining variance, while also being uncorrelated with the first component. With more variables we can continue this process to obtain as many components as there are variables (assuming that there are more observations than there are variables), though in practice we usually hope to find a small number of components that can explain a large portion of the variance.</p>
+<p>In the case of our two-dimensional example, we can compute the principal components and plot them over the data (Figure <a href="multivariate.html#fig:pcaPlot">16.8</a>). What we see is that the first principal component (shown in green) follows the direction of the greatest variance. This line is similar, though not identical, to the linear regression line; while the linear regression solution minimizes the distance between each data point and the regression line at the same X value (i.e. the vertical distance), the principal component minimizes the Euclidean distance between the data points and the line representing the component (i.e. the distance perpendicular to the component). The second component points in a direction that is perpendicular to the first component (which is equivalent to being uncorrelated).</p>
+<div class="figure"><span style="display:block;" id="fig:pcaPlot"></span>
+<img src="StatsThinking21_files/figure-html/pcaPlot-1.png" alt="A plot of synthetic data, with the first principal component plotted in green and the second in red." width="384" />
+<p class="caption">
+Figure 16.8: A plot of synthetic data, with the first principal component plotted in green and the second in red.
+</p>
+</div>
+<p>It’s common to use PCA to reduce the dimensionality of a more complex dataset. For example, let’s say that we would like to know whether performance on all four of the stop signal task variables in the earlier dataset are related to the five impulsivity survey variables. We can perform PCA on each of those datasets separately, and examine how much of the variance in the data is accounted for by the first principal component, which will serve as our summary of the data.</p>
+<div class="figure"><span style="display:block;" id="fig:VAF"></span>
+<img src="StatsThinking21_files/figure-html/VAF-1.png" alt="A plot of the variance accounted for (or *scree plot*) for PCA applied separately to the response inhibition and impulsivity variables from the Eisenberg dataset." width="384" />
+<p class="caption">
+Figure 16.9: A plot of the variance accounted for (or <em>scree plot</em>) for PCA applied separately to the response inhibition and impulsivity variables from the Eisenberg dataset.
+</p>
+</div>
+<p>We see in Figure <a href="multivariate.html#fig:VAF">16.9</a> that for the stop signal variables, the first principal component accounts for about 60% of the variance in the data, whereas for the UPPS it accounts for about 55% of the variance. We can then compute the correlation between the scores obtained using the first principal component from each set of variables, in order to ask whether the there is a relation between the two sets of variables. The correlation of -0.014 between the two summary variables suggests that there is no overall relationship between response inhibition and impulsivity in this dataset.</p>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  pca_df$SSRT and pca_df$UPPS
+## t = -0.3, df = 327, p-value = 0.8
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.123  0.093
+## sample estimates:
+##    cor 
+## -0.015</code></pre>
+<p>We could also perform PCA on all of these variables at once. Looking at the plot of variance accounted for (also known as a *scree plot) in Figure <a href="multivariate.html#fig:dendro">16.7</a>, we can see that the first two components account for a substantial amount of the variance in the data. We can then look at the loadings of each of the individual variables on these two components to understand how each specific variable is associated with the different components.</p>
+<div class="figure">
+<img src="StatsThinking21_files/figure-html/imp_pc_scree-1.png" alt="Plot of variance accounted for by PCA components computed on the full set of self-control variables." width="576" />
+<p class="caption">
+(#fig:imp_pc_scree)Plot of variance accounted for by PCA components computed on the full set of self-control variables.
+</p>
+</div>
+<div class="figure"><span style="display:block;" id="fig:pcaVarPlot"></span>
+<img src="StatsThinking21_files/figure-html/pcaVarPlot-1.png" alt="Plot of variable loadings in PCA solution including all self-control variables. Each variable is shown in terms of its loadings on each of the two components; reflected in the two rows respectively." width="384" />
+<p class="caption">
+Figure 16.10: Plot of variable loadings in PCA solution including all self-control variables. Each variable is shown in terms of its loadings on each of the two components; reflected in the two rows respectively.
+</p>
+</div>
+<p>Doing this for the impulsivity dataset (Figure <a href="multivariate.html#fig:pcaVarPlot">16.10</a>), we see that the first component (in the first row of the figure) has nonzero loadings for most of the UPPS variables, and nearly zero loadings for each of the SSRT variables, whereas the opposite is true of the second principal component, which loads primarily on the SSRT variables. This tells us that the first principal component captured mostly variance related to the impulsivity measures, while the second component captured mostly variance related to the response inhibition measures. You might notice that the loadings are actually negative for most of these variables; the sign of the loadings is arbitrary, so we should make sure to look at large positive and negative loadings.</p>
+</div>
+<div id="factor-analysis" class="section level3 hasAnchor" number="16.4.2">
+<h3><span class="header-section-number">16.4.2</span> Factor analysis<a href="multivariate.html#factor-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>While principal component analysis can be useful for reducing a dataset to a smaller number of composite variables, the standard methods for PCA have some limitations. Most importantly, it ensures that the components are uncorrelated; while this may sometimes be useful, there are often cases where we want to extract dimensions that may be correlated with one another. A second limitation is that PCA doesn’t account for measurement error in the variables that are being analyzed, which can lead to difficult in interpreting the resulting loadings on the components. Although there are modifications of PCA that can address these issues, it is more common in some fields (such as psychology) to use a technique called <em>exploratory factor analysis</em> (or EFA) to reduce the dimensionality of a dataset.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>The idea behind EFA is that each observed variable is created through a combination of contributions from a set of <em>latent variables</em> – that is, variables that cannot be observed directly – along with some amount of measurement error for each variable. For this reason, EFA models are often referred to as belonging to a class of statistical models known as <em>latent variable models</em>.</p>
+<p>For example, let’s say that we want to understand how measures of several different variables relate to the underlying factors that give rise to those measurements. We will first generate a synthetic dataset to show how this might work. We will generate a set of individuals for whom we will pretend that we know the values of several latent psychological variables: impulsivity, working memory capacity, and fluid reasoning We will assume that working memory capacity and fluid reasoning are correlated with one another, but that neither is correlated with impulsivity. From these latent variables we will then generate a set of eight observed variables for each indivdiual, which are simply linear combinations of the latent variables along with random noise added to simulate measurement error.</p>
+<p>We can further examine the data by displaying a heatmap of the correlation matrix relating all of these variables (Figure <a href="multivariate.html#fig:dendro">16.7</a>. We see from this that there are three clusters of variables corresponding to our three latent variables, which is as it should be.</p>
+<div class="figure">
+<img src="StatsThinking21_files/figure-html/efa_cor_hmap-1.png" alt="A heatmap showing the correlations between the variables generated from the three underlying latent variables." width="576" />
+<p class="caption">
+(#fig:efa_cor_hmap)A heatmap showing the correlations between the variables generated from the three underlying latent variables.
+</p>
+</div>
+<p>We can think of EFA as estimating the parameters of a set of linear models all at once, where each model relates each of the observed variables to the latent variables. For our example, these equations would look as follows. In these equations, the <span class="math inline">\(\beta\)</span> characters have two subscripts, one that refers to the task and the other than refers to the latent variable, and a variable <span class="math inline">\(\epsilon\)</span> that refers to the error. Here we will assume that everything has a mean of zero, so that we don’t need to include an extra intercept term for each equation.</p>
+<p><span class="math display">\[
+\begin{array}{lcl}
+nback &amp; = &amp;beta_{[1, 1]} * WM + \beta_{[1, 2]} * FR + \beta_{[1, 3]} * IMP  + \epsilon \\
+dspan &amp; = &amp;beta_{[2, 1]} * WM + \beta_{[2, 2]} * FR + \beta_{[2, 3]} * IMP  + \epsilon \\
+ospan &amp; = &amp;beta_{[3, 1]} * WM + \beta_{[3, 2]} * FR + \beta_{[3, 3]} * IMP  + \epsilon \\
+ravens &amp; = &amp;beta_{[4, 1]} * WM + \beta_{[4, 2]} * FR + \beta_{[4, 3]} * IMP   + \epsilon \\
+crt &amp; = &amp;beta_{[5, 1]} * WM + \beta_{[5, 2]} * FR + \beta_{[5, 3]} * IMP   + \epsilon \\
+UPPS &amp; = &amp;beta_{[6, 1]} * WM + \beta_{[6, 2]} * FR + \beta_{[6, 3]} * IMP   + \epsilon \\
+BIS11 &amp; = &amp;beta_{[7, 1]} * WM + \beta_{[7, 2]} * FR + \beta_{[7, 3]} * IMP  + \epsilon \\
+dickman &amp; = &amp;beta_{[8, 1]} * WM + \beta_{[8, 2]} * FR + \beta_{[8, 3]} * IMP   + \epsilon \\
+\end{array}
+\]</span></p>
+<p>In effect what we want to do using EFA is to estimate the <em>matrix</em> of coefficients (betas) that map the latent variables into the observed variables. For the data that we are generating, we know that most of the betas in this matrix are zero because we created them that way; for each task, only one of the weights is set to 1, which means that each task is a noisy measurement of a single latent variable.</p>
+<p>We can apply EFA to our synthetic dataset to estimate these parameters. We won’t go into the details of how EFA is actually performed, other than to mention one important point. Most of the previous analyses in this book have relied upon methods that try to minimize the difference between the observed data values and the values predicted by the model. The methods that are used to estimate the parameters for EFA instead attempt to minimize the difference between the observed <em>covariances</em> between the observed variables, and the covariances implied by the model parameters. For this reason, these methods are often referred to as <em>covariance structure models</em>.</p>
+<p>Let’s apply an exploratory factor analysis to our synthetic data. As with clustering methods, we need to first determine how many latent factors we want to include in our model. In this case we know there are three factors, so let’s start with that; later on we will examine ways to estimate the number of factors directly from the data. Here is the output from our statistical software for this model:</p>
+<pre><code>## 
+## Factor analysis with Call: fa(r = observed_df, nfactors = 3)
+## 
+## Test of the hypothesis that 3 factors are sufficient.
+## The degrees of freedom for the model is 7  and the objective function was  0.04 
+## The number of observations was  200  with Chi Square =  8  with prob &lt;  0.34 
+## 
+## The root mean square of the residuals (RMSA) is  0.01 
+## The df corrected root mean square of the residuals is  0.03 
+## 
+## Tucker Lewis Index of factoring reliability =  0.99
+## RMSEA index =  0.026  and the 10 % confidence intervals are  0 0.094
+## BIC =  -29
+##  With factor correlations of 
+##      MR1  MR2  MR3
+## MR1 1.00 0.03 0.47
+## MR2 0.03 1.00 0.03
+## MR3 0.47 0.03 1.00</code></pre>
+<p>One question that we would like to ask is how well our model actually fits the data. There is no single way to answer this question; rather, researchers have developed a number of different methods that provide some insight into how well the model fits the data. For example, one commonly used criterion is based on the <em>root mean square error of approximation</em> (RMSEA) statistic, which quantifies how far the predicted covariances are from the actual covariances; a value of RMSEA less than 0.08 is often considered to reflect an adequately fitting model. In the example here, the RMSEA value is 0.026, which suggests a model that fits quite well.</p>
+<p>We can also examine the parameter estimates in order to see whether the model has appropriately identified the structure in the data. It’s common to plot this as a graph, with arrows from the latent variables (represented as ellipses) pointing to the observed variables (represented as rectangles), where an arrow represents a substantial loading of the observed variable on the latent variable; this kind of graph is often referred to as a <em>path diagram</em> since it reflects the paths relating the variables. This is shown in Figure <a href="multivariate.html#fig:faDiagram">16.11</a>. In this case the EFA procedure correctly identified the structure present in the data, both in terms of which observed variables are related to each of the latent variables, and in terms of the correlations between latent variables.</p>
+<div class="figure"><span style="display:block;" id="fig:faDiagram"></span>
+<img src="StatsThinking21_files/figure-html/faDiagram-1.png" alt="Path diagram for the exploratory factor analysis model." width="576" />
+<p class="caption">
+Figure 16.11: Path diagram for the exploratory factor analysis model.
+</p>
+</div>
+</div>
+<div id="determining-the-number-of-factors" class="section level3 hasAnchor" number="16.4.3">
+<h3><span class="header-section-number">16.4.3</span> Determining the number of factors<a href="multivariate.html#determining-the-number-of-factors" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>One of the main challenges in applying EFA is to determine the number of factors. A common way to do this is to examine the fit of the model while varying the number of factors, and then selecting the model that gives the best fit. This is not foolproof, and there are multiple ways to quantify the fit of the model that can sometimes give different answers.</p>
+<p>One might think that we could simply look at how well the model fits and pick the number of factors with the best fit, but this won’t work, because a more complex model will always fit the data better (as we saw in our earlier discussion of overfitting). For this reason, we need to use a metric of model fit that penalizes for the number of parameters in the model. For the purposes of this example we will select one of the common methods for quantifying model fit, which is known as the <em>sample-size adjusted Bayesian information criterion</em> (or <em>SABIC</em>). This measure quantifies how well the model fits the data, while also taking into account the number of parameters in the model (which in this case is related to the number of factors) as well as the sample size. While the absolute value of the SABIC is not interpretable, when using the same data and same kind of model we can compare models using SABIC to determine which is most appropriate for the data. One important thing to know about SABIC and other measures like it (known as <em>information criteria</em>) is that lower values represent better fit of the model, so in this case we want to find the number of factors with the lowest SABIC. In Figure <a href="multivariate.html#fig:sabicPlot">16.12</a> we see that the model with the lowest SABIC has three factors, which shows that this approach was able to accurately determine the number of factors used to generate the data.</p>
+<div class="figure"><span style="display:block;" id="fig:sabicPlot"></span>
+<img src="StatsThinking21_files/figure-html/sabicPlot-1.png" alt="Plot of SABIC for varying numbers of factors." width="576" />
+<p class="caption">
+Figure 16.12: Plot of SABIC for varying numbers of factors.
+</p>
+</div>
+<p>Now let’s see what happens when we apply this model to real data from the Eisenberg et al. dataset, which contains measurements of all of the eight variables that were simulated in the above example. The model with three factors also has the lowest SABIC for these real data.</p>
+<div class="figure"><span style="display:block;" id="fig:faDiagramSro"></span>
+<img src="StatsThinking21_files/figure-html/faDiagramSro-1.png" alt="Path diagram for the three-factor model on the Eisenberg et al. data." width="576" />
+<p class="caption">
+Figure 16.13: Path diagram for the three-factor model on the Eisenberg et al. data.
+</p>
+</div>
+<p>Plotting the path diagram (Figure <a href="multivariate.html#fig:faDiagramSro">16.13</a>) we see that the real data demonstrate a factor structure that is very similar to what we saw with the simulated data. This should not be surprising, since the simulated data were generated based on knowledge of these different tasks, but it’s comforting to know that human behavior is systematic enough that we can reliably identify these kinds of relationships. The main difference is that the correlation between the working memory factor (MR3) and the fluid reasoning factor (MR1) is even higher than it was in the simulated data. This result is scientifically useful because it shows us that while working memory and fluid reasoning are closely related, there is utility in separately modeling them.</p>
+</div>
+</div>
+<div id="learning-objectives-15" class="section level2 hasAnchor" number="16.5">
+<h2><span class="header-section-number">16.5</span> Learning objectives<a href="multivariate.html#learning-objectives-15" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Having read this chapter, you should be able to:</p>
+<ul>
+<li>Describe the distinction between supervised and unsupervised learning.</li>
+<li>Employ visualization techniques including heatmaps to visualize the structure of multivariate data.</li>
+<li>Understand the concept of clustering and how it can be used to identify structure in data.</li>
+<li>Understand the concept of dimensionality reduction.</li>
+<li>Describe how principal component analysis and factor analysis can be used to perform dimensionality reduction.</li>
+</ul>
+</div>
+<div id="suggested-readings-11" class="section level2 hasAnchor" number="16.6">
+<h2><span class="header-section-number">16.6</span> Suggested readings<a href="multivariate.html#suggested-readings-11" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><em>The Geometry of Multivariate Statistics</em>, by Thomas Wickens</li>
+<li><em>No Bullshit Guide to Linear Algebra</em>, by Ivan Savov</li>
+</ul>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>There is another application of factor analysis known as <em>confirmatory factor analysis</em> (or CFA) that we will not discuss here; In practice its application can be problematic, and recent work has started to move towards modifications of EFA that can answer the questions often addressed using CFA.<span class="citation">(<a href="#ref-Marsh:2014th" role="doc-biblioref"><strong>Marsh:2014th?</strong></a>)</span><a href="multivariate.html#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="comparing-means.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="practical-example.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="book_assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="book_assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/statsthinking21/statsthinking21-core/edit/master/16-MultivariateStats.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["StatsThinking21.pdf", "StatsThinking21.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
