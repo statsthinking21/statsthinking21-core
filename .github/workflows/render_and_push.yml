@@ -22,6 +22,7 @@ jobs:
     container: poldrack/statsthinking21
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - uses: actions/checkout@v2
     - name: render pdf
       run: make render-pdf
     - name: render gitbook
