@@ -22,8 +22,6 @@ library(knitr)
 library(DiagrammeR)
 library(htmltools)
 library(webshot)
-library(DiagrammeRsvg)
-library(rsvg)
 
 set.seed(123456) # set random seed to exactly replicate results
 
@@ -238,66 +236,6 @@ Let's say that we did such an analysis, and we found that abused children had po
 ### Causal graphs
 
 One useful way to describe causal relations between variables is through a *causal graph*, which shows variables as circles and causal relations between them as arrows.  For example, Figure \@ref(fig:simpleCausalGraph) shows the causal relationships between study time and two variables that we think should be affected by it: exam grades and exam finishing times.  
-
-```{r mkCausalGraphs, echo=FALSE,message=FALSE,warning=FALSE,fig.cap="A graph showing causal relationships between three variables: study time, exam grades, and exam finishing time.  A green arrow represents a positive relationship (i.e. more study time causes exam grades to increase), and a red arrow represents a negative relationship (i.e. more study time causes faster completion of the exam).",fig.width=6,fig.height=6,out.height='50%'}
-
-graph = "
-digraph boxes_and_circles {
-
-  # a 'graph' statement
-  graph [overlap = true, fontsize = 6]
-
-  # several 'node' statements
- 
-  node [shape = circle,
-        fixedsize = true,
-        width = 0.9,
-        fontsize=6] // sets as circles
-  StudyTime; ExamGrade; FinishTime
-
-  # several 'edge' statements
-  StudyTime->ExamGrade [color=green]
-  StudyTime->FinishTime [color=red]
-}
-"
-
-grViz(graph) %>% 
-   export_svg %>% 
-   charToRaw %>% 
-   rsvg_png("images/dag_example.png", width = 500)
-
-latent_graph = "
-digraph boxes_and_circles {
-
-  # a 'graph' statement
-  graph [overlap = true, fontsize = 6]
-
-  # several 'node' statements
- 
-  node [shape = circle,
-        fixedsize = true,
-        width = 0.9,
-        fontsize=6] // sets as circles
-  StudyTime; ExamGrade; FinishTime
-  
-  node [shape = box,
-        fixedsize = true,
-        width = 0.9,
-        fontsize=6] //  
-  Knowledge
-
-  # several 'edge' statements
-  StudyTime->Knowledge [color=green]
-  Knowledge->ExamGrade [color=green]
-  Knowledge->FinishTime [color=red]
-}
-"
-grViz(latent_graph) %>% 
-   export_svg %>% 
-   charToRaw %>% 
-   rsvg_png("images/dag_latent_example.png", width = 500)
-
-```
 
 However, in reality the effects on finishing time and grades are not due directly to the amount of time spent studying, but rather to the amount of knowledge that the student gains by studying.  We would usually say that knowledge is a *latent* variable -- that is, we can't measure it directly but we can see it reflected in variables that we can measure (like grades and finishing times).  Figure \@ref(fig:latentCausalGraph) shows this.
 
