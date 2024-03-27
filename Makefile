@@ -14,7 +14,7 @@ docker-build:
 	docker build -t $(DOCKER_USERNAME)/statsthinking21 . 2>&1 > docker-build.log
 
 shell:
-	docker run --memory="18g" -it -v $(shell pwd):/book -w /book --entrypoint=bash $(DOCKER_USERNAME)/statsthinking21
+	docker run --platform linux/x86_64 --memory="18g" -it -v $(shell pwd):/book -w /book --entrypoint=bash $(DOCKER_USERNAME)/statsthinking21
 
 deploy:
 	bash deploy.sh
