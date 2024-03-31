@@ -1,0 +1,42 @@
+name: Render and push
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  render:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    container: poldrack/statsthinking21
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - uses: actions/checkout@v2
+    - name: render pdf
+      run: make render-pdf
+    - name: render gitbook
+      run: make render-gitbook
+    - name: render epub
+      run: make render-epub
+      
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v4.1.4
+      with:
+        # Name of the artifact to download. If unspecified, all artifacts for the run are downloaded.
+        name: rendered # optional
+        # Destination path. Supports basic tilde expansion. Defaults to $GITHUB_WORKSPACE
+        path: _book # optional
+        # The id of the workflow run where the desired download artifact was uploaded from. If github-token is specified, this is the run that artifacts will be downloaded from.
+        # run-id: # optional, default is ${{ github.run_id }}
+              
