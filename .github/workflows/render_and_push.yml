@@ -30,7 +30,8 @@ jobs:
     - name: render epub
       run: make render-epub
     - uses: cpina/github-action-push-to-another-repository@main
-      env: SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+      env:
+        SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
       with:
           source-directory: '_book'
           destination-github-username: 'poldrack'
