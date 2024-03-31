@@ -38,5 +38,3 @@ jobs:
           user-email: poldrack@gmail.com
           target-branch: master
           target-directory: docs
-
-              
