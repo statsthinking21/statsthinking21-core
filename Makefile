@@ -1,23 +1,8 @@
 all: render-pdf render-epub render-gitbook 
 
-docker-deploy: docker-login docker-upload
-
-docker-login:
-	docker login --username=$(DOCKER_USERNAME) --password=$(DOCKER_PASSWORD)
-
-docker-upload:
-	docker push poldrack/statsthinking21
-
-docker-build:
-	@echo This will take a while - output is stored in docker-build.log
-	-rm docker-build.log
-	docker build -t $(DOCKER_USERNAME)/statsthinking21 . 2>&1 > docker-build.log
-
 shell:
 	docker run --platform linux/x86_64 --memory="18g" -it -v $(shell pwd):/book -w /book --entrypoint=bash $(DOCKER_USERNAME)/statsthinking21
 
-deploy:
-	bash deploy.sh
 
 clean:
 	rm -rf _bookdown_files bookdown-demo.*
