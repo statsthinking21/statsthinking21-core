@@ -34,8 +34,8 @@ jobs:
         SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
       with:
           source-directory: '_book'
-          destination-github-username: 'poldrack'
-          destination-repository-name: 'statsthinking21/statsthinking21-core-site'
+          destination-github-username: 'statsthinking21'
+          destination-repository-name: 'statsthinking21-core-site'
           user-email: poldrack@gmail.com
           target-branch: master
           target-directory: docs
