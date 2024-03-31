@@ -29,14 +29,14 @@ jobs:
       run: make render-gitbook
     - name: render epub
       run: make render-epub
-      
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v4.1.4
+    - uses: cpina/github-action-push-to-another-repository@main
+      env: SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
       with:
-        # Name of the artifact to download. If unspecified, all artifacts for the run are downloaded.
-        # name: rendered # optional
-        # Destination path. Supports basic tilde expansion. Defaults to $GITHUB_WORKSPACE
-        path: _book # optional
-        # The id of the workflow run where the desired download artifact was uploaded from. If github-token is specified, this is the run that artifacts will be downloaded from.
-        # run-id: # optional, default is ${{ github.run_id }}
+          source-directory: '_book'
+          destination-github-username: 'poldrack'
+          destination-repository-name: 'statsthinking21/statsthinking21-core-site'
+          user-email: poldrack@gmail.com
+          target-branch: master
+          target-directory: docs
+
               
