@@ -22,7 +22,9 @@ Please cite this work as follows (for BibTeX):
 }
 
 #### License
-This book is licensed using the [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)  License](https://creativecommons.org/licenses/by-nc/4.0/).  A low-cost paper version of the book is currently in press with Princeton University Press.
+This book is licensed using the [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)  License](https://creativecommons.org/licenses/by-nc/4.0/).  
+
+A paper version of the book has been published by Princeton University Press: [Statistical Thinking](https://press.princeton.edu/books/hardcover/9780691250939/statistical-thinking)
 
 Comments/suggestions?  Please post an issue [here](https://github.com/poldrack/psych10-book/issues)
 
